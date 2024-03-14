@@ -57,7 +57,7 @@ namespace AntSK.Domain.Domain.Service
                     MaxTokensPerParagraph = kms.MaxTokensPerParagraph,
                     OverlappingTokens = kms.OverlappingTokens
                 });
-                //加载huihu 模型
+                //加载会话模型
                 WithTextGenerationByAIType(memoryBuild, chatModel, chatHttpClient);
                 //加载向量模型
                 WithTextEmbeddingGenerationByAIType(memoryBuild, embedModel, embeddingHttpClient);
@@ -99,6 +99,9 @@ namespace AntSK.Domain.Domain.Service
                     var embedder = new LLamaEmbedder(weights, parameters);
                     memory.WithLLamaSharpTextEmbeddingGeneration(new LLamaSharpTextEmbeddingGenerator(embedder));
                     break;
+                case Model.Enum.AIType.DashScope:
+                    memory.WithDashScopeDefaults(embedModel.ModelKey);
+                    break;
             }
         }
 
@@ -128,6 +131,12 @@ namespace AntSK.Domain.Domain.Service
                     var context = weights.CreateContext(parameters);
                     var executor = new StatelessExecutor(weights, parameters);
                     memory.WithLLamaSharpTextGeneration(new LlamaSharpTextGenerator(weights, context, executor));
+                    break;
+                case Model.Enum.AIType.DashScope:
+                    memory.WithDashScopeTextGeneration(new Cnblogs.KernelMemory.AI.DashScope.DashScopeConfig
+                    {
+                        ApiKey = chatModel.ModelKey,
+                    });
                     break;
             }
         }
