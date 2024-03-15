@@ -1,5 +1,4 @@
 ﻿using AntDesign;
-using AntSK.BackgroundTask;
 using AntSK.Domain.Domain.Interface;
 using AntSK.Domain.Domain.Model;
 using AntSK.Domain.Repositories;
@@ -10,7 +9,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.KernelMemory;
 using System.ComponentModel.DataAnnotations;
-using static AntSK.Pages.KmsPage.KmsDetail;
 
 namespace AntSK.Pages.KmsPage
 {
@@ -61,8 +59,8 @@ namespace AntSK.Pages.KmsPage
         protected IKMService iKMService { get; set; }
         [Inject]
         protected MessageService? _message { get; set; }
-        [Inject]
-        protected BackgroundTaskBroker<ImportKMSTaskReq> _taskBroker { get; set; }
+        //[Inject]
+        //protected BackgroundTaskBroker<ImportKMSTaskReq> _taskBroker { get; set; }
         [Inject]
         protected IHttpService _httpService { get; set; }
 

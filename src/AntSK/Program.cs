@@ -1,14 +1,15 @@
 using AntDesign.ProLayout;
-using AntSK.Domain.Common.DependencyInjection;
 using AntSK.Domain.Common.Map;
-using AntSK.Domain.Domain.Model;
-using AntSK.Domain.Domain.Other;
+using AntSK.Domain.Domain.Interface;
 using AntSK.Domain.Domain.Service;
 using AntSK.Domain.Options;
 using AntSK.Domain.Repositories;
 using AntSK.Domain.Utils;
 using AntSK.plugins.Functions;
+using AntSK.Services;
 using AntSK.Services.Auth;
+using AntSK.Services.LLamaSharp;
+using Coravel;
 using LLama.Native;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -42,10 +43,31 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri(sp.GetService<NavigationManager>()!.BaseUri)
 });
 builder.Services.Configure<ProSettings>(builder.Configuration.GetSection("ProSettings"));
-builder.Services.AddServicesFromAssemblies("AntSK");
-builder.Services.AddServicesFromAssemblies("AntSK.Domain");
 builder.Services.AddSingleton(sp => new FunctionService(sp, [typeof(AntSK.App).Assembly, typeof(AntSK.Domain.Common.AntSkFunctionAttribute).Assembly]));
 builder.Services.AddScoped<FunctionTest>();
+
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IHttpService, HttpService>();
+builder.Services.AddScoped<IImportKMSService, ImportKMSService>();
+builder.Services.AddScoped<IKernelService, KernelService>();
+builder.Services.AddScoped<IKMService, KMService>();
+builder.Services.AddScoped<IApis_Repositories, Apis_Repositories>();
+builder.Services.AddScoped<IApps_Repositories, Apps_Repositories>();
+builder.Services.AddScoped<IKmss_Repositories, Kmss_Repositories>();
+builder.Services.AddScoped<IKmsDetails_Repositories, KmsDetails_Repositories>();
+builder.Services.AddScoped<IAIModels_Repositories, AIModels_Repositories>();
+builder.Services.AddScoped<IUsers_Repositories, Users_Repositories>();
+builder.Services.AddSingleton<ILLamaChatService, LLamaChatService>();
+builder.Services.AddSingleton<ILLamaEmbeddingService,  LLamaEmbeddingService>();
+builder.Services.AddScoped<ILLamaSharpService, LLamaSharpService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+
+builder.Services.AddQueue();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -74,7 +96,7 @@ builder.Services.AddSwaggerGen(c =>
 //Mapper
 builder.Services.AddMapper();
 //后台队列任务
-builder.Services.AddBackgroundTaskBroker().AddHandler<ImportKMSTaskReq, BackGroundTaskHandler>("ImportKMSTask");
+//builder.Services.AddBackgroundTaskBroker().AddHandler<ImportKMSTaskReq, BackGroundTaskHandler>("ImportKMSTask");
 // 读取连接字符串配置
 {
     builder.Configuration.GetSection("DBConnection").Get<DBConnectionOption>();
@@ -133,14 +155,14 @@ void InitDB(WebApplication app)
     {
         //codefirst 创建表
         var _repository = scope.ServiceProvider.GetRequiredService<IApps_Repositories>();
-        _repository.GetDB().DbMaintenance.CreateDatabase();
-        _repository.GetDB().CodeFirst.InitTables(typeof(Apps));
-        _repository.GetDB().CodeFirst.InitTables(typeof(Kmss));
-        _repository.GetDB().CodeFirst.InitTables(typeof(KmsDetails));
-        _repository.GetDB().CodeFirst.InitTables(typeof(Users));
-        _repository.GetDB().CodeFirst.InitTables(typeof(Apis));
-        _repository.GetDB().CodeFirst.InitTables(typeof(AIModels));
-        //创建vector插件如果数据库没有则需要提供支持向量的数据库
-        _repository.GetDB().Ado.ExecuteCommandAsync($"CREATE EXTENSION IF NOT EXISTS vector;");
+        //_repository.GetDB().DbMaintenance.CreateDatabase();
+        //_repository.GetDB().CodeFirst.InitTables(typeof(Apps));
+        //_repository.GetDB().CodeFirst.InitTables(typeof(Kmss));
+        //_repository.GetDB().CodeFirst.InitTables(typeof(KmsDetails));
+        //_repository.GetDB().CodeFirst.InitTables(typeof(Users));
+        //_repository.GetDB().CodeFirst.InitTables(typeof(Apis));
+        //_repository.GetDB().CodeFirst.InitTables(typeof(AIModels));
+        ////创建vector插件如果数据库没有则需要提供支持向量的数据库
+        //_repository.GetDB().Ado.ExecuteCommandAsync($"CREATE EXTENSION IF NOT EXISTS vector;");
     }
 }

@@ -1,5 +1,4 @@
-﻿using AntSK.BackgroundTask;
-using AntSK.Domain.Common.Map;
+﻿using AntSK.Domain.Common.Map;
 using AntSK.Domain.Domain.Interface;
 using AntSK.Domain.Domain.Model;
 using AntSK.Domain.Domain.Model.Enum;
@@ -18,16 +17,13 @@ namespace AntSK.Controllers
     {
         private readonly IKmsDetails_Repositories _kmsDetails_Repositories;
         private readonly IKMService _iKMService;
-        private readonly BackgroundTaskBroker<ImportKMSTaskReq> _taskBroker;
         public KMSController(
             IKmsDetails_Repositories kmsDetails_Repositories,
-            IKMService iKMService,
-            BackgroundTaskBroker<ImportKMSTaskReq> taskBroker
+            IKMService iKMService
             )
         {
             _kmsDetails_Repositories = kmsDetails_Repositories;
             _iKMService = iKMService;
-            _taskBroker = taskBroker;
         }
         [HttpPost]
         public async Task<IActionResult> ImportKMSTask(ImportKMSTaskDTO model)
@@ -45,7 +41,7 @@ namespace AntSK.Controllers
 
             _kmsDetails_Repositories.Insert(detail);
             req.KmsDetail = detail;
-            _taskBroker.QueueWorkItem(req);
+            //_taskBroker.QueueWorkItem(req);
             Console.WriteLine("api/kms/ImportKMSTask  结束");
             return Ok();
         }

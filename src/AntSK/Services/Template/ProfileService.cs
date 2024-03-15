@@ -1,6 +1,4 @@
-﻿using AntSK.Domain.Common.DependencyInjection;
-using AntSK.Models;
-using ServiceLifetime = AntSK.Domain.Common.DependencyInjection.ServiceLifetime;
+﻿using AntSK.Models;
 
 namespace AntSK.Services
 {
@@ -9,7 +7,7 @@ namespace AntSK.Services
         Task<BasicProfileDataType> GetBasicAsync();
         Task<AdvancedProfileData> GetAdvancedAsync();
     }
-    [ServiceDescription(typeof(IProfileService), ServiceLifetime.Scoped)]
+
     public class ProfileService : IProfileService
     {
         private readonly HttpClient _httpClient;

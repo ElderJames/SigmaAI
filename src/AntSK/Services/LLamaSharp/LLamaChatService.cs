@@ -1,5 +1,4 @@
-﻿using AntSK.Domain.Common.DependencyInjection;
-using AntSK.Domain.Options;
+﻿using AntSK.Domain.Options;
 using LLama;
 using LLama.Common;
 
@@ -11,10 +10,6 @@ namespace AntSK.Services.LLamaSharp
         IAsyncEnumerable<string> ChatStreamAsync(string input);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    [ServiceDescription(typeof(ILLamaChatService), Domain.Common.DependencyInjection.ServiceLifetime.Singleton)]
     public class LLamaChatService : IDisposable, ILLamaChatService
     {
         private readonly ChatSession _session;

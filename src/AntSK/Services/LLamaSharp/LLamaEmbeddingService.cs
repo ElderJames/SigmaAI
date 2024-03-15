@@ -1,5 +1,4 @@
-﻿using AntSK.Domain.Common.DependencyInjection;
-using AntSK.Domain.Options;
+﻿using AntSK.Domain.Options;
 using LLama;
 using LLama.Common;
 
@@ -13,7 +12,6 @@ namespace AntSK.Services.LLamaSharp
     /// <summary>
     /// 本地Embedding
     /// </summary>
-    [ServiceDescription(typeof(ILLamaEmbeddingService), Domain.Common.DependencyInjection.ServiceLifetime.Singleton)]
     public class LLamaEmbeddingService : IDisposable, ILLamaEmbeddingService
     {
         private LLamaEmbedder _embedder;

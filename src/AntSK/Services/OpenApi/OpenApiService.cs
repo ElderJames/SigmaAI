@@ -1,5 +1,4 @@
-﻿using AntSK.Domain.Common.DependencyInjection;
-using AntSK.Domain.Domain.Interface;
+﻿using AntSK.Domain.Domain.Interface;
 using AntSK.Domain.Domain.Model.Dto.OpenAPI;
 using AntSK.Domain.Repositories;
 using AntSK.Domain.Utils;
@@ -9,7 +8,6 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Newtonsoft.Json;
 using System.Text;
 using System.Text.RegularExpressions;
-using ServiceLifetime = AntSK.Domain.Common.DependencyInjection.ServiceLifetime;
 
 namespace AntSK.Services.OpenApi
 {
@@ -18,7 +16,6 @@ namespace AntSK.Services.OpenApi
         Task Chat(OpenAIModel model, string sk, HttpContext HttpContext);
     }
 
-    [ServiceDescription(typeof(IOpenApiService), ServiceLifetime.Scoped)]
     public class OpenApiService(
         IApps_Repositories _apps_Repositories,
         IKmss_Repositories _kmss_Repositories,

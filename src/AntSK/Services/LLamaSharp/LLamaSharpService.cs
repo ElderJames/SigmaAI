@@ -1,9 +1,7 @@
-﻿using AntSK.Domain.Common.DependencyInjection;
-using AntSK.Domain.Domain.Model.Dto.OpenAPI;
+﻿using AntSK.Domain.Domain.Model.Dto.OpenAPI;
 using AntSK.Domain.Utils;
 using Newtonsoft.Json;
 using System.Text;
-using ServiceLifetime = AntSK.Domain.Common.DependencyInjection.ServiceLifetime;
 
 namespace AntSK.Services.LLamaSharp
 {
@@ -15,7 +13,7 @@ namespace AntSK.Services.LLamaSharp
         Task Embedding(OpenAIEmbeddingModel model, HttpContext HttpContext);
     }
 
-    [ServiceDescription(typeof(ILLamaSharpService), ServiceLifetime.Scoped)]
+
     public class LLamaSharpService(
         ILLamaEmbeddingService _lLamaEmbeddingService,
         ILLamaChatService _lLamaChatService

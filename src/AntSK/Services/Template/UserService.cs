@@ -1,6 +1,4 @@
-﻿using AntSK.Domain.Common.DependencyInjection;
-using AntSK.Models;
-using ServiceLifetime = AntSK.Domain.Common.DependencyInjection.ServiceLifetime;
+﻿using AntSK.Models;
 
 namespace AntSK.Services
 {
@@ -8,7 +6,7 @@ namespace AntSK.Services
     {
         Task<CurrentUser> GetCurrentUserAsync();
     }
-    [ServiceDescription(typeof(IUserService), ServiceLifetime.Scoped)]
+
     public class UserService : IUserService
     {
         private readonly HttpClient _httpClient;

@@ -5,8 +5,6 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntSK", "AntSK\AntSK.csproj", "{9AA5A735-8FB1-4CC5-AB3E-D02B3A3B6682}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntSK.Domain", "AntSK.Domain\AntSK.Domain.csproj", "{64F17C9A-97C2-46FA-9345-86C5289288AD}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{9F2E193A-5F9D-4C82-B591-CB133EEB59F0}"
 	ProjectSection(SolutionItems) = preProject
 		..\docker-compose.simple.yml = ..\docker-compose.simple.yml
@@ -14,11 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{9F2E19
 		..\Dockerfile = ..\Dockerfile
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MiddleWare", "MiddleWare", "{40DDB1DC-571B-4A95-9F34-47F52981C511}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntSK.BackgroundTask", "MiddleWare\AntSK.BackgroundTask\AntSK.BackgroundTask.csproj", "{DF87E829-99C5-44A7-9718-B3E67DC801F6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntSK.LLM", "AntSk.LLM\AntSK.LLM.csproj", "{19529BFA-152F-4A8C-8254-F2D4896AB739}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntSK.Core", "AntSK.Core\AntSK.Core.csproj", "{0E060515-78BE-4C7A-B5EB-3291E7977467}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,24 +26,17 @@ Global
 		{9AA5A735-8FB1-4CC5-AB3E-D02B3A3B6682}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AA5A735-8FB1-4CC5-AB3E-D02B3A3B6682}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AA5A735-8FB1-4CC5-AB3E-D02B3A3B6682}.Release|Any CPU.Build.0 = Release|Any CPU
-		{64F17C9A-97C2-46FA-9345-86C5289288AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{64F17C9A-97C2-46FA-9345-86C5289288AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{64F17C9A-97C2-46FA-9345-86C5289288AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{64F17C9A-97C2-46FA-9345-86C5289288AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DF87E829-99C5-44A7-9718-B3E67DC801F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF87E829-99C5-44A7-9718-B3E67DC801F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF87E829-99C5-44A7-9718-B3E67DC801F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF87E829-99C5-44A7-9718-B3E67DC801F6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{19529BFA-152F-4A8C-8254-F2D4896AB739}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{19529BFA-152F-4A8C-8254-F2D4896AB739}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19529BFA-152F-4A8C-8254-F2D4896AB739}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19529BFA-152F-4A8C-8254-F2D4896AB739}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E060515-78BE-4C7A-B5EB-3291E7977467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E060515-78BE-4C7A-B5EB-3291E7977467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E060515-78BE-4C7A-B5EB-3291E7977467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E060515-78BE-4C7A-B5EB-3291E7977467}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{DF87E829-99C5-44A7-9718-B3E67DC801F6} = {40DDB1DC-571B-4A95-9F34-47F52981C511}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2076B7C9-2E5B-4580-9712-03F0D56BC1AF}
