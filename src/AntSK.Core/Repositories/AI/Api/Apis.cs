@@ -1,14 +1,13 @@
-﻿using AntSK.Domain.Domain.Model.Enum;
+﻿using AntSK.Core.Repositories.Base;
+using AntSK.Domain.Domain.Model.Enum;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AntSK.Domain.Repositories
 {
     [Table("Apis")]
-    public partial class Apis
+    public partial class Apis : EntityBase
     {
-        public string Id { get; set; }
-
         /// <summary>
         /// 接口名称
         /// </summary>
@@ -20,24 +19,28 @@ namespace AntSK.Domain.Repositories
         /// </summary>
         [Required]
         public string Describe { get; set; }
+
         /// <summary>
         /// 接口地址
         /// </summary>
         [Required]
         public string Url { get; set; }
+
         /// <summary>
         /// 请求方法
         /// </summary>
         [Required]
         public HttpMethodType Method { get; set; }
 
-        [Column(TypeName= "varchar(1000)")]
+        [Column(TypeName = "varchar(1000)")]
         public string? Header { get; set; }
+
         /// <summary>
         /// QueryString参数
         /// </summary>
         [Column(TypeName = "varchar(1000)")]
         public string? Query { get; set; }
+
         /// <summary>
         /// jsonBody 实体
         /// </summary>

@@ -14,7 +14,7 @@ using AntSK.Domain.Domain.Model;
 using AntSK.Domain.Domain.Model.Dto;
 
 namespace AntSK.Domain.Domain.Service
-{ 
+{
     public class ChatService(
         IKernelService _kernelService,
         IKMService _kMService,
@@ -38,7 +38,7 @@ namespace AntSK.Domain.Domain.Service
             var _kernel = _kernelService.GetKernelByApp(app);
             var temperature = app.Temperature / 100;//存的是0~100需要缩小
             OpenAIPromptExecutionSettings settings = new() { Temperature = temperature };
-            if (!string.IsNullOrEmpty(app.ApiFunctionList)|| !string.IsNullOrEmpty(app.NativeFunctionList))//这里还需要加上本地插件的
+            if (!string.IsNullOrEmpty(app.ApiFunctionList) || !string.IsNullOrEmpty(app.NativeFunctionList))//这里还需要加上本地插件的
             {
                 _kernelService.ImportFunctionsByApp(app, _kernel);
                 settings.ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions;
@@ -61,7 +61,7 @@ namespace AntSK.Domain.Domain.Service
             var _memory = _kMService.GetMemoryByKMS(kmsidList.FirstOrDefault());
             foreach (var kmsid in kmsidList)
             {
-                filters.Add(new MemoryFilter().ByTag("kmsid", kmsid));
+                filters.Add(new MemoryFilter().ByTag("kmsid", kmsid.ToString()));
             }
             var xlresult = await _memory.SearchAsync(questions, index: "kms", filters: filters);
             string dataMsg = "";

@@ -1,178 +1,127 @@
 ﻿using AntSK.Domain.Repositories.Base;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace AntSK.Core.Repositories.Base
 {
-    public class Repository<T> : IRepository<T>
+    public class Repository<T> : IRepository<T> where T : EntityBase
     {
+        private DbContext _db;
+
+        public Repository(DbContext db)
+        {
+            _db = db;
+        }
+
         public int Count(Expression<Func<T, bool>> whereExpression)
         {
-            throw new NotImplementedException();
+            return _db.Set<T>().Count(whereExpression);
         }
 
         public Task<int> CountAsync(Expression<Func<T, bool>> whereExpression)
         {
-            throw new NotImplementedException();
+            return _db.Set<T>().CountAsync(whereExpression);
         }
 
-        public bool Delete(dynamic id)
+        public bool Delete(string id)
         {
-            throw new NotImplementedException();
+            return _db.Set<T>().Where(x => x.Id == id).ExecuteDelete() > 0;
         }
 
         public bool Delete(T obj)
         {
-            throw new NotImplementedException();
+            _db.Set<T>().Remove(obj);
+            return _db.SaveChanges() > 0;
         }
 
         public bool Delete(Expression<Func<T, bool>> whereExpression)
         {
-            throw new NotImplementedException();
+            return _db.Set<T>().Where(whereExpression).ExecuteDelete() > 0;
         }
 
-        public Task<bool> DeleteAsync(dynamic id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            throw new NotImplementedException();
+            return (await _db.Set<T>().Where(x => x.Id == id).ExecuteDeleteAsync()) > 0;
         }
 
-        public Task<bool> DeleteAsync(T obj)
+        public async Task<bool> DeleteAsync(T obj)
         {
-            throw new NotImplementedException();
+            _db.Set<T>().Remove(obj);
+            return (await _db.SaveChangesAsync()) > 0;
         }
 
-        public Task<bool> DeleteAsync(Expression<Func<T, bool>> whereExpression)
+        public async Task<bool> DeleteAsync(Expression<Func<T, bool>> whereExpression)
         {
-            throw new NotImplementedException();
+            return (await _db.Set<T>().Where(whereExpression).ExecuteDeleteAsync()) > 0;
         }
 
-        public bool DeleteByIds(dynamic[] ids)
+        public bool DeleteByIds(string[] ids)
         {
-            throw new NotImplementedException();
+            return (_db.Set<T>().Where(x => ids.Contains(x.Id)).ExecuteDelete()) > 0;
         }
 
-        public Task<bool> DeleteByIdsAsync(dynamic[] ids)
+        public async Task<bool> DeleteByIdsAsync(string[] ids)
         {
-            throw new NotImplementedException();
+            return (await _db.Set<T>().Where(x => ids.Contains(x.Id)).ExecuteDeleteAsync()) > 0;
         }
 
-        public T GetById(dynamic id)
+        public T? GetById(int id)
         {
-            throw new NotImplementedException();
+            return _db.Set<T>().Find(id);
         }
 
-        public Task<T> GetByIdAsync(dynamic id)
+        public async Task<T?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _db.Set<T>().FindAsync(id);
         }
 
         public T GetFirst(Expression<Func<T, bool>> whereExpression)
         {
-            throw new NotImplementedException();
+            return _db.Set<T>().Where(whereExpression).First();
         }
 
-        public Task<T> GetFirstAsync(Expression<Func<T, bool>> whereExpression)
+        public async Task<T> GetFirstAsync(Expression<Func<T, bool>> whereExpression)
         {
-            throw new NotImplementedException();
+            return await _db.Set<T>().Where(whereExpression).FirstAsync();
         }
 
         public List<T> GetList()
         {
-            throw new NotImplementedException();
+            return _db.Set<T>().ToList();
         }
 
         public List<T> GetList(Expression<Func<T, bool>> whereExpression)
         {
-            throw new NotImplementedException();
+            return _db.Set<T>().Where(whereExpression).ToList();
         }
 
-        public Task<List<T>> GetListAsync()
+        public async Task<List<T>> GetListAsync()
         {
-            throw new NotImplementedException();
+            return await _db.Set<T>().ToListAsync();
         }
 
-        public Task<List<T>> GetListAsync(Expression<Func<T, bool>> whereExpression)
+        public async Task<List<T>> GetListAsync(Expression<Func<T, bool>> whereExpression)
         {
-            throw new NotImplementedException();
-        }
-
-        public T GetSingle(Expression<Func<T, bool>> whereExpression)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<T> GetSingleAsync(Expression<Func<T, bool>> whereExpression)
-        {
-            throw new NotImplementedException();
+            return await _db.Set<T>().Where(whereExpression).ToListAsync();
         }
 
         public bool Insert(T obj)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> InsertAsync(T obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool InsertRange(List<T> objs)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> InsertRangeAsync(List<T> objs)
-        {
-            throw new NotImplementedException();
-        }
-
-        public long InsertReturnBigIdentity(T obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<long> InsertReturnBigIdentityAsync(T obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int InsertReturnIdentity(T obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<int> InsertReturnIdentityAsync(T obj)
-        {
-            throw new NotImplementedException();
+            _db.Set<T>().Add(obj);
+            return _db.SaveChanges() > 0;
         }
 
         public bool IsAny(Expression<Func<T, bool>> whereExpression)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> IsAnyAsync(Expression<Func<T, bool>> whereExpression)
-        {
-            throw new NotImplementedException();
+            return _db.Set<T>().Any(whereExpression);
         }
 
         public bool Update(T obj)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateAsync(T obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool UpdateRange(List<T> objs)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateRangeAsync(List<T> objs)
-        {
-            throw new NotImplementedException();
+            _db.Update(obj);
+            return _db.SaveChanges() > 0;
         }
     }
 }

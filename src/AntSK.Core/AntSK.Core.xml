@@ -4,22 +4,6 @@
         <name>AntSK.Core</name>
     </assembly>
     <members>
-        <member name="M:AntSK.Domain.Common.Map.MapperExtend.ToDTOList``1(System.Object)">
-            <summary>
-            Entity集合转DTO集合
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AntSK.Domain.Common.Map.MapperExtend.ToDTO``1(System.Object)">
-            <summary>
-            Entity转DTO
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
         <member name="T:AntSK.Domain.Domain.Model.Enum.AIType">
             <summary>
             AI类型
@@ -564,6 +548,18 @@
             </summary>
             <param name="fieldOrPropertyInfo"></param>
             <returns></returns>
+        </member>
+        <member name="T:Sigma.Migrations.CreateIdentitySchema">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Migrations.CreateIdentitySchema.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Migrations.CreateIdentitySchema.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Migrations.CreateIdentitySchema.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
         </member>
     </members>
 </doc>

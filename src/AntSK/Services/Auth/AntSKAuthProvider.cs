@@ -15,16 +15,13 @@ namespace AntSK.Services.Auth
     {
         private ClaimsIdentity identity = new ClaimsIdentity();
 
-
         public async Task<bool> SignIn(string username, string password)
         {
-
-            var user = _users_Repositories.GetFirst(p => p.No == username);
             if (username == LoginOption.User && password == LoginOption.Password)
             {
                 string AdminRole = "AntSKAdmin";
                 // 管理员认证成功，创建用户的ClaimsIdentity
-                var claims = new[] {    
+                var claims = new[] {
                     new Claim(ClaimTypes.Name, username),
                     new Claim(ClaimTypes.Role, AdminRole)
                 };
@@ -35,6 +32,7 @@ namespace AntSK.Services.Auth
             }
             else
             {
+                var user = _users_Repositories.GetFirst(p => p.No == username);
                 string UserRole = "AntSKUser";
                 if (user.IsNull())
                 {
@@ -45,7 +43,7 @@ namespace AntSK.Services.Auth
                     return false;
                 }
                 // 用户认证成功，创建用户的ClaimsIdentity
-                var claims = new[] { 
+                var claims = new[] {
                      new Claim(ClaimTypes.Name, username),
                     new Claim(ClaimTypes.Role, UserRole)
                      };
@@ -61,9 +59,9 @@ namespace AntSK.Services.Auth
             var user = new ClaimsPrincipal(identity);
             return user;
         }
+
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            
             var userSessionStorageResult = await _protectedSessionStore.GetAsync<UserSession>("UserSession");
             var userSession = userSessionStorageResult.Success ? userSessionStorageResult.Value : null;
             if (userSession.IsNotNull())

@@ -1,5 +1,4 @@
 using AntDesign.ProLayout;
-using AntSK.Domain.Common.Map;
 using AntSK.Domain.Domain.Interface;
 using AntSK.Domain.Domain.Service;
 using AntSK.Domain.Options;
@@ -13,7 +12,10 @@ using Coravel;
 using LLama.Native;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Sigma.Data;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using System.Text.Encodings.Web;
@@ -43,6 +45,25 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri(sp.GetService<NavigationManager>()!.BaseUri)
 });
 builder.Services.Configure<ProSettings>(builder.Configuration.GetSection("ProSettings"));
+
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+})
+    .AddIdentityCookies();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(connectionString));
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddSignInManager()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddSingleton(sp => new FunctionService(sp, [typeof(AntSK.App).Assembly, typeof(AntSK.Domain.Common.AntSkFunctionAttribute).Assembly]));
 builder.Services.AddScoped<FunctionTest>();
 
@@ -58,14 +79,13 @@ builder.Services.AddScoped<IKmsDetails_Repositories, KmsDetails_Repositories>();
 builder.Services.AddScoped<IAIModels_Repositories, AIModels_Repositories>();
 builder.Services.AddScoped<IUsers_Repositories, Users_Repositories>();
 builder.Services.AddSingleton<ILLamaChatService, LLamaChatService>();
-builder.Services.AddSingleton<ILLamaEmbeddingService,  LLamaEmbeddingService>();
+builder.Services.AddSingleton<ILLamaEmbeddingService, LLamaEmbeddingService>();
 builder.Services.AddScoped<ILLamaSharpService, LLamaSharpService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IUserService, UserService>();
-
 
 builder.Services.AddQueue();
 
@@ -77,7 +97,7 @@ builder.Services.AddSwaggerGen(c =>
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath, true);
     //添加Domain层注释（true表示显示控制器注释）
-    var xmlFile1 = $"{Assembly.GetExecutingAssembly().GetName().Name.Replace("Api", "Domain")}.xml";
+    var xmlFile1 = $"{Assembly.GetExecutingAssembly().GetName().Name.Replace("Api", "Core")}.xml";
     var xmlPath1 = Path.Combine(AppContext.BaseDirectory, xmlFile1);
     c.IncludeXmlComments(xmlPath1, true);
     c.DocInclusionPredicate((docName, apiDes) =>
@@ -94,7 +114,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 //Mapper
-builder.Services.AddMapper();
+
 //后台队列任务
 //builder.Services.AddBackgroundTaskBroker().AddHandler<ImportKMSTaskReq, BackGroundTaskHandler>("ImportKMSTask");
 // 读取连接字符串配置
@@ -154,7 +174,8 @@ void InitDB(WebApplication app)
     using (var scope = app.Services.CreateScope())
     {
         //codefirst 创建表
-        var _repository = scope.ServiceProvider.GetRequiredService<IApps_Repositories>();
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        db.Database.EnsureCreated();
         //_repository.GetDB().DbMaintenance.CreateDatabase();
         //_repository.GetDB().CodeFirst.InitTables(typeof(Apps));
         //_repository.GetDB().CodeFirst.InitTables(typeof(Kmss));

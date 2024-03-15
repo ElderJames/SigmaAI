@@ -11,7 +11,6 @@ namespace AntSK.Domain.Domain.Service
         IKmss_Repositories _kmss_Repositories
         ) : IImportKMSService
     {
-
         public void ImportKMSTask(ImportKMSTaskReq req)
         {
             try
@@ -25,40 +24,40 @@ namespace AntSK.Domain.Domain.Service
                     case ImportType.File:
                         //导入文件
                         {
-                            var importResult = _memory.ImportDocumentAsync(new Document(fileid)
+                            var importResult = _memory.ImportDocumentAsync(new Document(fileid.ToString())
                           .AddFile(req.FilePath)
-                          .AddTag("kmsid", req.KmsId)
+                          .AddTag("kmsid", req.KmsId.ToString())
                           , index: "kms").Result;
                             //查询文档数量
-                            var docTextList = _kMService.GetDocumentByFileID(km.Id, fileid).Result;
+                            var docTextList = _kMService.GetDocumentByFileID(km.Id, fileid.ToString()).Result;
                             string fileGuidName = Path.GetFileName(req.FilePath);
                             req.KmsDetail.FileName = req.FileName;
                             req.KmsDetail.FileGuidName = fileGuidName;
                             req.KmsDetail.DataCount = docTextList.Count;
-
                         }
                         break;
+
                     case ImportType.Url:
                         {
-                            //导入url                  
-                            var importResult = _memory.ImportWebPageAsync(req.Url, fileid, new TagCollection() { { "kmsid", req.KmsId } }
+                            //导入url
+                            var importResult = _memory.ImportWebPageAsync(req.Url, fileid.ToString(), new TagCollection() { { "kmsid", req.KmsId.ToString() } }
                                  , index: "kms").Result;
                             //查询文档数量
-                            var docTextList = _kMService.GetDocumentByFileID(km.Id, fileid).Result;
+                            var docTextList = _kMService.GetDocumentByFileID(km.Id, fileid.ToString()).Result;
                             req.KmsDetail.Url = req.Url;
                             req.KmsDetail.DataCount = docTextList.Count;
                         }
                         break;
+
                     case ImportType.Text:
                         //导入文本
                         {
-                            var importResult = _memory.ImportTextAsync(req.Text, fileid, new TagCollection() { { "kmsid", req.KmsId } }
+                            var importResult = _memory.ImportTextAsync(req.Text, fileid.ToString(), new TagCollection() { { "kmsid", req.KmsId.ToString() } }
                        , index: "kms").Result;
                             //查询文档数量
-                            var docTextList = _kMService.GetDocumentByFileID(km.Id, fileid).Result;
+                            var docTextList = _kMService.GetDocumentByFileID(km.Id, fileid.ToString()).Result;
                             req.KmsDetail.Url = req.Url;
                             req.KmsDetail.DataCount = docTextList.Count;
-
                         }
                         break;
                 }

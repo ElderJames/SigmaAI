@@ -16,6 +16,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntSK.LLM", "AntSk.LLM\AntS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntSK.Core", "AntSK.Core\AntSK.Core.csproj", "{0E060515-78BE-4C7A-B5EB-3291E7977467}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigma", "Sigma\Sigma\Sigma.csproj", "{7A163ABD-AC35-4850-89C4-155EDE4B59B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigma.Client", "Sigma\Sigma.Client\Sigma.Client.csproj", "{B90E095C-2C25-4202-B25F-826C4E03FEF7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +38,14 @@ Global
 		{0E060515-78BE-4C7A-B5EB-3291E7977467}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E060515-78BE-4C7A-B5EB-3291E7977467}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E060515-78BE-4C7A-B5EB-3291E7977467}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A163ABD-AC35-4850-89C4-155EDE4B59B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A163ABD-AC35-4850-89C4-155EDE4B59B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A163ABD-AC35-4850-89C4-155EDE4B59B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A163ABD-AC35-4850-89C4-155EDE4B59B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B90E095C-2C25-4202-B25F-826C4E03FEF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B90E095C-2C25-4202-B25F-826C4E03FEF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B90E095C-2C25-4202-B25F-826C4E03FEF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B90E095C-2C25-4202-B25F-826C4E03FEF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

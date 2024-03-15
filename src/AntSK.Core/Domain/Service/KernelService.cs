@@ -58,7 +58,7 @@ namespace AntSK.Domain.Domain.Service
                 RegisterPluginsWithKernel(_kernel);
                 return _kernel;
             }
-            //else 
+            //else
             //{
             //    return _kernel;
             //}
@@ -91,7 +91,7 @@ namespace AntSK.Domain.Domain.Service
 
                 case Model.Enum.AIType.SparkDesk:
                     var options = new SparkDeskOptions { AppId = chatModel.EndPoint, ApiSecret = chatModel.ModelKey, ApiKey = chatModel.ModelName, ModelVersion = Sdcb.SparkDesk.ModelVersion.V3_5 };
-                    builder.Services.AddKeyedSingleton<ITextGenerationService>("spark-desk", new SparkDeskTextCompletion(options, app.Id));
+                    builder.Services.AddKeyedSingleton<ITextGenerationService>("spark-desk", new SparkDeskTextCompletion(options, app.Id.ToString()));
                     break;
 
                 case Model.Enum.AIType.DashScope:
@@ -201,7 +201,7 @@ namespace AntSK.Domain.Domain.Service
                 var nativeIdList = app.NativeFunctionList.Split(",");
 
                 _functionService.SearchMarkedMethods();
-                using var scope= _serviceProvider.CreateScope();
+                using var scope = _serviceProvider.CreateScope();
 
                 foreach (var func in _functionService.Functions)
                 {

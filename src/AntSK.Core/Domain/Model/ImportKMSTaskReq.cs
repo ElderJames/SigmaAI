@@ -4,13 +4,11 @@ namespace AntSK.Domain.Domain.Model
 {
     public class ImportKMSTaskDTO
     {
-
         public ImportType ImportType { get; set; }
 
         public string KmsId { get; set; }
 
         public string Url { get; set; } = "";
-
 
         public string Text { get; set; } = "";
 
@@ -18,7 +16,6 @@ namespace AntSK.Domain.Domain.Model
 
         public string FileName { get; set; } = "";
     }
-
 
     public class ImportKMSTaskReq : ImportKMSTaskDTO
     {

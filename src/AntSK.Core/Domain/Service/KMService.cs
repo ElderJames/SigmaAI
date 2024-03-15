@@ -68,7 +68,6 @@ namespace AntSK.Domain.Domain.Service
             //else {
             //    return _memory;
             //}
-
         }
 
         private void WithTextEmbeddingGenerationByAIType(IKernelMemoryBuilder memory, AIModels embedModel, HttpClient embeddingHttpClient)
@@ -82,6 +81,7 @@ namespace AntSK.Domain.Domain.Service
                         EmbeddingModel = embedModel.ModelName
                     }, null, false, embeddingHttpClient);
                     break;
+
                 case Model.Enum.AIType.AzureOpenAI:
                     memory.WithAzureOpenAITextEmbeddingGeneration(new AzureOpenAIConfig()
                     {
@@ -92,11 +92,13 @@ namespace AntSK.Domain.Domain.Service
                         APIType = AzureOpenAIConfig.APITypes.EmbeddingGeneration,
                     });
                     break;
+
                 case Model.Enum.AIType.LLamaSharp:
                     var (weights, parameters) = LLamaConfig.GetLLamaConfig(embedModel.ModelName);
                     var embedder = new LLamaEmbedder(weights, parameters);
                     memory.WithLLamaSharpTextEmbeddingGeneration(new LLamaSharpTextEmbeddingGenerator(embedder));
                     break;
+
                 case Model.Enum.AIType.DashScope:
                     memory.WithDashScopeDefaults(embedModel.ModelKey);
                     break;
@@ -114,6 +116,7 @@ namespace AntSK.Domain.Domain.Service
                         TextModel = chatModel.ModelName
                     }, null, chatHttpClient);
                     break;
+
                 case Model.Enum.AIType.AzureOpenAI:
                     memory.WithAzureOpenAITextGeneration(new AzureOpenAIConfig()
                     {
@@ -124,12 +127,14 @@ namespace AntSK.Domain.Domain.Service
                         APIType = AzureOpenAIConfig.APITypes.TextCompletion,
                     });
                     break;
+
                 case Model.Enum.AIType.LLamaSharp:
                     var (weights, parameters) = LLamaConfig.GetLLamaConfig(chatModel.ModelName);
                     var context = weights.CreateContext(parameters);
                     var executor = new StatelessExecutor(weights, parameters);
                     memory.WithLLamaSharpTextGeneration(new LlamaSharpTextGenerator(weights, context, executor));
                     break;
+
                 case Model.Enum.AIType.DashScope:
                     memory.WithDashScopeTextGeneration(new Cnblogs.KernelMemory.AI.DashScope.DashScopeConfig
                     {
@@ -153,12 +158,14 @@ namespace AntSK.Domain.Domain.Service
                         TableNamePrefix = TableNamePrefix
                     });
                     break;
+
                 case "Disk":
                     memory.WithSimpleFileStorage(new SimpleFileStorageConfig()
                     {
                         StorageType = FileSystemTypes.Disk
                     });
                     break;
+
                 case "Memory":
                     memory.WithSimpleFileStorage(new SimpleFileStorageConfig()
                     {
@@ -179,7 +186,6 @@ namespace AntSK.Domain.Domain.Service
             {
                 foreach (var memoryDb in memoryDbs)
                 {
-
                     var items = await memoryDb.GetListAsync(memoryIndex.Name, new List<MemoryFilter>() { new MemoryFilter().ByDocument(fileid) }, 100, true).ToListAsync();
                     foreach (var item in items)
                     {
@@ -197,7 +203,5 @@ namespace AntSK.Domain.Domain.Service
             }
             return docTextList;
         }
-
-
     }
 }

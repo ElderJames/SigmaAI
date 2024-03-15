@@ -1,13 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AntSK.Core.Repositories.Base;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AntSK.Domain.Repositories
 {
     [Table("Users")]
-    public partial class Users
+    public partial class Users : EntityBase
     {
-        public string Id { get; set; }
-
         /// <summary>
         /// 工号，用于登陆
         /// </summary>
@@ -31,11 +30,11 @@ namespace AntSK.Domain.Repositories
         /// </summary>
         [Required]
         public string Describe { get; set; }
+
         /// <summary>
         /// 菜单权限
         /// </summary>
         [Required]
         public string MenuRole { get; set; }
-
     }
 }
