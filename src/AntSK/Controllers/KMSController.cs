@@ -18,16 +18,21 @@ namespace AntSK.Controllers
     {
         private readonly IKmsDetails_Repositories _kmsDetails_Repositories;
         private readonly IKMService _iKMService;
-        private IQueue _queue;
-        private IImportKMSService _importKMSService;
+        private readonly IQueue _queue;
+        private readonly IImportKMSService _importKMSService;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+
 
         public KMSController(
             IKmsDetails_Repositories kmsDetails_Repositories,
-            IKMService iKMService
-            )
+            IKMService iKMService, 
+            IQueue queue,
+            IServiceScopeFactory serviceScopeFactory)
         {
             _kmsDetails_Repositories = kmsDetails_Repositories;
             _iKMService = iKMService;
+            _serviceScopeFactory = serviceScopeFactory;
+            _queue = queue;
         }
 
         [HttpPost]
@@ -47,9 +52,12 @@ namespace AntSK.Controllers
             _kmsDetails_Repositories.Insert(detail);
             req.KmsDetail = detail;
 
-            this._queue.QueueAsyncTask(async () =>
+            this._queue.QueueAsyncTask(() =>
             {
-                _importKMSService.ImportKMSTask(req);
+                using var scope = _serviceScopeFactory.CreateScope();
+                var importService = scope.ServiceProvider.GetRequiredService<IImportKMSService>();
+                importService.ImportKMSTask(req);
+                return Task.CompletedTask;
             });
 
             //_taskBroker.QueueWorkItem(req);

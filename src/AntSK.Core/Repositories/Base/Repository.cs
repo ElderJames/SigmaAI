@@ -77,14 +77,14 @@ namespace AntSK.Core.Repositories.Base
             return await _db.Set<T>().FindAsync(id);
         }
 
-        public T GetFirst(Expression<Func<T, bool>> whereExpression)
+        public T? GetFirst(Expression<Func<T, bool>> whereExpression)
         {
-            return _db.Set<T>().Where(whereExpression).First();
+            return _db.Set<T>().Where(whereExpression).FirstOrDefault();
         }
 
-        public async Task<T> GetFirstAsync(Expression<Func<T, bool>> whereExpression)
+        public async Task<T?> GetFirstAsync(Expression<Func<T, bool>> whereExpression)
         {
-            return await _db.Set<T>().Where(whereExpression).FirstAsync();
+            return await _db.Set<T>().Where(whereExpression).FirstOrDefaultAsync();
         }
 
         public List<T> GetList()
