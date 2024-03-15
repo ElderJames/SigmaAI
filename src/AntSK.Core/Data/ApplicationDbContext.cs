@@ -15,5 +15,7 @@ namespace Sigma.Data
         public DbSet<KmsDetails> KmsDetails { get; set; }
 
         public DbSet<AIModels> AIModels { get; set; }
+
+        public DbSet<Users> Admin { get; set; }
     }
 }

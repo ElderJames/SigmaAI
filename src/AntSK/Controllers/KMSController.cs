@@ -2,6 +2,7 @@
 using AntSK.Domain.Domain.Model;
 using AntSK.Domain.Domain.Model.Enum;
 using AntSK.Domain.Repositories;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AntSK.Controllers
@@ -30,18 +31,18 @@ namespace AntSK.Controllers
         public async Task<IActionResult> ImportKMSTask(ImportKMSTaskDTO model)
         {
             Console.WriteLine("api/kms/ImportKMSTask  开始");
-            //ImportKMSTaskReq req = model.Adapt<ImportKMSTaskReq>();
-            //KmsDetails detail = new KmsDetails()
-            //{
-            //    Id = 0,
-            //    KmsId = req.KmsId.ToString(),
-            //    CreateTime = DateTime.Now,
-            //    Status = ImportKmsStatus.Loadding,
-            //    Type = model.ImportType.ToString().ToLower()
-            //};
+            ImportKMSTaskReq req = model.Adapt<ImportKMSTaskReq>();
+            KmsDetails detail = new KmsDetails()
+            {
+                Id = Guid.NewGuid().ToString(),
+                KmsId = req.KmsId.ToString(),
+                CreateTime = DateTime.Now,
+                Status = ImportKmsStatus.Loadding,
+                Type = model.ImportType.ToString().ToLower()
+            };
 
-            //_kmsDetails_Repositories.Insert(detail);
-            //req.KmsDetail = detail;
+            _kmsDetails_Repositories.Insert(detail);
+            req.KmsDetail = detail;
             //_taskBroker.QueueWorkItem(req);
             Console.WriteLine("api/kms/ImportKMSTask  结束");
             return Ok();
