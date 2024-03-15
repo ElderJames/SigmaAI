@@ -2,6 +2,7 @@
 using AntSK.Domain.Domain.Model;
 using AntSK.Domain.Domain.Model.Enum;
 using AntSK.Domain.Repositories;
+using Coravel.Queuing.Interfaces;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,8 @@ namespace AntSK.Controllers
     {
         private readonly IKmsDetails_Repositories _kmsDetails_Repositories;
         private readonly IKMService _iKMService;
+        private IQueue _queue;
+        private IImportKMSService _importKMSService;
 
         public KMSController(
             IKmsDetails_Repositories kmsDetails_Repositories,
@@ -43,6 +46,12 @@ namespace AntSK.Controllers
 
             _kmsDetails_Repositories.Insert(detail);
             req.KmsDetail = detail;
+
+            this._queue.QueueAsyncTask(async () =>
+            {
+                _importKMSService.ImportKMSTask(req);
+            });
+
             //_taskBroker.QueueWorkItem(req);
             Console.WriteLine("api/kms/ImportKMSTask  结束");
             return Ok();
