@@ -1,0 +1,565 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Sigma.Core</name>
+    </assembly>
+    <members>
+        <member name="T:AntSK.Domain.Domain.Model.Enum.AIType">
+            <summary>
+            AI类型
+            </summary>
+        </member>
+        <member name="T:AntSK.Domain.Domain.Model.Enum.AIModelType">
+            <summary>
+            模型类型
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Domain.Model.MessageInfo.IsSend">
+            <summary>
+            发送是true  接收是false
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Domain.Model.PageList`1.PageIndex">
+            <summary>
+            当前页，从1开始
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Domain.Model.PageList`1.PageSize">
+            <summary>
+            每页数量
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Domain.Model.PageList`1.TotalCount">
+            <summary>
+            总数
+            </summary>
+        </member>
+        <member name="F:AntSK.Domain.Domain.Other.LLamaConfig.dicLLamaWeights">
+            <summary>
+            避免模型重复加载，本地缓存
+            </summary>
+        </member>
+        <member name="M:AntSK.Domain.Domain.Service.ChatService.SendChatByAppAsync(AntSK.Domain.Repositories.Apps,System.String,System.String)">
+            <summary>
+            发送消息
+            </summary>
+            <param name="app"></param>
+            <param name="questions"></param>
+            <param name="history"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Domain.Service.FunctionService.SearchMarkedMethods">
+            <summary>
+            查询程序集中的方法委托，后续利用Source Generators生成
+            </summary>
+        </member>
+        <member name="M:AntSK.Domain.Domain.Service.KernelService.GetKernelByApp(AntSK.Domain.Repositories.Apps)">
+            <summary>
+            获取kernel实例，依赖注入不好按每个用户去Import不同的插件，所以每次new一个新的kernel
+            </summary>
+            <param name="modelId"></param>
+            <param name="apiKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Domain.Service.KernelService.ImportFunctionsByApp(AntSK.Domain.Repositories.Apps,Microsoft.SemanticKernel.Kernel)">
+            <summary>
+            根据app配置的插件，导入插件
+            </summary>
+            <param name="app"></param>
+            <param name="_kernel"></param>
+        </member>
+        <member name="M:AntSK.Domain.Domain.Service.KernelService.RegisterPluginsWithKernel(Microsoft.SemanticKernel.Kernel)">
+            <summary>
+            注册默认插件
+            </summary>
+            <param name="kernel"></param>
+        </member>
+        <member name="M:AntSK.Domain.Domain.Service.KernelService.HistorySummarize(Microsoft.SemanticKernel.Kernel,System.String,System.String)">
+            <summary>
+            会话总结
+            </summary>
+            <param name="_kernel"></param>
+            <param name="questions"></param>
+            <param name="history"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AntSK.Domain.Options.DBConnectionOption.DbType">
+            <summary>
+            sqlite连接字符串
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Options.DBConnectionOption.ConnectionStrings">
+            <summary>
+            pg链接字符串
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Options.KernelMemoryOption.VectorDb">
+            <summary>
+            向量库
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Options.KernelMemoryOption.ConnectionString">
+            <summary>
+            连接字符串
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Options.KernelMemoryOption.TableNamePrefix">
+            <summary>
+            表前缀
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apis.Name">
+            <summary>
+            接口名称
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apis.Describe">
+            <summary>
+            接口描述
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apis.Url">
+            <summary>
+            接口地址
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apis.Method">
+            <summary>
+            请求方法
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apis.Query">
+            <summary>
+            QueryString参数
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apis.JsonBody">
+            <summary>
+            jsonBody 实体
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apis.InputPrompt">
+            <summary>
+            入参提示词
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apis.OutputPrompt">
+            <summary>
+            返回提示词
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apps.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apps.Describe">
+            <summary>
+            描述
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apps.Icon">
+            <summary>
+            图标
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apps.Type">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apps.ChatModelID">
+            <summary>
+            会话模型ID
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apps.Temperature">
+            <summary>
+            温度
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apps.Prompt">
+            <summary>
+            提示词
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apps.ApiFunctionList">
+            <summary>
+            插件列表
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apps.NativeFunctionList">
+            <summary>
+            本地函数列表
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apps.KmsIdList">
+            <summary>
+            知识库ID列表
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Apps.SecretKey">
+            <summary>
+            API调用秘钥
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.KmsDetails.FileName">
+            <summary>
+            文件名称
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.KmsDetails.Url">
+            <summary>
+            地址
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.KmsDetails.Type">
+            <summary>
+            类型 file，url
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.KmsDetails.DataCount">
+            <summary>
+            数据数量
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.KmsDetails.CreateTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.KmsDetails.Status">
+            <summary>
+            状态
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Kmss.Icon">
+            <summary>
+            图标
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Kmss.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Kmss.Describe">
+            <summary>
+            会话模型
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Kmss.ChatModelID">
+            <summary>
+            会话模型ID
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Kmss.EmbeddingModelID">
+            <summary>
+            向量模型ID
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Kmss.MaxTokensPerParagraph">
+            <summary>
+            每个段落的最大标记数。
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Kmss.MaxTokensPerLine">
+            <summary>
+            每行，也就是每句话的最大标记数
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Kmss.OverlappingTokens">
+            <summary>
+            段落之间重叠标记的数量。
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.AIModels.AIType">
+            <summary>
+            AI类型
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.AIModels.AIModelType">
+            <summary>
+            模型类型
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.AIModels.EndPoint">
+            <summary>
+            模型地址
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.AIModels.ModelName">
+            <summary>
+            模型名称
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.AIModels.ModelKey">
+            <summary>
+            模型秘钥
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.AIModels.ModelDescription">
+            <summary>
+            部署名，azure需要使用
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Users.No">
+            <summary>
+            工号，用于登陆
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Users.Password">
+            <summary>
+            密码
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Users.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Users.Describe">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:AntSK.Domain.Repositories.Users.MenuRole">
+            <summary>
+            菜单权限
+            </summary>
+        </member>
+        <member name="M:AntSK.Domain.Utils.ConvertUtils.IsNull(System.Object)">
+            <summary>
+            判断是否为空，为空返回true
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.ConvertUtils.IsNotNull(System.Object)">
+            <summary>
+            判断是否为空，为空返回true
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.ConvertUtils.IsNull(System.String)">
+            <summary>
+            判断是否为空，为空返回true
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.ConvertUtils.ConvertToString(System.Object)">
+            <summary>
+            将obj类型转换为string
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.ConvertUtils.ConvertToInt32(System.Object)">
+            <summary>
+            object 转int32
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.ConvertUtils.ConvertToInt64(System.Object)">
+            <summary>
+            object 转int32
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.ConvertUtils.ConvertToDouble(System.Object)">
+            <summary>
+            将字符串转double
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.ConvertUtils.ConvertToDateTime(System.String)">
+            <summary>
+            转换为datetime类型
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.ConvertUtils.ConvertToDateTime(System.String,System.String)">
+            <summary>
+            转换为datetime类型的格式字符串
+            </summary>
+            <param name="s">要转换的对象</param>
+            <param name="y">格式化字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.ConvertUtils.ConvertToDecimal(System.Object)">
+            <summary>
+            将字符串转换成decimal
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.ConvertUtils.DecimalFraction(System.Decimal)">
+            <summary>
+            decimal保留2位小数
+            </summary>
+        </member>
+        <member name="M:AntSK.Domain.Utils.ConvertUtils.ReplaceHtml(System.String)">
+            <summary>
+            替换html种的特殊字符
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.ConvertUtils.StreamToByte(System.IO.Stream)">
+            <summary>
+            流转byte
+            </summary>
+            <param name="stream"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.RepoFiles.SamplePluginsPath">
+            <summary>
+            Scan the local folders from the repo, looking for "samples/plugins" folder.
+            </summary>
+            <returns>The full path to samples/plugins</returns>
+        </member>
+        <member name="T:AntSK.Domain.Utils.XmlCommentHelper">
+            <summary>
+            注释辅助类
+            </summary>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.LoadAll">
+            <summary>
+            从当前dll文件中加载所有的xml文件
+            </summary>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.LoadXml(System.String[])">
+            <summary>
+            从xml中加载
+            </summary>
+            <param name="xmls"></param>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.Load(System.String[])">
+            <summary>
+            从文件中加载
+            </summary>
+            <param name="xmlFiles"></param>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.Load(System.IO.Stream[])">
+            <summary>
+            从流中加载
+            </summary>
+            <param name="streams"></param>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.GetTypeComment(System.Type,System.String,System.Boolean)">
+            <summary>
+            读取类型中的注释
+            </summary>
+            <param name="type">类型</param>
+            <param name="xPath">注释路径</param>
+            <param name="humanize">可读性优化(比如：去掉xml标记)</param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.GetFieldOrPropertyComment(System.Reflection.MemberInfo,System.String,System.Boolean)">
+            <summary>
+            读取字段或者属性的注释
+            </summary>
+            <param name="fieldOrPropertyInfo">字段或者属性</param>
+            <param name="xPath">注释路径</param>
+            <param name="humanize">可读性优化(比如：去掉xml标记)</param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.GetMethodComment(System.Reflection.MethodInfo,System.String,System.Boolean)">
+            <summary>
+            读取方法中的注释
+            </summary>
+            <param name="methodInfo">方法</param>
+            <param name="xPath">注释路径</param>
+            <param name="humanize">可读性优化(比如：去掉xml标记)</param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.GetMethodReturnComment(System.Reflection.MethodInfo,System.Boolean)">
+            <summary>
+            读取方法中的返回值注释
+            </summary>
+            <param name="methodInfo">方法</param>
+            <param name="humanize">可读性优化(比如：去掉xml标记)</param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.GetParameterComment(System.Reflection.ParameterInfo,System.Boolean)">
+            <summary>
+            读取参数的注释
+            </summary>
+            <param name="parameterInfo">参数</param>
+            <param name="humanize">可读性优化(比如：去掉xml标记)</param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.GetParameterComments(System.Reflection.MethodInfo,System.Boolean)">
+            <summary>
+            读取方法的所有参数的注释
+            </summary>
+            <param name="methodInfo">方法</param>
+            <param name="humanize">可读性优化(比如：去掉xml标记)</param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.GetComment(System.String,System.String,System.Boolean)">
+            <summary>
+            读取指定名称节点的注释
+            </summary>
+            <param name="name">节点名称</param>
+            <param name="xPath">注释路径</param>
+            <param name="humanize">可读性优化(比如：去掉xml标记)</param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.GetSummary(System.String,System.Boolean)">
+            <summary>
+            读取指定节点的summary注释
+            </summary>
+            <param name="name">节点名称</param>
+            <param name="humanize">可读性优化(比如：去掉xml标记)</param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.GetExample(System.String,System.Boolean)">
+            <summary>
+            读取指定节点的example注释
+            </summary>
+            <param name="name">节点名称</param>
+            <param name="humanize">可读性优化(比如：去掉xml标记)</param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.GetMemberNameForMethod(System.Reflection.MethodInfo)">
+            <summary>
+            获取方法的节点名称
+            </summary>
+            <param name="method"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.GetMemberNameForType(System.Type)">
+            <summary>
+            获取类型的节点名称
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntSK.Domain.Utils.XmlCommentHelper.GetMemberNameForFieldOrProperty(System.Reflection.MemberInfo)">
+            <summary>
+            获取字段或者属性的节点名称
+            </summary>
+            <param name="fieldOrPropertyInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Sigma.Migrations.CreateIdentitySchema">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Migrations.CreateIdentitySchema.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Migrations.CreateIdentitySchema.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Migrations.CreateIdentitySchema.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

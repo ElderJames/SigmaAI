@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AntSK.Core\AntSK.Core.csproj" />
+    <ProjectReference Include="..\Sigma.Core\Sigma.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
