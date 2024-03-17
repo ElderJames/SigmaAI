@@ -4,11 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{9F2E193A-5F9D-4C82-B591-CB133EEB59F0}"
-	ProjectSection(SolutionItems) = preProject
-		..\docker-compose.simple.yml = ..\docker-compose.simple.yml
-		..\docker-compose.yml = ..\docker-compose.yml
-		..\Dockerfile = ..\Dockerfile
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sigma.LLM", "src\Sigma.LLM\Sigma.LLM.csproj", "{CFC53E67-13DC-4DB6-BFB4-0B85D23B2B1B}"
 EndProject
