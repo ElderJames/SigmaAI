@@ -101,7 +101,18 @@ namespace AntSK.LLM.SparkDesk
                                 {
                                     if (JsonElement.TryGetProperty(parameter.Name, out var property))
                                     {
-                                        arguments.Add(parameter.Name, property.Deserialize(parameter.ParameterType!, _jsonSerializerOptions));
+                                        object? argumentValue = property.ValueKind switch
+                                        {
+                                            JsonValueKind.Null => null,
+                                            JsonValueKind.Undefined => null,
+                                            JsonValueKind.String => property.GetString(),
+                                            JsonValueKind.Number => property.GetDecimal(),
+                                            JsonValueKind.True => property.GetBoolean(),
+                                            JsonValueKind.False => property.GetBoolean(),
+                                            JsonValueKind.Object => property.Deserialize(parameter.ParameterType),
+                                            JsonValueKind.Array => property.Deserialize(parameter.ParameterType),
+                                        };
+                                        arguments.Add(parameter.Name, argumentValue == null ? null : Convert.ChangeType(argumentValue, parameter.ParameterType));
                                     }
                                 }
                                 catch (Exception ex)
@@ -119,11 +130,15 @@ namespace AntSK.LLM.SparkDesk
                             var result = (await function.InvokeAsync(kernel, arguments, cancellationToken)).GetValue<object>() ?? string.Empty;
                             var stringResult = ProcessFunctionResult(result, chatExecutionSettings.ToolCallBehavior);
                             messages = [.. messages, ChatMessage.FromUser($"""
-                                                                           function call result:
+                                                                           上一个提问的答案是:
+                                                                           
                                                                            {stringResult}
+                                                                           
+                                                                           请将这个结果重新组织语言，并回复结果。
+                                                                           对同一个问题不再调用方法。
                                                                            """)];
 
-                            functionDefs.RemoveAll(x => x.Name == msg.FunctionCall.Name);
+                            //functionDefs.RemoveAll(x => x.Name == msg.FunctionCall.Name);
 
                             await foreach (var content in GetStreamingMessageAsync(messages, parameters, functionDefs, cancellationToken))
                             {
@@ -160,6 +175,11 @@ namespace AntSK.LLM.SparkDesk
             if (functionResult is ChatMessageContent chatMessageContent)
             {
                 return chatMessageContent.ToString();
+            }
+
+            if (functionResult is RestApiOperationResponse { } response)
+            {
+                return ProcessFunctionResult(response.Content, toolCallBehavior);
             }
 
             return JsonSerializer.Serialize(functionResult, _jsonSerializerOptions);

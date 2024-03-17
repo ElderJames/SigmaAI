@@ -14,6 +14,7 @@ namespace AntSK.Controllers
     /// <param name="_taskBroker"></param>
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class KMSController : ControllerBase
     {
         private readonly IKmsDetails_Repositories _kmsDetails_Repositories;

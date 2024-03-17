@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AntSK.Controllers
 {
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class LLamaSharpController(ILLamaSharpService _lLamaSharpService) : ControllerBase
     {
         /// <summary>

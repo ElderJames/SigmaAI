@@ -4,6 +4,7 @@ namespace AntSK.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi =true)]
     public class FileController : ControllerBase
     {
         /// <summary>

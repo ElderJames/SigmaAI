@@ -10,6 +10,7 @@ namespace AntSK.Controllers
     /// 对外接口
     /// </summary>
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class OpenController(IOpenApiService _openApiService) : ControllerBase
     {
         /// <summary>

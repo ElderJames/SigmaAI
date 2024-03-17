@@ -5,6 +5,7 @@ namespace AntSK.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class InitController : ControllerBase
     {
         private readonly IApps_Repositories _repository;

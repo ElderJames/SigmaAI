@@ -130,7 +130,14 @@ namespace AntSK.Domain.Domain.Service
                 {
                     if (api.Type== Sigma.Core.Repositories.AI.Api.ApiPluginType.OpenAPI)
                     {
-                        var openApi = await _kernel.CreatePluginFromOpenApiAsync(api.Name, new Uri(api.Url));
+                        var openApi = await _kernel.CreatePluginFromOpenApiAsync(api.Name, new Uri(api.Url), new()
+                        {
+                            //AuthCallback = (request, _) =>
+                            //{
+                            //    request.Headers.Add("Authorization", "Bearer XXX");
+                            //    return Task.CompletedTask;
+                            //}
+                        });
                         apiFunctions.AddRange(openApi);
                         continue;
                     }
