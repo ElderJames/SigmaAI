@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sigma.Data;
 
@@ -10,9 +11,11 @@ using Sigma.Data;
 namespace Sigma.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240316155357_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
@@ -29,15 +32,19 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("EndPoint")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ModelDescription")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ModelKey")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ModelName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

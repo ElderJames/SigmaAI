@@ -1,5 +1,6 @@
 ﻿using AntSK.Core.Repositories.Base;
 using AntSK.Domain.Domain.Model.Enum;
+using Sigma.Core.Repositories.AI.Api;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,6 +14,9 @@ namespace AntSK.Domain.Repositories
         /// </summary>
         [Required]
         public string Name { get; set; }
+
+        [Required]
+        public ApiPluginType Type { get; set; } = ApiPluginType.OpenAPI;
 
         /// <summary>
         /// 接口描述
@@ -29,8 +33,7 @@ namespace AntSK.Domain.Repositories
         /// <summary>
         /// 请求方法
         /// </summary>
-        [Required]
-        public HttpMethodType Method { get; set; }
+        public HttpMethodType Method { get; set; } = HttpMethodType.Get;
 
         [Column(TypeName = "varchar(1000)")]
         public string? Header { get; set; }
@@ -50,15 +53,13 @@ namespace AntSK.Domain.Repositories
         /// <summary>
         /// 入参提示词
         /// </summary>
-        [Required]
         [Column(TypeName = "varchar(1500)")]
-        public string InputPrompt { get; set; }
+        public string? InputPrompt { get; set; }
 
         /// <summary>
         /// 返回提示词
         /// </summary>
-        [Required]
         [Column(TypeName = "varchar(1500)")]
-        public string OutputPrompt { get; set; }
+        public string? OutputPrompt { get; set; }
     }
 }

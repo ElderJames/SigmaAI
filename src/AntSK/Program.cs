@@ -22,16 +22,16 @@ using System.Text.Encodings.Web;
 using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
-// Add services to the container.
-builder.Services.AddControllers().AddJsonOptions(config =>
-{
-    //此设定解决JsonResult中文被编码的问题
-    config.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
 
+// Add services to the container.
+builder.Services.AddControllers()
+    .AddJsonOptions(config =>
+{
+    config.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
     config.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
     config.JsonSerializerOptions.Converters.Add(new DateTimeNullableConvert());
 });
-// Add services to the container.
+
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddAntDesign();
@@ -92,14 +92,14 @@ builder.Services.AddQueue();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "AntSK.Api", Version = "v1" });
-    //添加Api层注释（true表示显示控制器注释）
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath, true);
-    //添加Domain层注释（true表示显示控制器注释）
-    var xmlFile1 = $"{Assembly.GetExecutingAssembly().GetName().Name.Replace("Api", "Core")}.xml";
-    var xmlPath1 = Path.Combine(AppContext.BaseDirectory, xmlFile1);
-    c.IncludeXmlComments(xmlPath1, true);
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "AntSK.xml"), true);
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "AntSK.Core.xml"), true);
+    c.CustomOperationIds(e =>
+    {
+        var routesValues = e.ActionDescriptor.RouteValues;
+        return $"{routesValues["controller"]}_{routesValues["action"]}";
+    });
+
     c.DocInclusionPredicate((docName, apiDes) =>
     {
         if (!apiDes.TryGetMethodInfo(out MethodInfo method))
@@ -151,7 +151,8 @@ using var scope = app.Services.CreateScope();
 
 //codefirst 创建表
 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-db.Database.EnsureCreated();
+//db.Database.EnsureCreated();
+db.Database.Migrate();
 
 app.UseRouting();
 

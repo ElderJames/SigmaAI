@@ -11,7 +11,6 @@ namespace AntSK.Domain.Repositories
         /// <summary>
         /// AI类型
         /// </summary>
-
         [Required]
         public AIType AIType { get; set; } = AIType.OpenAI;
 
@@ -24,26 +23,21 @@ namespace AntSK.Domain.Repositories
         /// <summary>
         /// 模型地址
         /// </summary>
-        [Required]
-        public string EndPoint { get; set; } = "";
+        public string? EndPoint { get; set; } = "";
 
         /// <summary>
         /// 模型名称
         /// </summary>
-        [Required]
-        public string ModelName { get; set; } = "";
+        public string? ModelName { get; set; } = "";
 
         /// <summary>
         /// 模型秘钥
         /// </summary>
-        [Required]
-        public string ModelKey { get; set; } = "";
+        public string? ModelKey { get; set; } = "";
 
         /// <summary>
         /// 部署名，azure需要使用
         /// </summary>
-
-        [Required]
-        public string ModelDescription { get; set; }
+        public string? ModelDescription { get; set; }
     }
 }

@@ -11,6 +11,7 @@ namespace AntSK.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
+        [Consumes("multipart/form-data","application/json")]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
             // 别忘了进行异常处理和文件为空的判断

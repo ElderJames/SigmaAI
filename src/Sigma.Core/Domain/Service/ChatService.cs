@@ -40,7 +40,7 @@ namespace AntSK.Domain.Domain.Service
             OpenAIPromptExecutionSettings settings = new() { Temperature = temperature };
             if (!string.IsNullOrEmpty(app.ApiFunctionList) || !string.IsNullOrEmpty(app.NativeFunctionList))//这里还需要加上本地插件的
             {
-                _kernelService.ImportFunctionsByApp(app, _kernel);
+                await _kernelService.ImportFunctionsByApp(app, _kernel);
                 settings.ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions;
             }
             var func = _kernel.CreateFunctionFromPrompt(app.Prompt, settings);

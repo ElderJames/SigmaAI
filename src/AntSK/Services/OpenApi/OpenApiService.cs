@@ -129,7 +129,7 @@ namespace AntSK.Services.OpenApi
             var temperature = app.Temperature / 100;//存的是0~100需要缩小
             OpenAIPromptExecutionSettings settings = new() { Temperature = temperature };
 
-            _kernelService.ImportFunctionsByApp(app, _kernel);
+            await _kernelService.ImportFunctionsByApp(app, _kernel);
             settings.ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions;
 
             var promptTemplateFactory = new KernelPromptTemplateFactory();

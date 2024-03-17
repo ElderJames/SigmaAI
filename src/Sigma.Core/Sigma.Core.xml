@@ -549,16 +549,28 @@
             <param name="fieldOrPropertyInfo"></param>
             <returns></returns>
         </member>
-        <member name="T:Sigma.Migrations.CreateIdentitySchema">
+        <member name="T:Sigma.Core.Migrations.Initial">
             <inheritdoc />
         </member>
-        <member name="M:Sigma.Migrations.CreateIdentitySchema.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:Sigma.Core.Migrations.Initial.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:Sigma.Migrations.CreateIdentitySchema.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:Sigma.Core.Migrations.Initial.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:Sigma.Migrations.CreateIdentitySchema.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:Sigma.Core.Migrations.Initial.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Sigma.Core.Migrations.Fix">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.Fix.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.Fix.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.Fix.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>

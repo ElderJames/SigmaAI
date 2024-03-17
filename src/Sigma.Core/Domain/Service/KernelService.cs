@@ -14,6 +14,7 @@ using System;
 using AntSK.LLM.Mock;
 using AntSK.Domain.Domain.Model.Enum;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.SemanticKernel.Plugins.OpenApi;
 
 namespace AntSK.Domain.Domain.Service
 {
@@ -109,7 +110,7 @@ namespace AntSK.Domain.Domain.Service
         /// </summary>
         /// <param name="app"></param>
         /// <param name="_kernel"></param>
-        public void ImportFunctionsByApp(Apps app, Kernel _kernel)
+        public async Task ImportFunctionsByApp(Apps app, Kernel _kernel)
         {
             //插件不能重复注册，否则会异常
             if (_kernel.Plugins.Any(p => p.Name == "AntSkFunctions"))
@@ -127,6 +128,13 @@ namespace AntSK.Domain.Domain.Service
 
                 foreach (var api in apiList)
                 {
+                    if (api.Type== Sigma.Core.Repositories.AI.Api.ApiPluginType.OpenAPI)
+                    {
+                        var openApi = await _kernel.CreatePluginFromOpenApiAsync(api.Name, new Uri(api.Url));
+                        apiFunctions.AddRange(openApi);
+                        continue;
+                    }
+                    
                     switch (api.Method)
                     {
                         case HttpMethodType.Get:
