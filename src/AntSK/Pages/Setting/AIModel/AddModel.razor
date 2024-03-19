@@ -24,18 +24,16 @@
                     <EnumRadioGroup @bind-Value="context.AIType"></EnumRadioGroup>
                 </FormItem>
                 <FormItem Label="模型类型" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
-                    <RadioGroup @bind-Value="context.AIModelType">
-                        <Radio RadioButton Value="@(AIModelType.Chat)">会话模型</Radio>
-                        <Radio RadioButton Value="@(AIModelType.Embedding)">向量模型</Radio>
-                    </RadioGroup>
+                    <Checkbox @bind-Value="@context.IsChat">Chat 模型</Checkbox>
+                    <Checkbox @bind-Value="@context.IsEmbedding"> Embedding 模型</Checkbox>
                 </FormItem>
-                @if (context.AIModelType == AIModelType.Embedding)
+                @*                 @if (context.AIModelType == AIModelType.Embedding)
                 {
-                    <FormItem Label="注意事项" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
-                        <b>请不要使用不同维度的向量模型，否则会导致无法向量存储</b>
-                    </FormItem>
+                <FormItem Label="注意事项" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                <b>请不要使用不同维度的向量模型，否则会导致无法向量存储</b>
+                </FormItem>
                 }
-
+                *@
                 @if (context.AIType == AIType.AzureOpenAI)
                 {
                     <FormItem Label="请求地址" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
@@ -62,14 +60,14 @@
                 }
                 @if (context.AIType == AIType.SparkDesk)
                 {
-                    <FormItem Label="APPID" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <FormItem Label="APP ID" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
                         <Input Placeholder="请输入APPID" @bind-Value="@context.EndPoint" />
                     </FormItem>
-                    <FormItem Label="APIKey" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
-                        <Input Placeholder="请输入请输入APIKey" @bind-Value="@context.ModelName" />
-                    </FormItem>
-                    <FormItem Label="APISecret" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <FormItem Label="API Secret" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
                         <InputPassword @bind-Value="@context.ModelKey" Placeholder="APISecret" Size="@InputSize.Large" />
+                    </FormItem>
+                    <FormItem Label="API Key" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                        <Input Placeholder="请输入请输入APIKey" @bind-Value="@context.ModelName" />
                     </FormItem>
                 }
                 @if (context.AIType == AIType.DashScope)

@@ -91,9 +91,9 @@ builder.Services.AddQueue();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "AntSK.Api", Version = "v1" });
+    c.SwaggerDoc("v1", new() { Title = "Sigma.Api", Version = "v1" });
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "AntSK.xml"), true);
-    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "AntSK.Core.xml"), true);
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Sigma.Core.xml"), true);
     c.CustomOperationIds(e =>
     {
         var routesValues = e.ActionDescriptor.RouteValues;

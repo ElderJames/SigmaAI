@@ -15,6 +15,7 @@ using AntSK.LLM.Mock;
 using AntSK.Domain.Domain.Model.Enum;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.SemanticKernel.Plugins.OpenApi;
+using Sigma.Core.Repositories.AI.Api;
 
 namespace AntSK.Domain.Domain.Service
 {
@@ -128,7 +129,7 @@ namespace AntSK.Domain.Domain.Service
 
                 foreach (var api in apiList)
                 {
-                    if (api.Type== Sigma.Core.Repositories.AI.Api.ApiPluginType.OpenAPI)
+                    if (api.Type== ApiPluginType.OpenAPI)
                     {
                         var openApi = await _kernel.CreatePluginFromOpenApiAsync(api.Name, new Uri(api.Url), new()
                         {
@@ -138,6 +139,7 @@ namespace AntSK.Domain.Domain.Service
                             //    return Task.CompletedTask;
                             //}
                         });
+
                         apiFunctions.AddRange(openApi);
                         continue;
                     }

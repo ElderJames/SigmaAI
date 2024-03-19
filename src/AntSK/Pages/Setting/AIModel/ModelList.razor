@@ -73,11 +73,11 @@
                                     <div class="listContentItem" style="width:10%">
                                         <b>模型类别</b>
                                         <p>
-                                            @if (context.AIModelType == AIModelType.Chat)
+                                            @if (context.IsChat)
                                             {
                                                 <Tag Color="@PresetColor.Yellow.ToString()">会话模型</Tag>
                                             }
-                                            else if (context.AIModelType == AIModelType.Embedding)
+                                            @if (context.IsEmbedding)
                                             {
                                                 <Tag Color="@PresetColor.Green.ToString()">向量模型</Tag>
                                             }

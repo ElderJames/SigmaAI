@@ -278,11 +278,6 @@
             AI类型
             </summary>
         </member>
-        <member name="P:AntSK.Domain.Repositories.AIModels.AIModelType">
-            <summary>
-            模型类型
-            </summary>
-        </member>
         <member name="P:AntSK.Domain.Repositories.AIModels.EndPoint">
             <summary>
             模型地址
@@ -571,6 +566,18 @@
             <inheritdoc />
         </member>
         <member name="M:Sigma.Core.Migrations.Fix.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Sigma.Core.Migrations.ModelType">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.ModelType.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.ModelType.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.ModelType.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>

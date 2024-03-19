@@ -46,8 +46,8 @@ namespace AntSK.Pages
 
             kmsCount =(await _kmss_Repositories.CountAsync(p=>true)).ConvertToString();
 
-            chatAIModelCount = (await _aiModels_Repositories.CountAsync(p=>p.AIModelType==AIModelType.Chat)).ConvertToString();
-            embeddingAIModelCount = (await _aiModels_Repositories.CountAsync(p=>p.AIModelType==AIModelType.Embedding)).ConvertToString();
+            chatAIModelCount = (await _aiModels_Repositories.CountAsync(p=>p.IsChat)).ConvertToString();
+            embeddingAIModelCount = (await _aiModels_Repositories.CountAsync(p=>p.IsEmbedding)).ConvertToString();
             aiModelCount= (chatAIModelCount.ConvertToInt32() + embeddingAIModelCount.ConvertToInt32()).ConvertToString();
 
             fileCount=(await _kmsDetails_Repositories.CountAsync(p =>p.Type=="file")).ConvertToString();

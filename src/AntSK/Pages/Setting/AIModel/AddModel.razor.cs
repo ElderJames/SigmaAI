@@ -47,17 +47,17 @@ namespace AntSK.Pages.Setting.AIModel
                     _aiModel = _aimodels_Repositories.GetFirst(p => p.Id == ModelId);
                 }
                 //目前只支持gguf的 所以筛选一下
-                _modelFiles = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), LLamaSharpOption.FileDirectory)).Where(p=>p.Contains(".gguf")).ToArray();
+                _modelFiles = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), LLamaSharpOption.FileDirectory)).Where(p => p.Contains(".gguf")).ToArray();
                 if (!string.IsNullOrEmpty(ModelPath))
                 {
                     //下载页跳入
                     _aiModel.AIType = AIType.LLamaSharp;
                     _downloadModalVisible = true;
 
-                    _downloadUrl = $"https://hf-mirror.com{ModelPath.Replace("---","/")}";
+                    _downloadUrl = $"https://hf-mirror.com{ModelPath.Replace("---", "/")}";
                 }
             }
-            catch 
+            catch
             {
                 _ = Message.Error("LLamaSharp.FileDirectory目录配置不正确！", 2);
             }
@@ -65,19 +65,19 @@ namespace AntSK.Pages.Setting.AIModel
 
         private void HandleSubmit()
         {
-            if (_aimodels_Repositories.IsAny(p => p.Id!=_aiModel.Id.ConvertToString()&& p.AIModelType == _aiModel.AIModelType && p.EndPoint == _aiModel.EndPoint.ConvertToString() && p.ModelKey == _aiModel.ModelKey && p.ModelName == _aiModel.ModelName))
-            {
-                _ = Message.Error("模型已存在！", 2);
-                return;
-            }
             if (_aiModel.AIType.IsNull())
             {
                 _ = Message.Error("AI类型必须选择", 2);
                 return;
             }
-            if (_aiModel.AIModelType.IsNull())
+            if (!_aiModel.IsChat && !_aiModel.IsEmbedding)
             {
                 _ = Message.Error("模型类型必须选择", 2);
+                return;
+            }
+            if (_aimodels_Repositories.IsAny(p => p.Id != _aiModel.Id.ConvertToString() && p.EndPoint == _aiModel.EndPoint.ConvertToString() && p.ModelKey == _aiModel.ModelKey && p.ModelName == _aiModel.ModelName))
+            {
+                _ = Message.Error("模型已存在！", 2);
                 return;
             }
             if (string.IsNullOrEmpty(ModelId))
@@ -132,7 +132,7 @@ namespace AntSK.Pages.Setting.AIModel
 
         private void DownloadProgressChanged(object? sender, DownloadProgressChangedEventArgs e)
         {
-            _downloadProgress = Math.Round( e.ProgressPercentage,2);
+            _downloadProgress = Math.Round(e.ProgressPercentage, 2);
             InvokeAsync(StateHasChanged);
         }
 
@@ -164,7 +164,7 @@ namespace AntSK.Pages.Setting.AIModel
 
         private void Stop()
         {
-            _downloadStarted=false;
+            _downloadStarted = false;
             _download?.Stop();
             InvokeAsync(StateHasChanged);
         }

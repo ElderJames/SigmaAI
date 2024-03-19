@@ -14,11 +14,9 @@ namespace AntSK.Domain.Repositories
         [Required]
         public AIType AIType { get; set; } = AIType.OpenAI;
 
-        /// <summary>
-        /// 模型类型
-        /// </summary>
-        [Required]
-        public AIModelType AIModelType { get; set; } = AIModelType.Chat;
+        public bool IsChat { get; set; }
+
+        public bool IsEmbedding { get; set; }
 
         /// <summary>
         /// 模型地址

@@ -52,7 +52,7 @@ namespace AntSK.Pages.AppPage
             _kmsList = _kmss_Repositories.GetList();
             _apiList = _apis_Repositories.GetList();
 
-            _chatList = _aimodels_Repositories.GetList(p => p.AIModelType == AIModelType.Chat);
+            _chatList = _aimodels_Repositories.GetList(p => p.IsChat);
             _functionService.SearchMarkedMethods();
             foreach (var func in _functionService.Functions)
             {
