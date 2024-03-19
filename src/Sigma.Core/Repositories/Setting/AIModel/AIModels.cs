@@ -21,7 +21,7 @@ namespace AntSK.Domain.Repositories
         /// <summary>
         /// 模型地址
         /// </summary>
-        public string? EndPoint { get; set; } = "";
+        public string EndPoint { get; set; } = "";
 
         /// <summary>
         /// 模型名称

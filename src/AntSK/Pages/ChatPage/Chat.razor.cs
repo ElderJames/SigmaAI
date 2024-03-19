@@ -13,6 +13,7 @@ using AntSK.Domain.Utils;
 using Markdig;
 using AntSK.Domain.Domain.Model;
 using AntSK.Domain.Domain.Model.Dto;
+using AntSK.Domain.Domain.Model.Enum;
 
 namespace AntSK.Pages.ChatPage
 {
@@ -133,11 +134,11 @@ namespace AntSK.Pages.ChatPage
 
             switch (app.Type)
             {
-                case "chat":
+                case AppType.Chat:
                     //普通会话
                     await SendChat(questions, msg, app);
                     break;
-                case "kms":
+                case AppType.Kms:
                     //知识库问答
                     await SendKms(questions, msg, app);
                     break;

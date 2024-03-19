@@ -1,4 +1,5 @@
 ﻿using AntSK.Core.Repositories.Base;
+using AntSK.Domain.Domain.Model.Enum;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -29,13 +30,17 @@ namespace AntSK.Domain.Repositories
         /// 类型
         /// </summary>
         [Required]
-        public string Type { get; set; }
+        public AppType Type { get; set; } = AppType.Chat;
 
         /// <summary>
         /// 会话模型ID
         /// </summary>
-        [Required]
         public string? ChatModelID { get; set; }
+
+        /// <summary>
+        /// 向量模型ID
+        /// </summary>
+        public string? EmbeddingModelID { get; set; }
 
         /// <summary>
         /// 温度

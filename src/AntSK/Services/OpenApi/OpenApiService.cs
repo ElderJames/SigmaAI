@@ -1,5 +1,6 @@
 ﻿using AntSK.Domain.Domain.Interface;
 using AntSK.Domain.Domain.Model.Dto.OpenAPI;
+using AntSK.Domain.Domain.Model.Enum;
 using AntSK.Domain.Repositories;
 using AntSK.Domain.Utils;
 using Microsoft.KernelMemory;
@@ -37,7 +38,7 @@ namespace AntSK.Services.OpenApi
                 string msg = await HistorySummarize(app, model);
                 switch (app.Type)
                 {
-                    case "chat":
+                    case AppType.Chat:
                         //普通会话
                         if (model.stream)
                         {
@@ -62,7 +63,7 @@ namespace AntSK.Services.OpenApi
                         }
                         break;
 
-                    case "kms":
+                    case AppType.Kms:
                         //知识库问答
                         if (model.stream)
                         {

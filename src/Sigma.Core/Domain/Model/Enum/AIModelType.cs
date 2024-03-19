@@ -7,7 +7,7 @@ namespace AntSK.Domain.Domain.Model.Enum
     /// </summary>
     public enum AIType
     {
-        [Display(Name = "Open AI")]
+        [Display(Name = "Open AI 协议")]
         OpenAI = 1,
 
         [Display(Name = "Azure Open AI")]

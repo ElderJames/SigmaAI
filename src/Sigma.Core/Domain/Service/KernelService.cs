@@ -47,23 +47,17 @@ namespace AntSK.Domain.Domain.Service
         /// <returns></returns>
         public Kernel GetKernelByApp(Apps app)
         {
-            //if (_kernel.IsNull())
-            {
-                var chatModel = _aIModels_Repositories.GetFirst(p => p.Id == app.ChatModelID);
+            var chatModel = _aIModels_Repositories.GetFirst(p => p.Id == app.ChatModelID);
 
-                var chatHttpClient = OpenAIHttpClientHandlerUtil.GetHttpClient(chatModel.EndPoint);
+            //http代理
+            var chatHttpClient = new HttpClient(ActivatorUtilities.CreateInstance<OpenAIHttpClientHandler>(_serviceProvider, chatModel.EndPoint));
 
-                var builder = Kernel.CreateBuilder();
-                WithTextGenerationByAIType(builder, app, chatModel, chatHttpClient);
+            var builder = Kernel.CreateBuilder();
+            WithTextGenerationByAIType(builder, app, chatModel, chatHttpClient);
 
-                _kernel = builder.Build();
-                RegisterPluginsWithKernel(_kernel);
-                return _kernel;
-            }
-            //else
-            //{
-            //    return _kernel;
-            //}
+            _kernel = builder.Build();
+            RegisterPluginsWithKernel(_kernel);
+            return _kernel;
         }
 
         private void WithTextGenerationByAIType(IKernelBuilder builder, Apps app, AIModels chatModel, HttpClient chatHttpClient)
@@ -129,7 +123,7 @@ namespace AntSK.Domain.Domain.Service
 
                 foreach (var api in apiList)
                 {
-                    if (api.Type== ApiPluginType.OpenAPI)
+                    if (api.Type == ApiPluginType.OpenAPI)
                     {
                         var openApi = await _kernel.CreatePluginFromOpenApiAsync(api.Name, new Uri(api.Url), new()
                         {
@@ -143,7 +137,7 @@ namespace AntSK.Domain.Domain.Service
                         apiFunctions.AddRange(openApi);
                         continue;
                     }
-                    
+
                     switch (api.Method)
                     {
                         case HttpMethodType.Get:

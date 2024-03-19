@@ -21,26 +21,32 @@
                     <a href="https://antblazor.com/zh-CN/components/icon" target="_blank">图标库</a>
                 </FormItem>
                 <FormItem Label="类型" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
-                    <RadioGroup @bind-Value="context.Type">
-                        <Radio RadioButton Value="@AppType.chat.ToString()">会话应用</Radio>
-                         <Radio RadioButton Value="@AppType.kms.ToString()">知识库</Radio>
-                     </RadioGroup>
-                 </FormItem>
-                 <FormItem Label="描述" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
-                     <Input Placeholder="请输入描述" @bind-Value="@context.Describe" />
-                 </FormItem>
+                    <EnumRadioGroup @bind-Value="context.Type"></EnumRadioGroup>
+                </FormItem>
+                <FormItem Label="描述" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Input Placeholder="请输入描述" @bind-Value="@context.Describe" />
+                </FormItem>
 
-                 <FormItem Label="会话模型" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
-                     <Select DataSource="@_chatList"
-                             @bind-Value="@context.ChatModelID"
-                             ValueProperty="c=>c.Id"
-                             LabelProperty="c=>'【'+c.AIType.ToString()+'】'+c.ModelDescription">
-                     </Select>
-                     <Button Type="@ButtonType.Link" OnClick="NavigateModelList">去创建</Button>
-                 </FormItem>
-                 @if (@context.Type == AppType.chat.ToString())
+                <FormItem Label="会话模型" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Select DataSource="@_chatList"
+                            @bind-Value="@context.ChatModelID"
+                            ValueProperty="c=>c.Id"
+                            LabelProperty="c=>'【'+c.AIType.ToString()+'】'+c.ModelDescription">
+                    </Select>
+                    <Button Type="@ButtonType.Link" OnClick="NavigateModelList">去创建</Button>
+                </FormItem>
+
+                <FormItem Label="Embedding模型" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Select DataSource="@_embeddingList"
+                            @bind-Value="@context.EmbeddingModelID"
+                            ValueProperty="c=>c.Id"
+                            LabelProperty="c=>'【'+c.AIType.ToString()+'】'+c.ModelDescription">
+                    </Select>
+                    <Button Type="@ButtonType.Link" OnClick="NavigateModelList">去创建</Button>
+                </FormItem>
+
+                @if (@context.Type == AppType.Chat)
                 {
-
                     <FormItem Label="提示词" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
                         <TextArea MinRows="4" Placeholder="请输入提示词,用户输入使用{{$input}} 来做占位符" @bind-Value="@context.Prompt" />
                     </FormItem>
@@ -50,8 +56,8 @@
                         <Slider TValue="double" Style="display: inline-block;width: 300px; " Min="0" Max="100" DefaultValue="70" @bind-Value="@context.Temperature" />
                         <span>更发散</span>
                     </FormItem>
-                  
-                    <FormItem Label="API插件列表" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">                      
+
+                    <FormItem Label="API插件列表" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
                         <Select Mode="multiple"
                                 @bind-Values="apiIds"
                                 Placeholder="选择API插件, 选择后会开启自动调用"
@@ -83,7 +89,7 @@
                         </Select>
                     </FormItem>
                 }
-                @if (@context.Type == AppType.kms.ToString())
+                @if (@context.Type == AppType.Kms)
                 {
                     <FormItem Label="知识库" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
                         <Select Mode="multiple"

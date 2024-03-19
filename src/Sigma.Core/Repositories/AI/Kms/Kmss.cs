@@ -10,8 +10,7 @@ namespace AntSK.Domain.Repositories
         /// <summary>
         /// 图标
         /// </summary>
-        [Required]
-        public string Icon { get; set; }
+        public string Icon { get; set; } = "appstore";
 
         /// <summary>
         /// 名称
@@ -19,17 +18,10 @@ namespace AntSK.Domain.Repositories
         [Required]
         public string Name { get; set; }
 
-        /// <summary>
-        /// 会话模型
-        /// </summary>
-        [Required]
+        ///// <summary>
+        ///// 会话模型
+        ///// </summary>
         public string Describe { get; set; }
-
-        /// <summary>
-        /// 会话模型ID
-        /// </summary>
-        [Required]
-        public string? ChatModelID { get; set; }
 
         /// <summary>
         /// 向量模型ID

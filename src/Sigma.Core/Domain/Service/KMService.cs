@@ -7,6 +7,7 @@ using LLama;
 using LLamaSharp.KernelMemory;
 using Markdig;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.KernelMemory;
 using Microsoft.KernelMemory.Configuration;
 using Microsoft.KernelMemory.FileSystem.DevTools;
@@ -19,22 +20,20 @@ namespace AntSK.Domain.Domain.Service
     public class KMService(
            IConfiguration _config,
            IKmss_Repositories _kmss_Repositories,
-           IAIModels_Repositories _aIModels_Repositories
+           IAIModels_Repositories _aIModels_Repositories,
+           IServiceProvider serviceProvider
         ) : IKMService
     {
         private MemoryServerless _memory;
 
         public MemoryServerless GetMemoryByKMS(string kmsID, SearchClientConfig searchClientConfig = null)
         {
-
             //获取KMS配置
             var kms = _kmss_Repositories.GetFirst(p => p.Id == kmsID);
-            var chatModel = _aIModels_Repositories.GetFirst(p => p.Id == kms.ChatModelID);
             var embedModel = _aIModels_Repositories.GetFirst(p => p.Id == kms.EmbeddingModelID);
 
             //http代理
-            var chatHttpClient = OpenAIHttpClientHandlerUtil.GetHttpClient(chatModel.EndPoint);
-            var embeddingHttpClient = OpenAIHttpClientHandlerUtil.GetHttpClient(embedModel.EndPoint);
+            var embeddingHttpClient = new HttpClient(ActivatorUtilities.CreateInstance<OpenAIHttpClientHandler>(serviceProvider, embedModel.EndPoint));
 
             //搜索配置
             if (searchClientConfig.IsNull())
@@ -56,8 +55,7 @@ namespace AntSK.Domain.Domain.Service
                 MaxTokensPerParagraph = kms.MaxTokensPerParagraph,
                 OverlappingTokens = kms.OverlappingTokens
             });
-            //加载会话模型
-            WithTextGenerationByAIType(memoryBuild, chatModel, chatHttpClient);
+
             //加载向量模型
             WithTextEmbeddingGenerationByAIType(memoryBuild, embedModel, embeddingHttpClient);
             //加载向量库
@@ -65,10 +63,9 @@ namespace AntSK.Domain.Domain.Service
 
             _memory = memoryBuild.Build<MemoryServerless>();
             return _memory;
-
         }
 
-        private void WithTextEmbeddingGenerationByAIType(IKernelMemoryBuilder memory, AIModels embedModel, HttpClient embeddingHttpClient)
+        private void WithTextEmbeddingGenerationByAIType(IKernelMemoryBuilder memory, AIModels embedModel, HttpClient? embeddingHttpClient = null)
         {
             switch (embedModel.AIType)
             {
@@ -99,45 +96,6 @@ namespace AntSK.Domain.Domain.Service
 
                 case Model.Enum.AIType.DashScope:
                     memory.WithDashScopeDefaults(embedModel.ModelKey);
-                    break;
-            }
-        }
-
-        private void WithTextGenerationByAIType(IKernelMemoryBuilder memory, AIModels chatModel, HttpClient chatHttpClient)
-        {
-            switch (chatModel.AIType)
-            {
-                case Model.Enum.AIType.OpenAI:
-                    memory.WithOpenAITextGeneration(new OpenAIConfig()
-                    {
-                        APIKey = chatModel.ModelKey,
-                        TextModel = chatModel.ModelName
-                    }, null, chatHttpClient);
-                    break;
-
-                case Model.Enum.AIType.AzureOpenAI:
-                    memory.WithAzureOpenAITextGeneration(new AzureOpenAIConfig()
-                    {
-                        APIKey = chatModel.ModelKey,
-                        Deployment = chatModel.ModelName.ConvertToString(),
-                        Endpoint = chatModel.EndPoint.ConvertToString(),
-                        Auth = AzureOpenAIConfig.AuthTypes.APIKey,
-                        APIType = AzureOpenAIConfig.APITypes.TextCompletion,
-                    });
-                    break;
-
-                case Model.Enum.AIType.LLamaSharp:
-                    var (weights, parameters) = LLamaConfig.GetLLamaConfig(chatModel.ModelName);
-                    var context = weights.CreateContext(parameters);
-                    var executor = new StatelessExecutor(weights, parameters);
-                    memory.WithLLamaSharpTextGeneration(new LlamaSharpTextGenerator(weights, context, executor));
-                    break;
-
-                case Model.Enum.AIType.DashScope:
-                    memory.WithDashScopeTextGeneration(new Cnblogs.KernelMemory.AI.DashScope.DashScopeConfig
-                    {
-                        ApiKey = chatModel.ModelKey,
-                    });
                     break;
             }
         }

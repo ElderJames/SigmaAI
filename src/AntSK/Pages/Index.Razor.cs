@@ -40,8 +40,8 @@ namespace AntSK.Pages
         {
             await base.OnInitializedAsync();
 
-            chatAppCount = (await _apps_Repositories.CountAsync(p => p.Type == AppType.chat.ToString())).ConvertToString();
-            kmsAppCount = (await _apps_Repositories.CountAsync(p => p.Type == AppType.kms.ToString())).ConvertToString();
+            chatAppCount = (await _apps_Repositories.CountAsync(p => p.Type == AppType.Chat)).ConvertToString();
+            kmsAppCount = (await _apps_Repositories.CountAsync(p => p.Type == AppType.Kms)).ConvertToString();
             appCount= (chatAppCount.ConvertToInt32()+ kmsAppCount.ConvertToInt32()).ConvertToString();
 
             kmsCount =(await _kmss_Repositories.CountAsync(p=>true)).ConvertToString();

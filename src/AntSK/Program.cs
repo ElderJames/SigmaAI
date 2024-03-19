@@ -1,3 +1,4 @@
+using AntDesign.Charts;
 using AntDesign.ProLayout;
 using AntSK.Domain.Domain.Interface;
 using AntSK.Domain.Domain.Service;
@@ -131,7 +132,6 @@ else if (LLamaSharpOption.RunType.ToUpper() == "GPU")
     .WithCuda(true)
     .WithLogs(true);
 }
-
 
 var app = builder.Build();
 

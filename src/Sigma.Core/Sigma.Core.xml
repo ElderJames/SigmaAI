@@ -173,6 +173,11 @@
             会话模型ID
             </summary>
         </member>
+        <member name="P:AntSK.Domain.Repositories.Apps.EmbeddingModelID">
+            <summary>
+            向量模型ID
+            </summary>
+        </member>
         <member name="P:AntSK.Domain.Repositories.Apps.Temperature">
             <summary>
             温度
@@ -241,16 +246,6 @@
         <member name="P:AntSK.Domain.Repositories.Kmss.Name">
             <summary>
             名称
-            </summary>
-        </member>
-        <member name="P:AntSK.Domain.Repositories.Kmss.Describe">
-            <summary>
-            会话模型
-            </summary>
-        </member>
-        <member name="P:AntSK.Domain.Repositories.Kmss.ChatModelID">
-            <summary>
-            会话模型ID
             </summary>
         </member>
         <member name="P:AntSK.Domain.Repositories.Kmss.EmbeddingModelID">
@@ -578,6 +573,18 @@
             <inheritdoc />
         </member>
         <member name="M:Sigma.Core.Migrations.ModelType.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Sigma.Core.Migrations.changekms">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.changekms.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.changekms.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.changekms.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>
