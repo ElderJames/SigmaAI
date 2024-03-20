@@ -293,6 +293,11 @@
             部署名，azure需要使用
             </summary>
         </member>
+        <member name="P:AntSK.Domain.Repositories.AIModels.UseIntentionRecognition">
+            <summary>
+            启用意图识别
+            </summary>
+        </member>
         <member name="P:AntSK.Domain.Repositories.Users.No">
             <summary>
             工号，用于登陆
@@ -585,6 +590,18 @@
             <inheritdoc />
         </member>
         <member name="M:Sigma.Core.Migrations.changekms.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Sigma.Core.Migrations.UseIntentionRecognition">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.UseIntentionRecognition.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.UseIntentionRecognition.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.UseIntentionRecognition.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>

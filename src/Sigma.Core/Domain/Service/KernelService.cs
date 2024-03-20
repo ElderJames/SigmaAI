@@ -48,7 +48,7 @@ namespace AntSK.Domain.Domain.Service
         public Kernel GetKernelByApp(Apps app)
         {
             var chatModel = _aIModels_Repositories.GetFirst(p => p.Id == app.ChatModelID);
-
+            app.AIModel= chatModel;
             //http代理
             var chatHttpClient = new HttpClient(ActivatorUtilities.CreateInstance<OpenAIHttpClientHandler>(_serviceProvider, chatModel.EndPoint));
 

@@ -73,5 +73,8 @@ namespace AntSK.Domain.Repositories
         /// API调用秘钥
         /// </summary>
         public string? SecretKey { get; set; }
+
+        [NotMapped]
+        public AIModels AIModel { get; set; }
     }
 }

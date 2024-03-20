@@ -12,6 +12,9 @@ using Microsoft.KernelMemory;
 using Markdig;
 using AntSK.Domain.Domain.Model;
 using AntSK.Domain.Domain.Model.Dto;
+using System.Text.Json;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 namespace AntSK.Domain.Domain.Service
 {
@@ -21,6 +24,11 @@ namespace AntSK.Domain.Domain.Service
         IKmsDetails_Repositories _kmsDetails_Repositories
         ) : IChatService
     {
+        JsonSerializerOptions JsonSerializerOptions = new()
+        {
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+        };
+
         /// <summary>
         /// 发送消息
         /// </summary>
@@ -30,11 +38,7 @@ namespace AntSK.Domain.Domain.Service
         /// <returns></returns>
         public async IAsyncEnumerable<StreamingKernelContent> SendChatByAppAsync(Apps app, string questions, string history)
         {
-            if (string.IsNullOrEmpty(app.Prompt) || !app.Prompt.Contains("{{$input}}"))
-            {
-                //如果模板为空，给默认提示词
-                app.Prompt = app.Prompt.ConvertToString() + "{{$input}}";
-            }
+       
             var _kernel = _kernelService.GetKernelByApp(app);
             var temperature = app.Temperature / 100;//存的是0~100需要缩小
             OpenAIPromptExecutionSettings settings = new() { Temperature = temperature };
@@ -43,7 +47,21 @@ namespace AntSK.Domain.Domain.Service
                 await _kernelService.ImportFunctionsByApp(app, _kernel);
                 settings.ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions;
             }
-            var func = _kernel.CreateFunctionFromPrompt(app.Prompt, settings);
+
+            if (string.IsNullOrEmpty(app.Prompt) || !app.Prompt.Contains("{{$input}}"))
+            {
+                //如果模板为空，给默认提示词
+                app.Prompt = app.Prompt.ConvertToString() + "{{$input}}";
+            }
+
+            var prompt = app.Prompt;
+
+            if (app.AIModel.UseIntentionRecognition)
+            {
+                prompt = GenerateFuncionPrompt(_kernel) + prompt;
+            }
+
+            var func = _kernel.CreateFunctionFromPrompt(prompt, settings);
             var chatResult = _kernel.InvokeStreamingAsync(function: func, arguments: new KernelArguments() { ["input"] = $"{history}{Environment.NewLine} user:{questions}" });
             await foreach (var content in chatResult)
             {
@@ -77,5 +95,31 @@ namespace AntSK.Domain.Domain.Service
                 yield return new StreamingTextContent("知识库未搜索到相关内容");
             }
         }
+    
+        private string GenerateFuncionPrompt(Kernel kernel)
+        {
+            var functions = kernel?.Plugins.GetFunctionsMetadata().Where(x => x.PluginName == "AntSkFunctions").ToList() ?? [];
+            if (!functions.Any())
+                return "";
+
+            var functionNames= functions.Select(x=>x.Description).ToList();
+            var functionKV = functions.ToDictionary(x => x.Description, x => new { Function = $"{x.Name}", Parameters = x.Parameters.Select(x => $"{x.Name}:{x.ParameterType?.Name}") });
+            var template = $$"""
+                          请完成意图识别任务，已知的意图有{{JsonSerializer.Serialize(functionNames, JsonSerializerOptions)}}，分别对应的函数如下：
+                          {{JsonSerializer.Serialize(functionKV, JsonSerializerOptions)}}
+
+                          只需回复Json字符串，不要有其他字符,不要有空格,不要markdow格式。示例如下：
+                          
+                          {
+                             "function": string   // 意图对应的function
+                             "intention": string  // 用户的意图
+                             "arguments: object   // 传入参数
+                          }
+                         
+                          """;
+
+            return template;
+        }
+    
     }
 }
