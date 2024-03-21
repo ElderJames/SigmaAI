@@ -16,6 +16,8 @@ using AntSK.Domain.Domain.Model.Enum;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.SemanticKernel.Plugins.OpenApi;
 using Sigma.Core.Repositories.AI.Api;
+using Microsoft.SemanticKernel.ChatCompletion;
+using LLamaSharp.SemanticKernel.ChatCompletion;
 
 namespace AntSK.Domain.Domain.Service
 {
@@ -48,7 +50,7 @@ namespace AntSK.Domain.Domain.Service
         public Kernel GetKernelByApp(Apps app)
         {
             var chatModel = _aIModels_Repositories.GetFirst(p => p.Id == app.ChatModelID);
-
+            app.AIModel= chatModel;
             //http代理
             var chatHttpClient = new HttpClient(ActivatorUtilities.CreateInstance<OpenAIHttpClientHandler>(_serviceProvider, chatModel.EndPoint));
 
@@ -68,6 +70,7 @@ namespace AntSK.Domain.Domain.Service
                     builder.AddOpenAIChatCompletion(
                        modelId: chatModel.ModelName,
                        apiKey: chatModel.ModelKey,
+                       chatModel.ModelDescription,
                        httpClient: chatHttpClient);
                     break;
 
@@ -75,27 +78,29 @@ namespace AntSK.Domain.Domain.Service
                     builder.AddAzureOpenAIChatCompletion(
                         deploymentName: chatModel.ModelName,
                         apiKey: chatModel.ModelKey,
-                        endpoint: chatModel.EndPoint
-                        );
+                        serviceId: chatModel.ModelDescription,
+                        endpoint: chatModel.EndPoint);
                     break;
 
                 case Model.Enum.AIType.LLamaSharp:
                     var (weights, parameters) = LLamaConfig.GetLLamaConfig(chatModel.ModelName);
                     var ex = new StatelessExecutor(weights, parameters);
-                    builder.Services.AddKeyedSingleton<ITextGenerationService>("local-llama", new LLamaSharpTextCompletion(ex));
+                    builder.Services.AddKeyedSingleton<ITextGenerationService>(chatModel.ModelDescription, new LLamaSharpTextCompletion(ex));
+                    builder.Services.AddKeyedSingleton<IChatCompletionService>(chatModel.ModelDescription, new LLamaSharpChatCompletion(ex));
                     break;
 
                 case Model.Enum.AIType.SparkDesk:
                     var options = new SparkDeskOptions { AppId = chatModel.EndPoint, ApiSecret = chatModel.ModelKey, ApiKey = chatModel.ModelName, ModelVersion = Sdcb.SparkDesk.ModelVersion.V3_5 };
-                    builder.Services.AddKeyedSingleton<ITextGenerationService>("spark-desk", new SparkDeskTextCompletion(options, app.Id.ToString()));
+                    builder.Services.AddKeyedSingleton<ITextGenerationService>(chatModel.ModelDescription, new SparkDeskTextCompletion(options, app.Id.ToString()));
                     break;
 
                 case Model.Enum.AIType.DashScope:
-                    builder.Services.AddDashScopeChatCompletion(chatModel.ModelKey, chatModel.ModelName);
+                    builder.Services.AddDashScopeChatCompletion(chatModel.ModelKey, chatModel.ModelName, chatModel.ModelDescription);
                     break;
 
                 case Model.Enum.AIType.Mock:
-                    builder.Services.AddKeyedSingleton<ITextGenerationService>("mock", new MockTextCompletion());
+                    //builder.Services.AddKeyedSingleton<ITextGenerationService>(chatModel.ModelDescription, new MockTextCompletion());
+                    builder.Services.AddKeyedSingleton<IChatCompletionService>(chatModel.ModelDescription, new MockTextCompletion());
                     break;
             }
         }

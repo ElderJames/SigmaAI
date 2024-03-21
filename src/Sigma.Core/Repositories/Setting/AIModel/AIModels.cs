@@ -37,5 +37,10 @@ namespace AntSK.Domain.Repositories
         /// 部署名，azure需要使用
         /// </summary>
         public string? ModelDescription { get; set; }
+
+        /// <summary>
+        /// 启用意图识别
+        /// </summary>
+        public bool UseIntentionRecognition { get; set; }
     }
 }

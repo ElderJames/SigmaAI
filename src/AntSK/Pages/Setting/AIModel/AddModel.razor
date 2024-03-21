@@ -91,6 +91,9 @@
                 @if (context.AIType == AIType.Mock)
                 {
                 }
+                <FormItem Label="Function Call" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Switch @bind-Value="@context.UseIntentionRecognition" UnCheckedChildren="原生" CheckedChildren="意图识别" />
+                </FormItem>
                 <FormItem Label=" " Style="margin-top:32px" WrapperCol="LayoutModel._submitFormLayout.WrapperCol">
                     <Button Type="primary" OnClick="HandleSubmit">
                         保存
