@@ -604,11 +604,5 @@
         <member name="M:Sigma.Core.Migrations.UseIntentionRecognition.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
-        <member name="T:Microsoft.TypeChat.PluginProgramValidator">
-            <summary>
-            Validates programs produced by PluginProgramTranslator.
-            Ensures that function calls are to existing plugins with matching parameters
-            </summary>
-        </member>
     </members>
 </doc>

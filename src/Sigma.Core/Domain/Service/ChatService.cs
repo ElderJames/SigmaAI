@@ -2,23 +2,12 @@
 using AntSK.Domain.Repositories;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using AntSK.Domain.Utils;
-using Microsoft.KernelMemory;
-using Markdig;
-using AntSK.Domain.Domain.Model;
 using AntSK.Domain.Domain.Model.Dto;
 using System.Text.Json;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
-using DocumentFormat.OpenXml.Bibliography;
-using Microsoft.TypeChat;
-using AntDesign;
-using Sigma.Core;
 using LLMJson;
 using Sigma.Core.Domain.Model.Dto;
 
@@ -84,34 +73,80 @@ namespace AntSK.Domain.Domain.Service
                 //    """;
             }
 
-            var func = _kernel.CreateFunctionFromPrompt(prompt, settings);
-            var chatResult = _kernel.InvokeStreamingAsync(function: func, arguments: new KernelArguments() { ["input"] = $"{history}{Environment.NewLine} user:{questions}" });
-
-            var result = "";
-            var successMatch = false;
-            await foreach (var content in chatResult)
+            await foreach (var content in Execute())
             {
-                if (app.AIModel?.UseIntentionRecognition == true)
-                {
-                    result += content.ToString();
-
-                    if (result.Length > 5 && result.Contains("func"))
-                    {
-                        successMatch = true;
-                        continue;
-                    }
-                }
-
                 yield return content;
             }
 
-            if (successMatch)
+            async IAsyncEnumerable<StreamingKernelContent> Execute()
             {
+                var func = _kernel.CreateFunctionFromPrompt(prompt, settings);
+                var chatResult = _kernel.InvokeStreamingAsync(function: func, arguments: new KernelArguments() { ["input"] = $"{history}{Environment.NewLine} user:{questions}" });
+
+                var result = "";
+                var successMatch = false;
+                var isfirstSend = false;
+                List<StreamingKernelContent> contentBuff = [];
+
+                await foreach (var content in chatResult)
+                {
+                    if (app.AIModel?.UseIntentionRecognition == true)
+                    {
+                        result += content.ToString();
+                        successMatch = result.Contains("func");
+
+                        if (result.Length > 20 && !successMatch)
+                        {
+                            if (contentBuff.Count > 0)
+                            {
+                                await foreach (var c in contentBuff.ToAsyncEnumerable())
+                                {
+                                    yield return c;
+                                }
+                                contentBuff.Clear();
+                            }
+
+                            yield return content;
+                        }
+                        else
+                        {
+                            contentBuff.Add(content);
+                        }
+                    }
+                }
+
+                if (!successMatch)
+                {
+                    yield break;
+                }
+
                 var functioResult = new FunctionSchema();
-                result.FromJson(functioResult);
+                JsonParser.FromJson(result, functioResult);
+
+                var plugin = _kernel?.Plugins.GetFunctionsMetadata().Where(x => x.PluginName == "AntSkFunctions").ToList().FirstOrDefault(f => f.Name == functioResult.Function);
+                if (plugin == null)
+                {
+                    yield break;
+                }
+
+                if (!_kernel.Plugins.TryGetFunction(plugin.PluginName, plugin.Name, out var function))
+                {
+                    yield break;
+                }
+                var arguments = new KernelArguments(functioResult.Arguments);
+                var funcResult = (await function.InvokeAsync(_kernel, arguments)).GetValue<object>() ?? string.Empty;
+
+                history = $"""
+                          {JsonSerializer.Serialize(funcResult, JsonSerializerOptions)}
+                          """;
+                questions = "请将这个结果重新组织语言";
+                prompt = "{{$input}}";
+
+                await foreach (var content in Execute())
+                {
+                    yield return content;
+                }
             }
-
-
         }
 
         public async IAsyncEnumerable<StreamingKernelContent> SendKmsByAppAsync(Apps app, string questions, string history, List<RelevantSource> relevantSources = null)
