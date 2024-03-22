@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntSK", "src\AntSK\AntSK.cs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LLMJson", "src\LLMJson\LLMJson.csproj", "{F54949E5-8944-4589-B87E-99FA0DE34C98}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigma.Tests", "tests\Sigma.Tests\Sigma.Tests.csproj", "{18E72367-F725-4E61-BEAF-19804DE88FE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{F54949E5-8944-4589-B87E-99FA0DE34C98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F54949E5-8944-4589-B87E-99FA0DE34C98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F54949E5-8944-4589-B87E-99FA0DE34C98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18E72367-F725-4E61-BEAF-19804DE88FE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18E72367-F725-4E61-BEAF-19804DE88FE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18E72367-F725-4E61-BEAF-19804DE88FE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18E72367-F725-4E61-BEAF-19804DE88FE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
