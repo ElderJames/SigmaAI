@@ -33,10 +33,11 @@ namespace AntSK.Domain.Domain.Service
         /// <returns></returns>
         public async IAsyncEnumerable<StreamingKernelContent> SendChatByAppAsync(Apps app, string questions, string history)
         {
-
             var _kernel = _kernelService.GetKernelByApp(app);
             var temperature = app.Temperature / 100;//存的是0~100需要缩小
             OpenAIPromptExecutionSettings settings = new() { Temperature = temperature };
+            var useIntentionRecognition = app.AIModel?.UseIntentionRecognition == true;
+
             if (!string.IsNullOrEmpty(app.ApiFunctionList) || !string.IsNullOrEmpty(app.NativeFunctionList))//这里还需要加上本地插件的
             {
                 await _kernelService.ImportFunctionsByApp(app, _kernel);
@@ -51,72 +52,61 @@ namespace AntSK.Domain.Domain.Service
 
             var prompt = app.Prompt;
 
-            if (app.AIModel != null && app.AIModel.UseIntentionRecognition)
+            if (useIntentionRecognition)
             {
                 prompt = GenerateFuncionPrompt(_kernel) + prompt;
-
-                //var pluginApi = new PluginApi(_kernel);
-                //var pluginSchema = pluginApi.TypeInfo.ExportSchema(pluginApi.TypeName);
-                //var translator = new ProgramTranslator(
-                //    _kernel.ChatLanguageModel(app.AIModel.ModelDescription ?? "model"),
-                //    new ProgramValidator(new PluginProgramValidator(pluginApi.TypeInfo)),
-                //    pluginSchema
-                //);
-                //translator.MaxRepairAttempts = 2;
-                //var interpreter = new ProgramInterpreter();
-                //using Program program = await translator.TranslateAsync(questions);
-
-                //string? result = await interpreter.RunAsync(program, pluginApi.InvokeAsync);
-
-                //questions += $"""
-                //    user: 以上的结果是：{result}，请重新组织语言回复。
-                //    """;
             }
 
             await foreach (var content in Execute())
-            {
                 yield return content;
-            }
 
             async IAsyncEnumerable<StreamingKernelContent> Execute()
             {
                 var func = _kernel.CreateFunctionFromPrompt(prompt, settings);
                 var chatResult = _kernel.InvokeStreamingAsync(function: func, arguments: new KernelArguments() { ["input"] = $"{history}{Environment.NewLine} user:{questions}" });
 
+                if (!useIntentionRecognition)
+                {
+                    await foreach (var content in chatResult)
+                        yield return content;
+
+                    yield break;
+                }
+
                 var result = "";
                 var successMatch = false;
-                var isfirstSend = false;
-                List<StreamingKernelContent> contentBuff = [];
+
+                List<StreamingKernelContent> contentBuffer = [];
 
                 await foreach (var content in chatResult)
                 {
-                    if (app.AIModel?.UseIntentionRecognition == true)
+                    result += content.ToString();
+                    successMatch = result.Contains("func");
+
+                    // wait for function until the result lenght is more than 20
+                    if (result.Length > 20 && !successMatch)
                     {
-                        result += content.ToString();
-                        successMatch = result.Contains("func");
-
-                        if (result.Length > 20 && !successMatch)
+                        if (contentBuffer.Count > 0)
                         {
-                            if (contentBuff.Count > 0)
-                            {
-                                await foreach (var c in contentBuff.ToAsyncEnumerable())
-                                {
-                                    yield return c;
-                                }
-                                contentBuff.Clear();
-                            }
+                            foreach (var c in contentBuffer)
+                                yield return c;
 
-                            yield return content;
+                            contentBuffer.Clear();
                         }
-                        else
-                        {
-                            contentBuff.Add(content);
-                        }
+
+                        yield return content;
+                    }
+                    else
+                    {
+                        contentBuffer.Add(content);
                     }
                 }
 
                 if (!successMatch)
                 {
+                   foreach (var c in contentBuffer)
+                        yield return c;
+
                     yield break;
                 }
 
@@ -136,16 +126,14 @@ namespace AntSK.Domain.Domain.Service
                 var arguments = new KernelArguments(functioResult.Arguments);
                 var funcResult = (await function.InvokeAsync(_kernel, arguments)).GetValue<object>() ?? string.Empty;
 
-                history = $"""
-                          {JsonSerializer.Serialize(funcResult, JsonSerializerOptions)}
-                          """;
+                history = $"system: 用户意图{functioResult.Intention}结果是{JsonSerializer.Serialize(funcResult, JsonSerializerOptions)}";
+
                 questions = "请将这个结果重新组织语言";
                 prompt = "{{$input}}";
+                useIntentionRecognition = false;
 
                 await foreach (var content in Execute())
-                {
                     yield return content;
-                }
             }
         }
 
@@ -185,7 +173,7 @@ namespace AntSK.Domain.Domain.Service
             var functionNames = functions.Select(x => x.Description).ToList();
             var functionKV = functions.ToDictionary(x => x.Description, x => new { Function = $"{x.Name}", Parameters = x.Parameters.Select(x => $"{x.Name}:{x.ParameterType?.Name}") });
             var template = $$"""
-                          请完成意图识别任务，已知的意图有{{JsonSerializer.Serialize(functionNames, JsonSerializerOptions)}}，分别对应的函数如下：
+                          请对用户的最后一个提问完成意图识别任务，已知的意图有{{JsonSerializer.Serialize(functionNames, JsonSerializerOptions)}}，分别对应的函数如下：
                           {{JsonSerializer.Serialize(functionKV, JsonSerializerOptions)}}
 
                           请直接给出json对象,不要输出 markdown 及其他多余文字。
