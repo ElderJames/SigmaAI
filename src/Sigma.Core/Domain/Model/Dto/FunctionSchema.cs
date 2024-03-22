@@ -10,6 +10,7 @@ namespace Sigma.Core.Domain.Model.Dto
     {
         public string  Function { get; set; }
         public string Intention { get; set; }
+        public string Reason { get; set; }
         public Dictionary<string,object> Arguments { get; set; }
     }
 }

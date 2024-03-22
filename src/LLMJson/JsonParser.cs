@@ -27,7 +27,7 @@ namespace LLMJson
     public static class JsonParser
     {
 
-        public static bool UseRepair     { get; set; } = true;
+        public static bool UseRepair { get; set; } = true;
         public static bool UseRecognizer { get; set; } = true;
 
 
@@ -38,14 +38,12 @@ namespace LLMJson
         private static object? _baseObject;
         private static bool _isbase;
 
-        //public static T FromJson<T>(this string json, T? baseObject) where T : new()
-        //{
-        //    _baseObject = baseObject;
-        //    _isbase = true;
-        //    return json.FromJson<T>();
-        //}
+        public static T FromJson<T>(string json)
+        {
+            return FromJson<T>(json, default);
+        }
 
-        public static T FromJson<T>(this string json, T baseObject) //where T : new()
+        public static T FromJson<T>(string json, T? baseObject) //where T : new()
         {
             _baseObject = baseObject;
             _isbase = true;
@@ -144,11 +142,11 @@ namespace LLMJson
         }
 
         private static object? ParseValueJsonProp(object item, Type type, string json)
-        { 
+        {
 
             // If immutable, do not update the value
             type.GetProperty("UpdateState")?.SetValue(item, UpdateStates.Unchanged);
-            bool Immutable = (bool)        (type.GetProperty("Immutable")  ?.GetValue(item) ?? false);if (Immutable) {return item; }
+            bool Immutable = (bool)(type.GetProperty("Immutable")?.GetValue(item) ?? false); if (Immutable) { return item; }
 
             // Now update the inner value
 
@@ -160,7 +158,8 @@ namespace LLMJson
                 // Has custom setter. Now call JsonProp<>.FromString to use it
                 MethodInfo? methodInfo = type.GetMethod("FromString");
 
-                if (methodInfo != null) {
+                if (methodInfo != null)
+                {
                     var returnValue = methodInfo.Invoke(item, new object[] { json });
                     if (returnValue != null) { updateSucces = (bool)returnValue; }
                 }
@@ -176,13 +175,11 @@ namespace LLMJson
                 }
             }
 
-            type.GetProperty("UpdateState")?.SetValue(item, updateSucces? UpdateStates.Updated: UpdateStates.InvalidUpdate); 
-            
+            type.GetProperty("UpdateState")?.SetValue(item, updateSucces ? UpdateStates.Updated : UpdateStates.InvalidUpdate);
+
 
             return item;
         }
-
-
 
         internal static object? ParseValue(Type type, string json)
         {
@@ -223,7 +220,7 @@ namespace LLMJson
             }
             if (SafeParseUtils.IsPrimitiveFloat(type))
             {
-                return SafeParseUtils.GetSafeFloatingPoint(type, json,UseRecognizer);
+                return SafeParseUtils.GetSafeFloatingPoint(type, json, UseRecognizer);
             }
             if (type == typeof(decimal))
             {
@@ -405,19 +402,19 @@ namespace LLMJson
         static object? ParseObject(Type type, string json)
         {
             object? instance;
-            if (_isbase && _baseObject != null)
-            {
-                instance = _baseObject;
-                _isbase = false;
-            }
-            else
-            {
+            //if (_isbase && _baseObject != null)
+            //{
+            //    instance = _baseObject;
+            //    _isbase = false;
+            //}
+            //else
+            //{
 #if NET5_0_OR_GREATER
-                instance = System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(type);
+            instance = System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(type);
 #else
                 instance = FormatterServices.GetUninitializedObject(type);
 #endif
-            }
+            //}
 
             //The list is split into key/value pairs only, this means the split must be divisible by 2 to be valid JSON
             List<string> elems = Split(json);
@@ -451,13 +448,13 @@ namespace LLMJson
                 else if (nameToProperty.TryGetValue(key, out propertyInfo))
                 {
                     // check if this is a special JsonProp<T> type
-                    var isJsonProp  = false;
+                    var isJsonProp = false;
                     Type propType = propertyInfo.PropertyType;
-                    isJsonProp   = propType.IsGenericType && propType.GetGenericTypeDefinition() == typeof(JsonProp<>);
+                    isJsonProp = propType.IsGenericType && propType.GetGenericTypeDefinition() == typeof(JsonProp<>);
                     if (!isJsonProp)
                     {
                         // If not, it may be a derived class from property type. Let's check
-                        var  baseType = propertyInfo.PropertyType.BaseType;
+                        var baseType = propertyInfo.PropertyType.BaseType;
                         if (baseType != null)
                         {
                             // If so use this a type for setting values
@@ -469,9 +466,9 @@ namespace LLMJson
                     if (isJsonProp)
                     {
                         // Find the instance of the inner type of the JsonProp
-                        var instanceType = instance.GetType();  
+                        var instanceType = instance.GetType();
                         var propertyInfoJsonProp = instanceType.GetProperty(propertyInfo.Name);
-                        if (propertyInfoJsonProp!=null)
+                        if (propertyInfoJsonProp != null)
                         {
                             object? instanceJsonProp = propertyInfoJsonProp.GetValue(instance);
                             if (instanceJsonProp != null)
@@ -479,7 +476,8 @@ namespace LLMJson
                                 propertyInfo.SetValue(instance, ParseValueJsonProp(instanceJsonProp, propType, value), null);
                             }
                         }
-                    } else
+                    }
+                    else
                     {
                         propertyInfo.SetValue(instance, ParseValue(propType, value), null);
                     }
@@ -488,7 +486,5 @@ namespace LLMJson
 
             return instance;
         }
-
-
     }
 }

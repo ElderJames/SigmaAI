@@ -110,25 +110,31 @@ namespace AntSK.Domain.Domain.Service
                     yield break;
                 }
 
-                var functioResult = new FunctionSchema();
-                JsonParser.FromJson(result, functioResult);
+                var functioResults = JsonParser.FromJson<List<FunctionSchema>>(result);
 
-                var plugin = _kernel?.Plugins.GetFunctionsMetadata().Where(x => x.PluginName == "AntSkFunctions").ToList().FirstOrDefault(f => f.Name == functioResult.Function);
-                if (plugin == null)
+                var callResult = new List<string>();
+
+                foreach (var functioResult in functioResults)
                 {
-                    yield break;
+                    var plugin = _kernel?.Plugins.GetFunctionsMetadata().Where(x => x.PluginName == "AntSkFunctions").ToList().FirstOrDefault(f => f.Name == functioResult.Function);
+                    if (plugin == null)
+                    {
+                        yield break;
+                    }
+
+                    if (!_kernel.Plugins.TryGetFunction(plugin.PluginName, plugin.Name, out var function))
+                    {
+                        yield break;
+                    }
+                    var arguments = new KernelArguments(functioResult.Arguments);
+                    var funcResult = (await function.InvokeAsync(_kernel, arguments)).GetValue<object>() ?? string.Empty;
+                    callResult.Add($"用户意图{functioResult.Reason}结果是{JsonSerializer.Serialize(funcResult, JsonSerializerOptions)}");
                 }
 
-                if (!_kernel.Plugins.TryGetFunction(plugin.PluginName, plugin.Name, out var function))
-                {
-                    yield break;
-                }
-                var arguments = new KernelArguments(functioResult.Arguments);
-                var funcResult = (await function.InvokeAsync(_kernel, arguments)).GetValue<object>() ?? string.Empty;
 
-                history = $"system: 用户意图{functioResult.Intention}结果是{JsonSerializer.Serialize(funcResult, JsonSerializerOptions)}";
-
-                questions = "请将这个结果重新组织语言";
+                history = $"system: ${string.Join("\r\n", callResult)}。请结合用户问题作答。";
+                
+                //questions = "请将这个结果重新组织语言";
                 prompt = "{{$input}}";
                 useIntentionRecognition = false;
 
@@ -171,18 +177,26 @@ namespace AntSK.Domain.Domain.Service
                 return "";
 
             var functionNames = functions.Select(x => x.Description).ToList();
-            var functionKV = functions.ToDictionary(x => x.Description, x => new { Function = $"{x.Name}", Parameters = x.Parameters.Select(x => $"{x.Name}:{x.ParameterType?.Name}") });
+            var functionKV = functions.ToDictionary(x => x.Description, x => new { Function = $"{x.Name}", Parameters = x.Parameters.Select(x => $"{x.Name}:{x.ParameterType?.Name}({(x.ParameterType?.IsArray == true ? "数组" : "单个值")})") });
             var template = $$"""
                           请对用户的最后一个提问完成意图识别任务，已知的意图有{{JsonSerializer.Serialize(functionNames, JsonSerializerOptions)}}，分别对应的函数如下：
                           {{JsonSerializer.Serialize(functionKV, JsonSerializerOptions)}}
 
-                          请直接给出json对象,不要输出 markdown 及其他多余文字。
+                          请识别出一个或多个意图，并直接给出json对象,不要输出 markdown 及其他多余文字。
                           
-                          {
+                          要求格式如下：
+
+                          [{
                              "function": string   // 意图对应的function
                              "intention": string  // 用户的意图
-                             "arguments: object   // 传入参数
-                          }
+                             "arguments": object  // 参数
+                             "reason": string     // 问题中体现这参数的关键词
+                          },{
+                             "function": string   // 意图对应的function
+                             "intention": string  // 用户的意图
+                             "arguments": object  // 参数
+                             "reason": string     // 问题中体现这参数的关键词
+                          }]
                          
                           """;
 
