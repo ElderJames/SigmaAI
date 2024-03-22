@@ -73,9 +73,9 @@ namespace AntSK.LLM.SparkDesk
             //var messages = GetHistories(prompt);
             var messages = new ChatMessage[] { new ChatMessage("user", prompt)  };
 
-            return GetStreamingMessageAsync(messages, parameters, functionDefs, cancellationToken);
+            return GetStreamingMessageAsync();
 
-            async IAsyncEnumerable<StreamingTextContent> GetStreamingMessageAsync(ChatMessage[] messages, ChatRequestParameters parameters, List<FunctionDef> functionDefs, CancellationToken cancellationToken)
+            async IAsyncEnumerable<StreamingTextContent> GetStreamingMessageAsync()
             {
                 await foreach (StreamedChatResponse msg in _client.ChatAsStreamAsync(_options.ModelVersion, messages, parameters, functionDefs.Count > 0 ? [.. functionDefs] : null, cancellationToken: cancellationToken))
                 {
@@ -129,18 +129,12 @@ namespace AntSK.LLM.SparkDesk
 
                             var result = (await function.InvokeAsync(kernel, arguments, cancellationToken)).GetValue<object>() ?? string.Empty;
                             var stringResult = ProcessFunctionResult(result, chatExecutionSettings.ToolCallBehavior);
-                            messages = [.. messages, ChatMessage.FromUser($"""
-                                                                           上一个提问的答案是:
-                                                                           
-                                                                           {stringResult}
-                                                                           
-                                                                           请将这个结果重新组织语言，并回复结果。
-                                                                           对同一个问题不再调用方法。
-                                                                           """)];
+                            messages = [ChatMessage.FromSystem($"用户意图{func.Description},结果是{stringResult}"),
+                                ChatMessage.FromUser("请将这个结果重新组织语言")];
 
-                            //functionDefs.RemoveAll(x => x.Name == msg.FunctionCall.Name);
+                            functionDefs = [];
 
-                            await foreach (var content in GetStreamingMessageAsync(messages, parameters, functionDefs, cancellationToken))
+                            await foreach (var content in GetStreamingMessageAsync())
                             {
                                 yield return content;
                             }

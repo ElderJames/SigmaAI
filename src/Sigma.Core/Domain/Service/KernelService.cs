@@ -217,8 +217,7 @@ namespace AntSK.Domain.Domain.Service
                 var nativeIdList = app.NativeFunctionList.Split(",");
 
                 _functionService.SearchMarkedMethods();
-                using var scope = _serviceProvider.CreateScope();
-
+       
                 foreach (var func in _functionService.Functions)
                 {
                     if (nativeIdList.Contains(func.Key))
@@ -226,7 +225,7 @@ namespace AntSK.Domain.Domain.Service
                         var methodInfo = _functionService.MethodInfos[func.Key];
                         var parameters = methodInfo.Parameters.Select(x => new KernelParameterMetadata(x.ParameterName) { ParameterType = x.ParameterType, Description = x.Description });
                         var returnType = new KernelReturnParameterMetadata() { ParameterType = methodInfo.ReturnType.ParameterType, Description = methodInfo.ReturnType.Description };
-                        var target = ActivatorUtilities.CreateInstance(scope.ServiceProvider, func.Value.DeclaringType);
+                        var target = ActivatorUtilities.CreateInstance(_serviceProvider, func.Value.DeclaringType);
                         apiFunctions.Add(_kernel.CreateFunctionFromMethod(func.Value, target, func.Key, methodInfo.Description, parameters, returnType));
                     }
                 }
