@@ -81,7 +81,7 @@ namespace AntSK.Domain.Domain.Service
                 await foreach (var content in chatResult)
                 {
                     result += content.ToString();
-                    successMatch = result.Contains("func");
+                    successMatch = result.Contains("func", StringComparison.InvariantCultureIgnoreCase);
 
                     // wait for function until the result lenght is more than 20
                     if (result.Length > 20 && !successMatch)
@@ -132,7 +132,12 @@ namespace AntSK.Domain.Domain.Service
                 }
 
 
-                history = $"system: ${string.Join("\r\n", callResult)}。请结合用户问题作答。";
+                history = $"""
+                    system: {string.Join("\r\n", callResult)}。
+                    {history}
+                    
+                    请结合用户最后的问题作答：
+                    """;
                 
                 //questions = "请将这个结果重新组织语言";
                 prompt = "{{$input}}";
@@ -177,14 +182,14 @@ namespace AntSK.Domain.Domain.Service
                 return "";
 
             var functionNames = functions.Select(x => x.Description).ToList();
-            var functionKV = functions.ToDictionary(x => x.Description, x => new { Function = $"{x.Name}", Parameters = x.Parameters.Select(x => $"{x.Name}:{x.ParameterType?.Name}({(x.ParameterType?.IsArray == true ? "数组" : "单个值")})") });
+            var functionKV = functions.ToDictionary(x => x.Description, x => new { Function = $"{x.Name}", Parameters = x.Parameters.Select(x => $"{x.Name}:{x.ParameterType?.Name}({(x.ParameterType?.IsArray == true ? "数组" : "非数组")})") });
             var template = $$"""
-                          请对用户的最后一个提问完成意图识别任务，已知的意图有{{JsonSerializer.Serialize(functionNames, JsonSerializerOptions)}}，分别对应的函数如下：
-                          {{JsonSerializer.Serialize(functionKV, JsonSerializerOptions)}}
+                          请对用户的最后一个提问完成意图识别任务。已知的意图有{{JsonSerializer.Serialize(functionNames, JsonSerializerOptions)}}，分别对应的函数如下：
+                          {{JsonSerializer.Serialize(functionKV, JsonSerializerOptions)}}，其中 Parameters 的括号只表示参数类型和是否数组，不是参数名的一部分。
 
-                          请识别出一个或多个意图，并直接给出json对象,不要输出 markdown 及其他多余文字。
+                          从已知的意图中识别出一个或多个意图，并直接给出以下json格式的对象，不要输出 markdown 及其他多余文字。 
                           
-                          要求格式如下：
+                          输出格式如下：
 
                           [{
                              "function": string   // 意图对应的function
@@ -197,7 +202,9 @@ namespace AntSK.Domain.Domain.Service
                              "arguments": object  // 参数
                              "reason": string     // 问题中体现这参数的关键词
                           }]
-                         
+
+                          
+                          如果用户意图无法识别，则直接回答用户的问题，只输出markdown，不要有其他多余文字。
                           """;
 
             return template;
