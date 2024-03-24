@@ -1,9 +1,9 @@
-﻿using AntSK.Domain.Domain.Interface;
-using AntSK.Domain.Domain.Model;
-using AntSK.Domain.Repositories;
+﻿using Sigma.Core.Domain.Interface;
+using Sigma.Core.Domain.Model;
+using Sigma.Core.Repositories;
 using Microsoft.KernelMemory;
 
-namespace AntSK.Domain.Domain.Service
+namespace Sigma.Core.Domain.Service
 {
     public class ImportKMSService(
         IKMService _kMService,

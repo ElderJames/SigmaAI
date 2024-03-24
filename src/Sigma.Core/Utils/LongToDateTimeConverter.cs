@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace AntSK.Domain.Utils
+namespace Sigma.Core.Utils
 {
     public class LongToDateTimeConverter : JsonConverter<DateTime>
     {

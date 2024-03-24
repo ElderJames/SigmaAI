@@ -1,4 +1,4 @@
-﻿namespace AntSK.Domain.Domain.Model.Enum
+﻿namespace Sigma.Core.Domain.Model.Enum
 {
     public enum HttpMethodType
     {

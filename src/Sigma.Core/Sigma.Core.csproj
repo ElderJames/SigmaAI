@@ -14,8 +14,7 @@
     <None Remove="Migrations\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AntDesign.Charts" Version="0.5.1" />
-    <PackageReference Include="AntDesign.ProLayout" Version="0.18.0" />
+	<PackageReference Include="Coravel" Version="5.0.3" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Markdig" Version="0.36.2" />
@@ -41,7 +40,7 @@
     <PackageReference Include="LLamaSharp.Backend.Cuda12" Version="0.10.0" />
     <PackageReference Include="LLamaSharp.kernel-memory" Version="0.10.0" />
     <PackageReference Include="LLamaSharp.semantic-kernel" Version="0.10.0" />
-
+	<PackageReference Include="Downloader" Version="3.0.6" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LLMJson\LLMJson.csproj" />

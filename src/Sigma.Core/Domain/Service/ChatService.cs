@@ -1,17 +1,17 @@
-﻿using AntSK.Domain.Domain.Interface;
-using AntSK.Domain.Repositories;
+﻿using Sigma.Core.Domain.Interface;
+using Sigma.Core.Repositories;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.SemanticKernel;
 using System.Text;
-using AntSK.Domain.Utils;
-using AntSK.Domain.Domain.Model.Dto;
+using Sigma.Core.Utils;
+using Sigma.Core.Domain.Model.Dto;
 using System.Text.Json;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using LLMJson;
 using Sigma.Core.Domain.Model.Dto;
 
-namespace AntSK.Domain.Domain.Service
+namespace Sigma.Core.Domain.Service
 {
     public class ChatService(
         IKernelService _kernelService,
@@ -116,7 +116,7 @@ namespace AntSK.Domain.Domain.Service
 
                 foreach (var functioResult in functioResults)
                 {
-                    var plugin = _kernel?.Plugins.GetFunctionsMetadata().Where(x => x.PluginName == "AntSkFunctions").ToList().FirstOrDefault(f => f.Name == functioResult.Function);
+                    var plugin = _kernel?.Plugins.GetFunctionsMetadata().Where(x => x.PluginName == "SigmaFunctions").ToList().FirstOrDefault(f => f.Name == functioResult.Function);
                     if (plugin == null)
                     {
                         yield break;
@@ -177,7 +177,7 @@ namespace AntSK.Domain.Domain.Service
 
         private string GenerateFuncionPrompt(Kernel kernel)
         {
-            var functions = kernel?.Plugins.GetFunctionsMetadata().Where(x => x.PluginName == "AntSkFunctions").ToList() ?? [];
+            var functions = kernel?.Plugins.GetFunctionsMetadata().Where(x => x.PluginName == "SigmaFunctions").ToList() ?? [];
             if (!functions.Any())
                 return "";
 

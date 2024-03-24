@@ -1,0 +1,30 @@
+﻿@namespace Sigma.Components
+@using Microsoft.AspNetCore.Authorization
+@inherits AntDomComponentBase
+
+<Space Class="@ClassMapper.Class" Size="@("26")">
+    <Image Src="https://img.shields.io/github/stars/xuzeyu91/Sigma?style=social" Width="88px" Height="20px;"></Image>
+    <SpaceItem Style="margin-left:20px;">
+        <AuthorizeView>
+            <Authorized>
+                <AvatarDropdown Name="@context.User.Identity?.Name"
+                                Avatar="@_currentUser.Avatar"
+                                MenuItems="@AvatarMenuItems"
+                                OnItemSelected="HandleSelectUser" />
+
+            </Authorized>
+            <NotAuthorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="Account/Register">
+                        <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="Account/Login">
+                        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </SpaceItem>
+</Space>

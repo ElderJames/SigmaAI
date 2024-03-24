@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 
-namespace AntSK.Domain.Utils
+namespace Sigma.Core.Utils
 {
     public class OpenAIHttpClientHandler(string endPoint, ILogger<OpenAIHttpClientHandler> logger) : HttpClientHandler
     {

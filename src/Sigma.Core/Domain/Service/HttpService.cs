@@ -1,8 +1,8 @@
-﻿using AntSK.Domain.Domain.Interface;
+﻿using Sigma.Core.Domain.Interface;
 using Newtonsoft.Json;
 using RestSharp;
 
-namespace AntSK.Domain.Domain.Service
+namespace Sigma.Core.Domain.Service
 {
     public class HttpService : IHttpService
     {

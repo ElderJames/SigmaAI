@@ -1,0 +1,68 @@
+﻿@namespace Sigma
+@using System.Security.Claims
+@using Sigma.Models
+@using Sigma.Services.Auth
+@using Microsoft.AspNetCore.Components.Authorization
+@using Sigma.Core.Options
+@using Sigma.Core.Repositories
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject INotificationService _notice
+@inherits LayoutComponentBase
+
+<AntDesign.ProLayout.BasicLayout Logo="@("https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg")"
+                                 MenuData="_menuData">
+    <RightContentRender>
+        <Sigma.Components.RightContent />
+    </RightContentRender>
+    <ChildContent>
+        <ErrorBoundary @ref="errorBoundary">
+            <ChildContent>
+                @Body
+            </ChildContent>
+            <ErrorContent Context="ex">
+                @{
+                    ShowNotification(ex);
+                }
+            </ErrorContent>
+        </ErrorBoundary>
+    </ChildContent>
+    <FooterRender>
+        <FooterView Copyright="2024 Sigma Platform" Links="Links"></FooterView>
+    </FooterRender>
+</AntDesign.ProLayout.BasicLayout>
+<SettingDrawer />
+
+@code
+{
+    ErrorBoundary errorBoundary;
+    private MenuDataItem[] _menuData = { };
+
+    [Inject] public HttpClient HttpClient { get; set; }
+
+    [Inject] protected IUsers_Repositories _users_Repositories { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        //菜单权限控制
+        _menuData = await HttpClient.GetFromJsonAsync<MenuDataItem[]>("data/menu.json");
+    }
+
+
+    void ShowNotification(Exception ex)
+    {
+        _ = _notice.Error(new()
+            {
+                Message = ex.Message,
+                Description = ex.StackTrace
+            });
+
+        errorBoundary.Recover();
+    }
+
+    public LinkItem[] Links { get; set; } =
+    {
+
+    };
+}

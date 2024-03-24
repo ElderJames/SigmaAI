@@ -1,0 +1,77 @@
+﻿@namespace Sigma.Components.Pages.AppPage
+@using Sigma.Core.Repositories
+@using Sigma.Core.Domain.Model.Enum
+@page "/AppList"
+@inject NavigationManager NavigationManager
+@using Sigma.Models
+@using Sigma.Services.Auth
+
+
+<PageContainer Title="应用列表">
+    <Content>
+        <div style="text-align: center;">
+            <Search Placeholder="输入回车"
+                    EnterButton="@("搜索")"
+                    Size="large"
+                    Style="max-width: 522px; width: 100%;"
+                    OnSearch="Search" />
+        </div>
+    </Content>
+    <ChildContent>
+        <div class="cardList">
+            <AntList TItem="Apps"
+                     DataSource="_data"
+                     ItemLayout="ListItemLayout.Horizontal"
+                     Grid="LayoutModel._listGridType">
+                <ListItem NoFlex>
+                    @if (string.IsNullOrEmpty(context.Id))
+                    {
+                        <Button Type="dashed" class="newButton" @onclick="NavigateToAddApp">
+                            <Icon Type="plus" Theme="outline" /> 创建应用
+                        </Button>
+                    }
+                    else
+                    {
+                        <Card Hoverable Bordered Class="card" Actions="@(new[] {
+                            info(()=> Info(context.Id)) ,
+                            open(()=> Open(context.Id)),
+                            delete(async ()=>await Delete(context.Id)) ,
+                       
+                             })" Style="max-height:247px;">
+                             <CardMeta>
+                                 <AvatarTemplate>
+                                     <Avatar Icon="@context.Icon" Style="background-color: #1890ff" />
+                                 </AvatarTemplate>
+                                 <TitleTemplate>
+                                     <a>@context.Name</a>
+                                </TitleTemplate>
+                                <DescriptionTemplate>
+                                    <Paragraph class="item" Ellipsis>
+                                     <!--todo: Ellipsis not working-->
+                                     @context.Describe
+                                    </Paragraph>
+                                    @if (context.Type == AppType.Chat)
+                                    {
+                                        <Tag Color="@PresetColor.Yellow.ToString()">会话应用</Tag>
+                                    }
+                                    else if (context.Type == AppType.Kms)
+                                    {
+                                        <Tag Color="@PresetColor.Green.ToString()">知识库</Tag>
+                                        
+                                    }
+                                </DescriptionTemplate>
+                            </CardMeta>
+                        </Card>
+                    }
+                </ListItem>
+            </AntList>
+        </div>
+    </ChildContent>
+</PageContainer>
+
+@code
+{
+    RenderFragment info(Action clickAction) =>@<a key="info" @onclick="@clickAction">查看</a>;
+    RenderFragment open(Action clickAction) =>@<a key="info" @onclick="@clickAction">外部使用</a>;
+    RenderFragment delete(Action clickAction) => @<a key="delete" @onclick="@clickAction">删除</a> ;
+}

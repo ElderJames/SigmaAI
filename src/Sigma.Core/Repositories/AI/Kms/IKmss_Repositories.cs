@@ -1,6 +1,6 @@
-﻿using AntSK.Domain.Repositories.Base;
+﻿using Sigma.Core.Repositories.Base;
 
-namespace AntSK.Domain.Repositories
+namespace Sigma.Core.Repositories
 {
     public interface IKmss_Repositories : IRepository<Kmss>
     {

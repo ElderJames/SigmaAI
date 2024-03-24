@@ -1,4 +1,4 @@
-﻿namespace AntSK.Domain.Utils
+﻿namespace Sigma.Core.Utils
 {
     public static class ConvertUtils
     {

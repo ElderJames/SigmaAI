@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AntSK.Core.Repositories.Base
+namespace Sigma.Core.Repositories.Base
 {
     public class EntityBase
     {

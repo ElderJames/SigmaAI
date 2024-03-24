@@ -1,8 +1,8 @@
-﻿using AntSK.Domain.Domain.Interface;
-using AntSK.Domain.Domain.Model.Dto;
-using AntSK.Domain.Domain.Other;
-using AntSK.Domain.Repositories;
-using AntSK.Domain.Utils;
+﻿using Sigma.Core.Domain.Interface;
+using Sigma.Core.Domain.Model.Dto;
+using Sigma.Core.Domain.Other;
+using Sigma.Core.Repositories;
+using Sigma.Core.Utils;
 using LLama;
 using LLamaSharp.KernelMemory;
 using Markdig;
@@ -15,7 +15,7 @@ using Microsoft.KernelMemory.MemoryStorage;
 using Microsoft.KernelMemory.MemoryStorage.DevTools;
 using Microsoft.KernelMemory.Postgres;
 
-namespace AntSK.Domain.Domain.Service
+namespace Sigma.Core.Domain.Service
 {
     public class KMService(
            IConfiguration _config,

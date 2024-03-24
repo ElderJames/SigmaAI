@@ -1,0 +1,23 @@
+﻿@namespace Sigma.Components.Pages.KmsPage
+@using Sigma.Core.Repositories
+@using Sigma.Core.Domain.Model.Dto
+@page "/Kms/DetailList/{KmsID}/{FileId}"
+@inject NavigationManager NavigationManager
+@using Sigma.Services.Auth
+
+
+
+<Button Type="@ButtonType.Primary" OnClick="NavigateBack">返回</Button>
+<AntList DataSource="@_data" TItem="KMFile">
+    <ListItem  >
+        <ListItemMeta   Description="@context.Text">
+            <TitleTemplate>
+                <a>@context.LastUpdate</a>
+            </TitleTemplate>
+        </ListItemMeta>
+    </ListItem>
+</AntList>
+
+@code {
+
+}

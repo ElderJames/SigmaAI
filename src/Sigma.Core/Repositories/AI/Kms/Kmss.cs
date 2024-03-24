@@ -1,8 +1,8 @@
-﻿using AntSK.Core.Repositories.Base;
+﻿using Sigma.Core.Repositories.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AntSK.Domain.Repositories
+namespace Sigma.Core.Repositories
 {
     [Table("Kms")]
     public partial class Kmss : EntityBase

@@ -1,4 +1,4 @@
-﻿using AntSK.LLM.SparkDesk;
+﻿using Sigma.LLM.SparkDesk;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
@@ -13,7 +13,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
 
-namespace AntSK.LLM.Mock
+namespace Sigma.LLM.Mock
 {
     public class MockTextCompletion : ITextGenerationService, IChatCompletionService, IAIService
     {

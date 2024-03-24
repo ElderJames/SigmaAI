@@ -1,4 +1,4 @@
-﻿namespace AntSK.Domain.Domain.Model
+﻿namespace Sigma.Core.Domain.Model
 {
     public class MessageInfo
     {

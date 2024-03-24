@@ -1,8 +1,8 @@
-﻿using AntSK.LLM.SparkDesk;
-using AntSK.Domain.Domain.Interface;
-using AntSK.Domain.Domain.Other;
-using AntSK.Domain.Repositories;
-using AntSK.Domain.Utils;
+﻿using Sigma.LLM.SparkDesk;
+using Sigma.Core.Domain.Interface;
+using Sigma.Core.Domain.Other;
+using Sigma.Core.Repositories;
+using Sigma.Core.Utils;
 using LLama;
 using LLamaSharp.SemanticKernel.TextCompletion;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,15 +11,15 @@ using Microsoft.SemanticKernel.Plugins.Core;
 using Microsoft.SemanticKernel.TextGeneration;
 using RestSharp;
 using System;
-using AntSK.LLM.Mock;
-using AntSK.Domain.Domain.Model.Enum;
+using Sigma.LLM.Mock;
+using Sigma.Core.Domain.Model.Enum;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.SemanticKernel.Plugins.OpenApi;
 using Sigma.Core.Repositories.AI.Api;
 using Microsoft.SemanticKernel.ChatCompletion;
 using LLamaSharp.SemanticKernel.ChatCompletion;
 
-namespace AntSK.Domain.Domain.Service
+namespace Sigma.Core.Domain.Service
 {
     public class KernelService : IKernelService
     {
@@ -113,7 +113,7 @@ namespace AntSK.Domain.Domain.Service
         public async Task ImportFunctionsByApp(Apps app, Kernel _kernel)
         {
             //插件不能重复注册，否则会异常
-            if (_kernel.Plugins.Any(p => p.Name == "AntSkFunctions"))
+            if (_kernel.Plugins.Any(p => p.Name == "SigmaFunctions"))
             {
                 return;
             }
@@ -230,7 +230,7 @@ namespace AntSK.Domain.Domain.Service
                     }
                 }
             }
-            _kernel.ImportPluginFromFunctions("AntSkFunctions", apiFunctions);
+            _kernel.ImportPluginFromFunctions("SigmaFunctions", apiFunctions);
         }
 
         /// <summary>

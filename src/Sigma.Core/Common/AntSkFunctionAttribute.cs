@@ -1,7 +1,7 @@
-﻿namespace AntSK.Domain.Common
+﻿namespace Sigma.Core.Common
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class AntSkFunctionAttribute : Attribute
+    public class SigmaFunctionAttribute : Attribute
     {
         // 自定义的ActionAttribute
     }

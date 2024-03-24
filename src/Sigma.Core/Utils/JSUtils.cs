@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 
-namespace AntSK.Domain.Utils
+namespace Sigma.Core.Utils
 {
     public static class JSUtils
     {

@@ -1,4 +1,4 @@
-using AntSK.Domain.Repositories;
+using Sigma.Core.Repositories;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

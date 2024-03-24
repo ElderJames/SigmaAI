@@ -1,0 +1,68 @@
+﻿@namespace Sigma.Components.Pages.KmsPage
+@using Sigma.Core.Repositories
+@using Sigma.Models
+@page "/Kms/Add"
+@page "/Kms/Add/{KmsId}"
+@inject IMessageService _message
+@using Sigma.Services.Auth
+
+
+<PageContainer Title="新增知识库">
+    <ChildContent>
+        <Card>
+            <Form Model="@_kmsModel"
+                  Style="margin-top: 8px;"
+                  OnFinish="HandleSubmit">
+                <FormItem Label="知识库名称" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Input Placeholder="请输入知识库名称" @bind-Value="@context.Name" />
+                </FormItem>
+                <FormItem Label="图标" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Input Placeholder="请输入图标" @bind-Value="@context.Icon" />
+                    <a href="https://antblazor.com/zh-CN/components/icon" target="_blank">图标库</a>
+                </FormItem>
+                <FormItem Label="描述" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Input Placeholder="请输入描述" @bind-Value="@context.Describe" />
+                </FormItem>
+   @*              <FormItem Label="会话模型" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Select DataSource="@_chatList"
+                            @bind-Value="@context.ChatModelID"
+                            ValueProperty="c=>c.Id"
+                            LabelProperty="c=>'【'+c.AIType.ToString()+'】'+ c.ModelDescription">
+                    </Select>
+                    <Button Type="@ButtonType.Link" OnClick="NavigateModelList">去创建</Button>
+                </FormItem> *@
+                <FormItem Label="向量模型" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Select DataSource="@_embeddingList"
+                            @bind-Value="@context.EmbeddingModelID"
+                            ValueProperty="c=>c.Id"
+                            LabelProperty="c=>'【'+c.AIType.ToString()+'】'+c.ModelDescription">
+                    </Select>
+                    <Button Type="@ButtonType.Link" OnClick="NavigateModelList">去创建</Button>
+                </FormItem>
+                <FormItem Label="段落切片数(token)" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <AntDesign.InputNumber @bind-Value="context.MaxTokensPerParagraph" PlaceHolder="段落切片数"></AntDesign.InputNumber>
+                </FormItem>
+                <FormItem Label="行切片数(token)" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <AntDesign.InputNumber @bind-Value="context.MaxTokensPerLine" PlaceHolder="行切片数"></AntDesign.InputNumber>
+                </FormItem>
+                <FormItem Label="重叠部分(token)" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <AntDesign.InputNumber @bind-Value="context.OverlappingTokens" PlaceHolder="重叠部分"></AntDesign.InputNumber>
+                </FormItem>
+
+                <FormItem Label=" " Style="margin-top:32px" WrapperCol="LayoutModel._submitFormLayout.WrapperCol">
+                    <Button Type="primary" HtmlType="submit">
+                        保存
+                    </Button>
+                </FormItem>
+            </Form>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+
+<style>
+    .avatar-uploader > .ant-upload {
+        width: 128px;
+        height: 128px;
+    }
+</style>

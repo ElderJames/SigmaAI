@@ -1,7 +1,7 @@
-﻿using AntSK.Domain.Repositories;
+﻿using Sigma.Core.Repositories;
 using Microsoft.SemanticKernel;
 
-namespace AntSK.Domain.Domain.Interface
+namespace Sigma.Core.Domain.Interface
 {
     public interface IKernelService
     {

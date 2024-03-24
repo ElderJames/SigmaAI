@@ -1,0 +1,87 @@
+﻿@namespace Sigma.Components.Pages.ApiPage
+@using Sigma.Core.Repositories
+@using Sigma.Models
+@using Sigma.Core.Domain.Model.Enum
+@page "/plugins/api/add"
+@page "/plugins/api/add/{ApiId}"
+@using Sigma.Services.Auth
+
+
+<PageContainer Title="新增API">
+    <ChildContent>
+        <Card>
+            <Form Model="@_apiModel"
+                  Style="margin-top: 8px;"
+                  OnFinish="HandleSubmit">
+                <FormItem Label="注意" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <h1>API插件需要使用FunctionCall能力，建议使用GPT4，国产模型可能不太行</h1>
+                </FormItem>
+                <FormItem Label="Api名称" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Input Placeholder="请输入Api名称" @bind-Value="@context.Name" />
+                </FormItem>
+                <FormItem Label="Api描述" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Input Placeholder="请输入Api描述" @bind-Value="@context.Describe" />
+                </FormItem>
+                <FormItem Label="Api类型" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <EnumRadioGroup @bind-Value="@context.Type"></EnumRadioGroup>
+                </FormItem>
+
+                @if (context.Type == Sigma.Core.Repositories.AI.Api.ApiPluginType.OpenAPI)
+                {
+                    <FormItem Label="Manifest URL" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                        <Input Placeholder="请输入 Manifest Url" @bind-Value="@context.Url" />
+                    </FormItem>
+                }
+                else
+                {
+
+                    <FormItem Label="Url地址" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                        <Input Placeholder="请输入Url地址" @bind-Value="@context.Url" />
+                    </FormItem>
+                    <FormItem Label="HttpHeader" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                        <TextArea Placeholder="一个一行，以冒号分割。例如:Content-Type:application/json" @bind-Value="@context.Header" MinRows="3" />
+                    </FormItem>
+                    <FormItem Label="Method类型" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                        <EnumRadioGroup ButtonStyle="@RadioButtonStyle.Outline" @bind-Value="context.Method"></EnumRadioGroup>
+                    </FormItem>
+
+                    @if (context.Method == HttpMethodType.Get)
+                    {
+                        <FormItem Label="Query" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                            <TextArea Placeholder="一个一行，以等号分割。例如:name=a" @bind-Value="@context.Query" MinRows="5" />
+                        </FormItem>
+                    }
+                    else if (context.Method == HttpMethodType.Post)
+                    {
+                        <FormItem Label="JsonBody" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                            <TextArea Placeholder="请输入JsonBody" @bind-Value="@context.JsonBody" MinRows="5" />
+                        </FormItem>
+                    }
+
+                    <FormItem Label="入参提示词" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                        <TextArea Placeholder="请输入入参提示词" @bind-Value="@context.InputPrompt" MinRows="5" />
+                    </FormItem>
+                    <FormItem Label="返回提示词" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                        <TextArea Placeholder="请输入返回提示词" @bind-Value="@context.OutputPrompt" MinRows="5" />
+                    </FormItem>
+                }
+                <FormItem Label=" " Style="margin-top:32px" WrapperCol="LayoutModel._submitFormLayout.WrapperCol">
+                    <Button Type="primary" HtmlType="submit">
+                        保存
+                    </Button>
+                    <Button OnClick="Back">
+                        返回
+                    </Button>
+                </FormItem>
+            </Form>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+
+<style>
+    .avatar-uploader > .ant-upload {
+        width: 128px;
+        height: 128px;
+    }
+</style>

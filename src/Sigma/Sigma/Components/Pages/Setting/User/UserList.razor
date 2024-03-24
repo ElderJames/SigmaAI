@@ -1,0 +1,68 @@
+﻿@namespace Sigma.Components.Pages.Setting.User
+@using Sigma.Core.Repositories
+@page "/setting/userlist"
+@inject NavigationManager NavigationManager
+@using Sigma.Services.Auth
+
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "SigmaAdmin")]
+
+<div>
+    <PageContainer Title="用户管理">
+        <ChildContent>
+            <div class="standardList">
+
+                <Card Class="listCard"
+                      Title="用户列表"
+                      Style="margin-top: 24px;"
+                      BodyStyle="padding: 0 32px 40px 32px">
+                    <Extra>
+                        <div class="extraContent">
+
+                            <Search Class="extraContentSearch" Placeholder="查询" @bind-Value="_searchKeyword" OnSearch="OnSearch" />
+                        </div>
+                    </Extra>
+                    <ChildContent>
+                        <Button Type="dashed"
+                                Style="width: 100%; margin-bottom: 8px;"
+                                OnClick="AddUser">
+                            <Icon Type="plus" Theme="outline" />
+                            新增用户
+                        </Button>
+
+                        <AntList TItem="Users"
+                                 DataSource="_data"
+                                 ItemLayout="ListItemLayout.Horizontal">
+                            <ListItem Actions="new[] {
+                            edit(()=> Edit(context.Id)),
+                            delete(async ()=>await Delete(context.Id))
+                             }" Style="width:100%">
+                                <div class="listContent" style="width:100%">
+                                    <div class="listContentItem" style="width:20%">
+                                        <b>工号</b>
+                                        <p>@context.No</p>
+                                    </div>
+                                    <div class="listContentItem" style="width:20%">
+                                        <b>姓名</b>
+                                        <p>@context.Name</p>
+                                    </div>
+                                    <div class="listContentItem" style="width:20%">
+                                        <b>备注</b>
+                                        <p>@context.Describe</p>
+                                    </div>
+                                </div>
+                            </ListItem>
+                        </AntList>
+                    </ChildContent>
+                </Card>
+            </div>
+        </ChildContent>
+    </PageContainer>
+</div>
+
+@code
+{
+    RenderFragment edit(Action clickAction) =>@<a key="edit" @onclick="@clickAction">修改</a>;
+    RenderFragment delete(Action clickAction) =>@<a key="delete" @onclick="@clickAction">删除</a>;
+   
+}

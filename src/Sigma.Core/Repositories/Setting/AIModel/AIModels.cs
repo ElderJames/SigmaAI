@@ -1,9 +1,9 @@
-﻿using AntSK.Core.Repositories.Base;
-using AntSK.Domain.Domain.Model.Enum;
+﻿using Sigma.Core.Repositories.Base;
+using Sigma.Core.Domain.Model.Enum;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AntSK.Domain.Repositories
+namespace Sigma.Core.Repositories
 {
     [Table("AIModels")]
     public partial class AIModels : EntityBase

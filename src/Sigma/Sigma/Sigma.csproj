@@ -11,7 +11,12 @@
     <ProjectReference Include="..\..\Sigma.Core\Sigma.Core.csproj" />
     <ProjectReference Include="..\Sigma.Client\Sigma.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.3" />
-
   </ItemGroup>
-
+	
+  <ItemGroup>
+  	<None Update="plugins\KMSPlugin\Ask\skprompt.txt">
+  	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  	</None>
+  </ItemGroup>
+	
 </Project>

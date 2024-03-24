@@ -1,4 +1,4 @@
-﻿namespace AntSK.Domain.Domain.Model.Dto
+﻿namespace Sigma.Core.Domain.Model.Dto
 {
     public class KMFile
     {
