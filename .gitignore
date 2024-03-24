@@ -333,13 +333,8 @@ ASALocalRun/
 **/bin/
 **/obj/
 **/.vs/
-/AntSK/AntSK.db
-/AntSK/appsettings.Development.json
-/AntSK.db
+
 **/tmp-memory-files/*
-/src/AntSK/AntSK.db
-/src/AntSK/appsettings.Development.json
-/src/AntSK.db
-/src/AntSK/llama_models
-/src/AntSK/AntSK.xml
-/src/AntSK
+*.db-shm
+*.db-wal
+*.db

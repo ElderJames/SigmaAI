@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
 @using Sigma.Data
+@using System.Security.Claims
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject ILogger<Login> Logger
@@ -63,23 +64,33 @@
     {
         // This doesn't count login failures towards account lockout
         // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-        var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-        if (result.Succeeded)
+        //var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+        var userCandidate = await SignInManager.UserManager.FindByEmailAsync(Input.Email);
+        var isValid = await SignInManager.UserManager.CheckPasswordAsync(userCandidate, Input.Password);
+        if (isValid)
         {
+            string AdminRole = "SigmaAdmin";
+            var claims = new[] {
+                    new Claim(ClaimTypes.Name, userCandidate.UserName),
+                    new Claim(ClaimTypes.Role, AdminRole)
+                };
+
+            await SignInManager.SignInWithClaimsAsync(userCandidate, true, claims);
+
             Logger.LogInformation("User logged in.");
             RedirectManager.RedirectTo(ReturnUrl);
         }
-        else if (result.RequiresTwoFactor)
-        {
-            RedirectManager.RedirectTo(
-                "Account/LoginWith2fa",
-                new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
-        }
-        else if (result.IsLockedOut)
-        {
-            Logger.LogWarning("User account locked out.");
-            RedirectManager.RedirectTo("Account/Lockout");
-        }
+        // else if (result.RequiresTwoFactor)
+        // {
+        //     RedirectManager.RedirectTo(
+        //         "Account/LoginWith2fa",
+        //         new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
+        // }
+        // else if (result.IsLockedOut)
+        // {
+        //     Logger.LogWarning("User account locked out.");
+        //     RedirectManager.RedirectTo("Account/Lockout");
+        // }
         else
         {
             errorMessage = "Error: Invalid login attempt.";
