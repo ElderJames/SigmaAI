@@ -10,7 +10,7 @@ using System.Security.Claims;
 
 namespace Sigma.Components
 {
-    public partial class RightContent
+    public partial class RightContent: AntDomComponentBase
     {
         private CurrentUser _currentUser = new CurrentUser();
         private NoticeIconData[] _notifications = { };

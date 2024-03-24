@@ -3,7 +3,6 @@ using Sigma.Core.Domain.Model.Dto.OpenAPI;
 using Sigma.Core.Repositories;
 using Sigma.Models;
 using Microsoft.AspNetCore.Components;
-using Newtonsoft.Json;
 
 namespace Sigma.Components.Pages.AppPage
 {
@@ -58,7 +57,7 @@ namespace Sigma.Components.Pages.AppPage
 
         private void GetDesc()
         {
-            _desc = @$"为了方便其他应用对接，接口符合openai规范，省略了温度TopP等参数。{Environment.NewLine}BaseUrl:{Environment.NewLine}{_openApiUrl} {Environment.NewLine}headers:{Environment.NewLine}Authorization: ""{_appModel.SecretKey}"" {Environment.NewLine}Body:  {Environment.NewLine}{JsonConvert.SerializeObject(new OpenAIModel() { messages = new List<OpenAIMessage>() { new OpenAIMessage() { role = "user", content = "你好，你是谁" } } }, Formatting.Indented)}";
+            //_desc = @$"为了方便其他应用对接，接口符合openai规范，省略了温度TopP等参数。{Environment.NewLine}BaseUrl:{Environment.NewLine}{_openApiUrl} {Environment.NewLine}headers:{Environment.NewLine}Authorization: ""{_appModel.SecretKey}"" {Environment.NewLine}Body:  {Environment.NewLine}{JsonConvert.SerializeObject(new OpenAIModel() { messages = new List<OpenAIMessage>() { new OpenAIMessage() { role = "user", content = "你好，你是谁" } } }, Formatting.Indented)}";
         }
 
         private void GetScript()

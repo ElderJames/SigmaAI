@@ -2,6 +2,7 @@
 using Sigma.Core.Utils;
 using Newtonsoft.Json;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace Sigma.Services.LLamaSharp
 {

@@ -47,7 +47,7 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 builder.Services.Configure<ProSettings>(builder.Configuration.GetSection("ProSettings"));
 
-builder.Services.AddSingleton(sp => new FunctionService(sp, [typeof(Sigma.BasicLayout).Assembly, typeof(Sigma.Core.Common.SigmaFunctionAttribute).Assembly]));
+builder.Services.AddSingleton(sp => new FunctionService(sp, [typeof(Sigma.Client.App).Assembly, typeof(Sigma.Core.Common.SigmaFunctionAttribute).Assembly]));
 builder.Services.AddScoped<FunctionTest>();
 
 builder.Services.AddScoped<IChatService, ChatService>();
@@ -140,7 +140,20 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.MapRazorComponents<App>()
+app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/Account"), second =>
+{
+    second.UseStaticFiles();
+    second.UseStaticFiles("/Account");
+
+    second.UseRouting();
+    second.UseAntiforgery();
+    second.UseEndpoints(endpoints =>
+    {
+        endpoints.MapRazorComponents<App>();
+    });
+});
+
+app.MapRazorComponents<Sigma.Client.App>()
     .AddInteractiveServerRenderMode();
 
 // Add additional endpoints required by the Identity /Account Razor components.

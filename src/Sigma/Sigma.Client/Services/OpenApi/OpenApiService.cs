@@ -9,6 +9,7 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Newtonsoft.Json;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 
 namespace Sigma.Services.OpenApi
 {

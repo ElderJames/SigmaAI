@@ -1,10 +1,8 @@
 ﻿using AntDesign;
-using Sigma.Core.Domain.Model.Enum;
 using Sigma.Core.Domain.Service;
 using Sigma.Core.Repositories;
 using Sigma.Core.Utils;
 using Microsoft.AspNetCore.Components;
-using Microsoft.SemanticKernel;
 
 namespace Sigma.Components.Pages.AppPage
 {

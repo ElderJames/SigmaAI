@@ -9,11 +9,11 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using RestSharp;
 using System.Text;
-using Sigma.Core.Utils;
 using Markdig;
 using Sigma.Core.Domain.Model;
 using Sigma.Core.Domain.Model.Dto;
 using Sigma.Core.Domain.Model.Enum;
+using Microsoft.Extensions.Logging;
 
 namespace Sigma.Components.Pages.ChatPage
 {

@@ -20,11 +20,11 @@
     <link href="./css/prism-toolbar.min.css" rel="stylesheet" />
     <link href="./css/prism-line-numbers.min.css" rel="stylesheet" />
 
-    <HeadOutlet />
+    <HeadOutlet @rendermode="InteractiveServer" />
 </head>
 
 <body>
-    <Sigma.Components.Routes />
+    <Routes @rendermode="InteractiveServer" />
     <script src="_content/AntDesign/js/ant-design-blazor.js"></script>
     @* <script src="_content/AntDesign.Charts/ant-design-charts-blazor.js"></script> *@
 

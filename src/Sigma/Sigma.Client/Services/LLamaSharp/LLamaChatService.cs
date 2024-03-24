@@ -1,6 +1,7 @@
 ﻿using Sigma.Core.Options;
 using LLama;
 using LLama.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Sigma.Services.LLamaSharp
 {
