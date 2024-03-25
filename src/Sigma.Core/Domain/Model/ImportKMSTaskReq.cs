@@ -1,6 +1,6 @@
-﻿using AntSK.Domain.Repositories;
+﻿using Sigma.Core.Repositories;
 
-namespace AntSK.Domain.Domain.Model
+namespace Sigma.Core.Domain.Model
 {
     public class ImportKMSTaskDTO
     {

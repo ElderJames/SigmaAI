@@ -1,0 +1,116 @@
+﻿@page "/Account/Login"
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
+@using Sigma.Data
+@using System.Security.Claims
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject ILogger<Login> Logger
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+@layout Sigma.Client.Layouts.UserLayout
+
+<PageTitle>Log in</PageTitle>
+
+<div class="main__b__0">
+    <div class="login">
+        <Form Model="@Input" OnFinish="LoginUser" Name="login" Method="post">
+            <FormItem>
+                <AntDesign.Input Placeholder="请输入账号" Size="large" @bind-Value="@Input.Email">
+                    <Prefix><Icon Type="user" /></Prefix>
+                </AntDesign.Input>
+            </FormItem>
+            <FormItem>
+                <AntDesign.Input Placeholder="请输入密码" Size="large" @bind-Value="@Input.Password" Type="password">
+                    <Prefix><Icon Type="lock" /></Prefix>
+                </AntDesign.Input>
+            </FormItem>
+            <Button Type="primary" HtmlType="submit" Class="submit" Size="large" Block>登录</Button>
+            <a href="/Account/Register" >还没有账号？去注册</a>
+        </Form>
+    </div>
+</div>
+
+@* <div class="col-md-6 col-md-offset-2">
+    <section>
+        <h3>Use another service to log in.</h3>
+        <hr />
+        <ExternalLoginPicker />
+    </section>
+</div> *@
+@code {
+    private string? errorMessage;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm]
+    private InputModel Input { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (HttpMethods.IsGet(HttpContext.Request.Method))
+        {
+            // Clear the existing external cookie to ensure a clean login process
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+        }
+    }
+
+    public async Task LoginUser()
+    {
+        // This doesn't count login failures towards account lockout
+        // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+        //var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+        var userCandidate = await SignInManager.UserManager.FindByEmailAsync(Input.Email);
+        var isValid = await SignInManager.UserManager.CheckPasswordAsync(userCandidate, Input.Password);
+        if (isValid)
+        {
+            string AdminRole = "SigmaAdmin";
+            var claims = new[] {
+                    new Claim(ClaimTypes.Name, userCandidate.UserName),
+                    new Claim(ClaimTypes.Role, AdminRole)
+                };
+
+            await SignInManager.SignInWithClaimsAsync(userCandidate, true, claims);
+
+            Logger.LogInformation("User logged in.");
+            RedirectManager.RedirectTo(ReturnUrl);
+        }
+        // else if (result.RequiresTwoFactor)
+        // {
+        //     RedirectManager.RedirectTo(
+        //         "Account/LoginWith2fa",
+        //         new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = Input.RememberMe });
+        // }
+        // else if (result.IsLockedOut)
+        // {
+        //     Logger.LogWarning("User account locked out.");
+        //     RedirectManager.RedirectTo("Account/Lockout");
+        // }
+        else
+        {
+            errorMessage = "Error: Invalid login attempt.";
+        }
+    }
+
+    private sealed class InputModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = "";
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; } = "";
+
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
+
+        public string? LoginType { get; set; }
+    }
+}

@@ -1,4 +1,4 @@
-﻿namespace AntSK.Domain.Domain.Model.Dto.OpenAPI
+﻿namespace Sigma.Core.Domain.Model.Dto.OpenAPI
 {
     public class OpenAIModel
     {

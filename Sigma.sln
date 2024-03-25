@@ -9,15 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sigma.LLM", "src\Sigma.LLM\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sigma.Core", "src\Sigma.Core\Sigma.Core.csproj", "{05523293-CDF3-4A3A-87AE-0607A7418A52}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sigma", "src\Sigma\Sigma\Sigma.csproj", "{816599F7-147A-4463-9CAB-17B000932550}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sigma.Client", "src\Sigma\Sigma.Client\Sigma.Client.csproj", "{4F8FBEC7-B366-4DAA-88A4-A705BEB093FB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntSK", "src\AntSK\AntSK.csproj", "{68BB8316-0596-422A-A8A0-691643845B97}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LLMJson", "src\LLMJson\LLMJson.csproj", "{F54949E5-8944-4589-B87E-99FA0DE34C98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigma.Tests", "tests\Sigma.Tests\Sigma.Tests.csproj", "{18E72367-F725-4E61-BEAF-19804DE88FE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sigma.Tests", "tests\Sigma.Tests\Sigma.Tests.csproj", "{18E72367-F725-4E61-BEAF-19804DE88FE1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sigma.Client", "src\Sigma.Client\Sigma.Client.csproj", "{31050CED-2D0B-4E9E-8A5D-DE4638C0465B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sigma", "src\Sigma\Sigma.csproj", "{038D9D2D-6C2F-4F2A-B3C8-FB089BE3B06E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,18 +31,6 @@ Global
 		{05523293-CDF3-4A3A-87AE-0607A7418A52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05523293-CDF3-4A3A-87AE-0607A7418A52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05523293-CDF3-4A3A-87AE-0607A7418A52}.Release|Any CPU.Build.0 = Release|Any CPU
-		{816599F7-147A-4463-9CAB-17B000932550}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{816599F7-147A-4463-9CAB-17B000932550}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{816599F7-147A-4463-9CAB-17B000932550}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{816599F7-147A-4463-9CAB-17B000932550}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4F8FBEC7-B366-4DAA-88A4-A705BEB093FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4F8FBEC7-B366-4DAA-88A4-A705BEB093FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4F8FBEC7-B366-4DAA-88A4-A705BEB093FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4F8FBEC7-B366-4DAA-88A4-A705BEB093FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{68BB8316-0596-422A-A8A0-691643845B97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68BB8316-0596-422A-A8A0-691643845B97}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68BB8316-0596-422A-A8A0-691643845B97}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68BB8316-0596-422A-A8A0-691643845B97}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F54949E5-8944-4589-B87E-99FA0DE34C98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F54949E5-8944-4589-B87E-99FA0DE34C98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F54949E5-8944-4589-B87E-99FA0DE34C98}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,6 +39,14 @@ Global
 		{18E72367-F725-4E61-BEAF-19804DE88FE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18E72367-F725-4E61-BEAF-19804DE88FE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18E72367-F725-4E61-BEAF-19804DE88FE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31050CED-2D0B-4E9E-8A5D-DE4638C0465B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31050CED-2D0B-4E9E-8A5D-DE4638C0465B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31050CED-2D0B-4E9E-8A5D-DE4638C0465B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31050CED-2D0B-4E9E-8A5D-DE4638C0465B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{038D9D2D-6C2F-4F2A-B3C8-FB089BE3B06E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{038D9D2D-6C2F-4F2A-B3C8-FB089BE3B06E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{038D9D2D-6C2F-4F2A-B3C8-FB089BE3B06E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{038D9D2D-6C2F-4F2A-B3C8-FB089BE3B06E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,8 +1,8 @@
-﻿using AntSK.Core.Repositories.Base;
+﻿using Sigma.Core.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 using Sigma.Data;
 
-namespace AntSK.Domain.Repositories
+namespace Sigma.Core.Repositories
 {
     public class Users_Repositories : Repository<Users>, IUsers_Repositories
     {

@@ -1,10 +1,10 @@
-﻿using AntSK.Domain.Repositories.Base;
+﻿using Sigma.Core.Repositories.Base;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace AntSK.Core.Repositories.Base
+namespace Sigma.Core.Repositories.Base
 {
     public class Repository<T> : IRepository<T> where T : EntityBase
     {

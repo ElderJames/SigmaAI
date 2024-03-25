@@ -20,7 +20,7 @@ namespace Sigma.Core.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
 
-            modelBuilder.Entity("AntSK.Domain.Repositories.AIModels", b =>
+            modelBuilder.Entity("Sigma.Core.Repositories.AIModels", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -55,7 +55,7 @@ namespace Sigma.Core.Migrations
                     b.ToTable("AIModels");
                 });
 
-            modelBuilder.Entity("AntSK.Domain.Repositories.Apis", b =>
+            modelBuilder.Entity("Sigma.Core.Repositories.Apis", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -98,7 +98,7 @@ namespace Sigma.Core.Migrations
                     b.ToTable("Apis");
                 });
 
-            modelBuilder.Entity("AntSK.Domain.Repositories.Apps", b =>
+            modelBuilder.Entity("Sigma.Core.Repositories.Apps", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -147,7 +147,7 @@ namespace Sigma.Core.Migrations
                     b.ToTable("Apps");
                 });
 
-            modelBuilder.Entity("AntSK.Domain.Repositories.KmsDetails", b =>
+            modelBuilder.Entity("Sigma.Core.Repositories.KmsDetails", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -186,7 +186,7 @@ namespace Sigma.Core.Migrations
                     b.ToTable("KmsDetails");
                 });
 
-            modelBuilder.Entity("AntSK.Domain.Repositories.Kmss", b =>
+            modelBuilder.Entity("Sigma.Core.Repositories.Kmss", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -221,7 +221,7 @@ namespace Sigma.Core.Migrations
                     b.ToTable("Kms");
                 });
 
-            modelBuilder.Entity("AntSK.Domain.Repositories.Users", b =>
+            modelBuilder.Entity("Sigma.Core.Repositories.Users", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");

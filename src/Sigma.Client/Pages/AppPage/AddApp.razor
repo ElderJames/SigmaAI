@@ -1,0 +1,129 @@
+﻿@namespace Sigma.Components.Pages.AppPage
+@using Sigma.Core.Repositories
+@using Sigma.Models
+@using Sigma.Core.Domain.Model.Enum
+@page "/App/Add"
+@page "/App/Add/{AppId}"
+
+
+
+<PageContainer Title="新增应用">
+    <ChildContent>
+        <Card>
+            <Form Model="@_appModel"
+                  Style="margin-top: 8px;"
+                  OnFinish="HandleSubmit">
+                <FormItem Label="应用名称" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Input Placeholder="请输入应用名称" @bind-Value="@context.Name" />
+                </FormItem>
+                <FormItem Label="图标" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Input Placeholder="请输入图标" @bind-Value="@context.Icon" />
+                    <a href="https://antblazor.com/zh-CN/components/icon" target="_blank">图标库</a>
+                </FormItem>
+                <FormItem Label="类型" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <EnumRadioGroup @bind-Value="context.Type"></EnumRadioGroup>
+                </FormItem>
+                <FormItem Label="描述" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Input Placeholder="请输入描述" @bind-Value="@context.Describe" />
+                </FormItem>
+
+                <FormItem Label="会话模型" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Select DataSource="@_chatList"
+                            @bind-Value="@context.ChatModelID"
+                            ValueProperty="c=>c.Id"
+                            LabelProperty="c=>'【'+c.AIType.ToString()+'】'+c.ModelDescription">
+                    </Select>
+                    <Button Type="@ButtonType.Link" OnClick="NavigateModelList">去创建</Button>
+                </FormItem>
+
+                <FormItem Label="Embedding模型" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                    <Select DataSource="@_embeddingList"
+                            @bind-Value="@context.EmbeddingModelID"
+                            ValueProperty="c=>c.Id"
+                            LabelProperty="c=>'【'+c.AIType.ToString()+'】'+c.ModelDescription">
+                    </Select>
+                    <Button Type="@ButtonType.Link" OnClick="NavigateModelList">去创建</Button>
+                </FormItem>
+
+                @if (@context.Type == AppType.Chat)
+                {
+                    <FormItem Label="提示词" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                        <TextArea MinRows="4" Placeholder="请输入提示词,用户输入使用{{$input}} 来做占位符" @bind-Value="@context.Prompt" />
+                    </FormItem>
+
+                    <FormItem Label="温度系数" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                        <span>更确定</span>
+                        <Slider TValue="double" Style="display: inline-block;width: 300px; " Min="0" Max="100" DefaultValue="70" @bind-Value="@context.Temperature" />
+                        <span>更发散</span>
+                    </FormItem>
+
+                    <FormItem Label="API插件列表" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                        <Select Mode="multiple"
+                                @bind-Values="apiIds"
+                                Placeholder="选择API插件, 选择后会开启自动调用"
+                                TItemValue="string"
+                                TItem="string"
+                                Size="@AntSizeLDSType.Default">
+                            <SelectOptions>
+                                @foreach (var api in _apiList)
+                                {
+                                    <SelectOption TItem="string" TItemValue="string" Value="@api.Id" Label="@(api.Name+"-"+api.Describe)" />
+                                }
+                            </SelectOptions>
+                        </Select>
+                    </FormItem>
+
+                    <FormItem Label="原生插件列表" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                        <Select Mode="multiple"
+                                @bind-Values="funIds"
+                                Placeholder="选择原生插件, 选择后会开启自动调用"
+                                TItemValue="string"
+                                TItem="string"
+                                Size="@AntSizeLDSType.Default">
+                            <SelectOptions>
+                                @foreach (var fun in _funList)
+                                {
+                                    <SelectOption TItem="string" TItemValue="string" Value="@fun.Key" Label="@(fun.Key+"-"+fun.Value)" />
+                                }
+                            </SelectOptions>
+                        </Select>
+                    </FormItem>
+                }
+                @if (@context.Type == AppType.Kms)
+                {
+                    <FormItem Label="知识库" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
+                        <Select Mode="multiple"
+                                @bind-Values="kmsIds"
+                                Placeholder="选择知识库"
+                                TItemValue="string"
+                                TItem="string"
+                                Size="@AntSizeLDSType.Default">
+                            <SelectOptions>
+                                @foreach (var kms in _kmsList)
+                                {
+                                    <SelectOption TItem="string" TItemValue="string" Value="@kms.Id" Label="@kms.Name" />
+                                }
+                            </SelectOptions>
+                        </Select>
+                    </FormItem>
+                }
+                <FormItem Label=" " Style="margin-top:32px" WrapperCol="LayoutModel._submitFormLayout.WrapperCol">
+                    <Button Type="primary" HtmlType="submit">
+                        保存
+                    </Button>
+                    <Button OnClick="Back">
+                        返回
+                    </Button>
+                </FormItem>
+            </Form>
+        </Card>
+    </ChildContent>
+</PageContainer>
+
+
+<style>
+    .avatar-uploader > .ant-upload {
+        width: 128px;
+        height: 128px;
+    }
+</style>

@@ -1,4 +1,4 @@
-﻿namespace AntSK.Domain.Options
+﻿namespace Sigma.Core.Options
 {
     public class KernelMemoryOption
     {

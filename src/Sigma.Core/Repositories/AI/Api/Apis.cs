@@ -1,10 +1,10 @@
-﻿using AntSK.Core.Repositories.Base;
-using AntSK.Domain.Domain.Model.Enum;
+﻿using Sigma.Core.Repositories.Base;
+using Sigma.Core.Domain.Model.Enum;
 using Sigma.Core.Repositories.AI.Api;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AntSK.Domain.Repositories
+namespace Sigma.Core.Repositories
 {
     [Table("Apis")]
     public partial class Apis : EntityBase

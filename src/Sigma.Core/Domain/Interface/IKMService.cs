@@ -1,7 +1,7 @@
-﻿using AntSK.Domain.Domain.Model.Dto;
+﻿using Sigma.Core.Domain.Model.Dto;
 using Microsoft.KernelMemory;
 
-namespace AntSK.Domain.Domain.Interface
+namespace Sigma.Core.Domain.Interface
 {
     public interface IKMService
     {

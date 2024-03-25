@@ -1,0 +1,70 @@
+﻿@namespace Sigma.Components.Pages
+@using Sigma.Core.Repositories
+@page "/KmsList"
+@inject NavigationManager NavigationManager
+
+
+
+
+<PageContainer Title="知识库列表">
+    <Content>
+        <div style="text-align: center;">
+            <Search Placeholder="输入回车"
+                    EnterButton="@("搜索")"
+                    Size="large"
+                    Style="max-width: 522px; width: 100%;"
+                    OnSearch="Search" />
+        </div>
+    </Content>
+    <ChildContent>
+        <div class="cardList">
+            <AntList TItem="Kmss"
+                     DataSource="_data"
+                     ItemLayout="ListItemLayout.Horizontal"
+                     Grid="_listGridType">
+                <ListItem NoFlex>
+                    @if (string.IsNullOrEmpty(context.Id))
+                    {
+                        <Button Type="dashed" class="newButton" @onclick="NavigateToAddKms">
+                            <Icon Type="plus" Theme="outline" /> 创建知识库
+                        </Button>
+                    }
+                    else
+                    {
+                        <Card Hoverable Bordered Class="card" Actions="@(new[] {
+                            info(()=> Info(context.Id)) ,
+                            update(async ()=>await Update(context.Id)),
+                            delete(async ()=>await Delete(context.Id)) ,
+                             })" Style="max-height:247px;">
+                             <CardMeta>
+                                 <AvatarTemplate>
+                                     <Avatar Icon="@context.Icon" Style="background-color: #1890ff" />
+                                 </AvatarTemplate>
+                                 <TitleTemplate>
+                                     <a>@context.Name</a>
+                                </TitleTemplate>
+                                <DescriptionTemplate>
+                                    <Paragraph class="item" Ellipsis>
+                                     <!--todo: Ellipsis not working-->
+                                        <span>
+                                         @context.Describe
+                                        </span>
+                                        <br />
+                                        <span style="color:#c6c6c6">行切片:@context.MaxTokensPerLine 段落切片:@context.MaxTokensPerParagraph 重叠:@context.OverlappingTokens</span>
+                                    </Paragraph>
+                                </DescriptionTemplate>
+                            </CardMeta>
+                        </Card>
+                    }
+                </ListItem>
+            </AntList>
+        </div>
+    </ChildContent>
+</PageContainer>
+
+@code
+{
+    RenderFragment info(Action clickAction) =>@<a key="info" @onclick="@clickAction">查看</a>;
+    RenderFragment update(Action clickAction) =>@<a key="update" @onclick="@clickAction">修改</a>;
+    RenderFragment delete(Action clickAction) => @<a key="delete" @onclick="@clickAction">删除</a> ;
+}

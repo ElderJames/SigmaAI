@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AntSK.Domain.Domain.Model.Enum
+namespace Sigma.Core.Domain.Model.Enum
 {
     public enum AppType
     {

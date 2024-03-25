@@ -1,5 +1,5 @@
-﻿using AntSK.Domain.Domain.Model.Dto;
-using AntSK.Domain.Repositories;
+﻿using Sigma.Core.Domain.Model.Dto;
+using Sigma.Core.Repositories;
 using Microsoft.SemanticKernel;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AntSK.Domain.Domain.Interface
+namespace Sigma.Core.Domain.Interface
 {
     public interface IChatService
     {

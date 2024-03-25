@@ -1,6 +1,6 @@
 ﻿using RestSharp;
 
-namespace AntSK.Domain.Domain.Interface
+namespace Sigma.Core.Domain.Interface
 {
     public interface IHttpService
     {

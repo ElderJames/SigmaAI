@@ -2,7 +2,7 @@
 using LLama.Common;
 using LLamaSharp.KernelMemory;
 
-namespace AntSK.Domain.Domain.Other
+namespace Sigma.Core.Domain.Other
 {
     public static class LLamaConfig
     {

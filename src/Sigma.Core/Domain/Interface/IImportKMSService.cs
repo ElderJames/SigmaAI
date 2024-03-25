@@ -1,6 +1,6 @@
-﻿using AntSK.Domain.Domain.Model;
+﻿using Sigma.Core.Domain.Model;
 
-namespace AntSK.Domain.Domain.Interface
+namespace Sigma.Core.Domain.Interface
 {
     public interface IImportKMSService
     {

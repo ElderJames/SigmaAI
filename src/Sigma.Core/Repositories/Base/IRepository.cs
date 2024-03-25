@@ -1,7 +1,7 @@
-﻿using AntSK.Core.Repositories.Base;
+﻿using Sigma.Core.Repositories.Base;
 using System.Linq.Expressions;
 
-namespace AntSK.Domain.Repositories.Base
+namespace Sigma.Core.Repositories.Base
 {
     public interface IRepository<T> where T : EntityBase
     {

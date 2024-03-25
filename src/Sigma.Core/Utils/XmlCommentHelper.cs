@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 
-namespace AntSK.Domain.Utils
+namespace Sigma.Core.Utils
 {
     /// <summary>
     /// 注释辅助类

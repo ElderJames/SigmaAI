@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AntSK.Domain.Domain.Model.hfmirror
+namespace Sigma.Core.Domain.Model.hfmirror
 {
     public class HfModelDetail
     {

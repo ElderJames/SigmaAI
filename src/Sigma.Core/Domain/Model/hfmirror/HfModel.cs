@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AntSK.Domain.Domain.Model.hfmirror
+namespace Sigma.Core.Domain.Model.hfmirror
 {
     public class HfModel
     {
@@ -18,7 +18,7 @@ namespace AntSK.Domain.Domain.Model.hfmirror
         public string Author { get; set; }
         public HfAuthorData AuthorData { get; set; }
         public int Downloads { get; set; }
-        public bool Gated { get; set; }
+        public string Gated { get; set; }
         public string Id { get; set; }
         public DateTime LastModified { get; set; }
         public int Likes { get; set; }
