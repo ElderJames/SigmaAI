@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Sigma.Client.Pages;
 using Sigma.Components;
 using Sigma.Components.Account;
 using Sigma.Core.Domain.Interface;
@@ -140,6 +139,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
+// The render mode of /Account components is Static SSR.
 app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/Account"), second =>
 {
     second.UseStaticFiles();
@@ -153,6 +153,7 @@ app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/Account"), second =>
     });
 });
 
+// The render mode of main area is Interactive SSR.
 app.MapRazorComponents<Sigma.Client.App>()
     .AddInteractiveServerRenderMode();
 

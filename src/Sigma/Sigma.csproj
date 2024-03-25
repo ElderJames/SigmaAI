@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Sigma.Core\Sigma.Core.csproj" />
     <ProjectReference Include="..\Sigma.Client\Sigma.Client.csproj" />
+    <ProjectReference Include="..\Sigma.Core\Sigma.Core.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.3" />
   </ItemGroup>
 	
