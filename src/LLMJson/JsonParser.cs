@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json;
 
 #pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8618
 
@@ -49,6 +50,12 @@ namespace LLMJson
             _isbase = true;
             JsonRepair.Context = JsonRepair.InputType.LLM;
             if (UseRepair) { try { json = JsonRepair.RepairJson(json); } catch (Exception) { /* cleaning failed */ } }
+
+            var tryParseElement = JsonSerializer.Deserialize<T>(json);
+
+            if (tryParseElement != null)
+                return tryParseElement;
+
             // Initialize, if needed, the ThreadStatic variables
             if (propertyInfoCache == null) propertyInfoCache = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
             if (fieldInfoCache == null) fieldInfoCache = new Dictionary<Type, Dictionary<string, FieldInfo>>();
