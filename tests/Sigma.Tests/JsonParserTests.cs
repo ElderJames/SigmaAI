@@ -1,4 +1,5 @@
 using LLMJson;
+using System.Text.Json;
 
 namespace Sigma.Tests
 {
@@ -9,7 +10,7 @@ namespace Sigma.Tests
         public Dictionary<string, object> Arguments { get; set; }
     }
 
-    public class LLMJsonParserTests
+    public class JsonParserTests
     {
         [Fact]
         public void JsonParse()
@@ -47,6 +48,35 @@ namespace Sigma.Tests
 
             Assert.NotNull(results);
             Assert.True(results.Count == 1);
+        }
+
+        [Fact]
+        public void Parse_paramsters()
+        {
+            var arguments = """
+                {
+                    "id": 123,
+                    "string":"hello",
+                    "numberString":123,
+                    "stringNumber":"123",
+                    "stringBool":"true"
+                }
+                """;
+            var parameters = new Dictionary<string, Type>
+            {
+                ["id"] = typeof(int),
+                ["string"]=typeof(string),
+                ["numberString"] = typeof(string),
+                ["stringNumber"] = typeof(int),
+                ["stringBool"] = typeof(bool),
+            };
+            var result = JsonParameterParser.ParseJsonToDictionary(JsonDocument.Parse(arguments).RootElement, parameters);
+
+            Assert.Equal(123, result["id"]);
+            Assert.Equal("hello", result["string"]);
+            Assert.Equal("123", result["numberString"]);
+            Assert.Equal(123, result["stringNumber"]);
+            Assert.Equal(true, result["stringBool"]);
         }
     }
 }

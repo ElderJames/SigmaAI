@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Sigma.Core.Domain.Model.Dto
@@ -11,6 +12,6 @@ namespace Sigma.Core.Domain.Model.Dto
         public string  Function { get; set; }
         public string Intention { get; set; }
         public string Reason { get; set; }
-        public Dictionary<string,object> Arguments { get; set; }
+        public JsonElement Arguments { get; set; }
     }
 }

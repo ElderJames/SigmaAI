@@ -127,7 +127,10 @@ namespace Sigma.Core.Domain.Service
                         {
                             yield break;
                         }
-                        var arguments = new KernelArguments(functioResult.Arguments);
+
+                        var parameters = plugin.Parameters.ToDictionary(x => x.Name, x => x.ParameterType!);
+                        var arguments = new KernelArguments(JsonParameterParser.ParseJsonToDictionary(functioResult.Arguments, parameters));
+
                         var funcResult = (await function.InvokeAsync(_kernel, arguments)).GetValue<object>() ?? string.Empty;
                         callResult.Add($"用户意图{functioResult.Reason}结果是{JsonSerializer.Serialize(funcResult, JsonSerializerOptions)}");
                     }
