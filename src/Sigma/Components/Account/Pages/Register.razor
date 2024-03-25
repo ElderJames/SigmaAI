@@ -17,43 +17,70 @@
 
 <PageTitle>Register</PageTitle>
 
-<h1>Register</h1>
+<div class="main__b__1">
+    <div class="register">
+        <h3>注册</h3>
+        <Form Model="@Input" Method="post" Name="register" OnFinish="RegisterUser">
+            @if (Message != null)
+            {
+                <Alert Type="error">@Message</Alert>
+            }
+            <FormItem>
+                <Input Placeholder="邮箱" @bind-Value="@Input.Email" Size="@InputSize.Large"></Input>
+            </FormItem>
 
-<div class="row">
-    <div class="col-md-4">
-        <StatusMessage Message="@Message" />
-        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
-            <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
-            <hr />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label for="email">Email</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="password">Password</label>
-                <ValidationMessage For="() => Input.Password" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="confirm-password">Confirm Password</label>
-                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </EditForm>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            <ExternalLoginPicker />
-        </section>
+            <FormItem>
+                <Input Placeholder="At Least 6-Digit Password, Case Sensitive" @bind-Value="@Input.Password" Size="@InputSize.Large" Type="password"></Input>
+            </FormItem>
+
+            <FormItem>
+                <Input Placeholder="Confirm Password" @bind-Value="@Input.ConfirmPassword" Size="@InputSize.Large" Type="password"></Input>
+            </FormItem>
+
+      @*       <FormItem>
+                <InputGroup Compact Size="@InputSize.Large" Style="display: table">
+                    <Select TItem="string"
+                            TItemValue="string"
+                            DefaultValue=@("+86")
+                            Style="width: 25%"
+                            Size="large">
+                        <SelectOptions>
+                            <SelectOption TItem="string" TItemValue="string" Value="@("+86")" Label="+86" />
+                            <SelectOption TItem="string" TItemValue="string" Value="@("+87")" Label="+87" />
+                        </SelectOptions>
+                    </Select>
+                    <AntDesign.Input Placeholder="Phone Number" Style="width: 75%;" @bind-Value="@context.Phone"></AntDesign.Input>
+                </InputGroup>
+            </FormItem>
+
+            <FormItem>
+                <FormItem>
+                    <Row Gutter="8">
+                        <AntDesign.Col Span="16">
+                            <AntDesign.Input Placeholder="Verification Code" @bind-Value="@context.Captcha" Size="@InputSize.Large"></AntDesign.Input>
+                        </AntDesign.Col>
+                        <AntDesign.Col Span="8">
+                            <Button Size="large" Block>Get Code</Button>
+                        </AntDesign.Col>
+                    </Row>
+                </FormItem>
+            </FormItem> *@
+
+            <FormItem>
+                <Button Type="primary" Size="large" HtmlType="submit" class="submit">注册</Button>
+                <a class="login" href="/account/login">已经注册？使用已有账号登录</a>
+            </FormItem>
+        </Form>
     </div>
 </div>
 
+@* <div class="col-md-6 col-md-offset-2">
+    <section>
+        <h3>Use another service to register.</h3>
+        <hr />
+        <ExternalLoginPicker />
+    </section>
+</div> *@
 @code {
     private IEnumerable<IdentityError>? identityErrors;
 

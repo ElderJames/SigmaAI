@@ -1,7 +1,7 @@
 async function embedChatbot() {
 	const chatBtnId = 'aiagent-chatbot-button'
 	const chatWindowId = 'aiagent-chatbot-window'
-	const script = document.getElementById('antsk-iframe')
+	const script = document.getElementById('sigma-iframe')
 	const botSrc = script?.getAttribute('data-src')
 	const width = script?.getAttribute('data-width') || '30rem'
 	const height = script?.getAttribute('data-height') || '50rem'

@@ -3,7 +3,6 @@ using AntDesign.ProLayout;
 using Sigma.Core.Options;
 using Sigma.Models;
 using Sigma.Services;
-using Sigma.Services.Auth;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;

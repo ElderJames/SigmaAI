@@ -1,51 +1,51 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>AntSK</name>
+        <name>Sigma</name>
     </assembly>
     <members>
-        <member name="M:AntSK.Controllers.FileController.UploadFile(Microsoft.AspNetCore.Http.IFormFile)">
+        <member name="M:Sigma.Controllers.FileController.UploadFile(Microsoft.AspNetCore.Http.IFormFile)">
             <summary>
             Upload FileName
             </summary>
             <returns></returns>
         </member>
-        <member name="T:AntSK.Controllers.KMSController">
+        <member name="T:Sigma.Controllers.KMSController">
              <summary>
             
              </summary>
              <param name="_taskBroker"></param>
         </member>
-        <member name="M:AntSK.Controllers.LLamaSharpController.chat(Sigma.Core.Domain.Model.Dto.OpenAPI.OpenAIModel)">
+        <member name="M:Sigma.Controllers.LLamaSharpController.chat(Sigma.Core.Domain.Model.Dto.OpenAPI.OpenAIModel)">
             <summary>
             本地会话接口
             </summary>
             <returns></returns>
         </member>
-        <member name="M:AntSK.Controllers.LLamaSharpController.embedding(Sigma.Core.Domain.Model.Dto.OpenAPI.OpenAIEmbeddingModel)">
+        <member name="M:Sigma.Controllers.LLamaSharpController.embedding(Sigma.Core.Domain.Model.Dto.OpenAPI.OpenAIEmbeddingModel)">
             <summary>
             本地嵌入接口
             </summary>
             <param name="model"></param>
             <returns></returns>
         </member>
-        <member name="T:AntSK.Controllers.OpenController">
+        <member name="T:Sigma.Controllers.OpenController">
             <summary>
             对外接口
             </summary>
         </member>
-        <member name="M:AntSK.Controllers.OpenController.#ctor(Sigma.Services.OpenApi.IOpenApiService)">
+        <member name="M:Sigma.Controllers.OpenController.#ctor(Sigma.Services.OpenApi.IOpenApiService)">
             <summary>
             对外接口
             </summary>
         </member>
-        <member name="M:AntSK.Controllers.OpenController.chat(Sigma.Core.Domain.Model.Dto.OpenAPI.OpenAIModel)">
+        <member name="M:Sigma.Controllers.OpenController.chat(Sigma.Core.Domain.Model.Dto.OpenAPI.OpenAIModel)">
             <summary>
             对话接口
             </summary>
             <returns></returns>
         </member>
-        <member name="M:AntSK.Pages.ChatPage.Chat.SendKms(System.String,System.String,Sigma.Core.Repositories.Apps)">
+        <member name="M:Sigma.Pages.ChatPage.Chat.SendKms(System.String,System.String,Sigma.Core.Repositories.Apps)">
             <summary>
             发送知识库问答
             </summary>
@@ -54,7 +54,7 @@
             <param name="app"></param>
             <returns></returns>
         </member>
-        <member name="M:AntSK.Pages.ChatPage.Chat.SendChat(System.String,System.String,Sigma.Core.Repositories.Apps)">
+        <member name="M:Sigma.Pages.ChatPage.Chat.SendChat(System.String,System.String,Sigma.Core.Repositories.Apps)">
             <summary>
             发送普通对话
             </summary>
@@ -63,14 +63,14 @@
             <param name="app"></param>
             <returns></returns>
         </member>
-        <member name="M:AntSK.Pages.ChatPage.Chat.HistorySummarize(Sigma.Core.Repositories.Apps,System.String)">
+        <member name="M:Sigma.Pages.ChatPage.Chat.HistorySummarize(Sigma.Core.Repositories.Apps,System.String)">
             <summary>
             历史会话的会话总结
             </summary>
             <param name="questions"></param>
             <returns></returns>
         </member>
-        <member name="M:AntSK.Pages.ChatPage.OpenChat.SendKms(System.String,System.String,Sigma.Core.Repositories.Apps)">
+        <member name="M:Sigma.Pages.ChatPage.OpenChat.SendKms(System.String,System.String,Sigma.Core.Repositories.Apps)">
             <summary>
             发送知识库问答
             </summary>
@@ -79,7 +79,7 @@
             <param name="app"></param>
             <returns></returns>
         </member>
-        <member name="M:AntSK.Pages.ChatPage.OpenChat.SendChat(System.String,System.String,Sigma.Core.Repositories.Apps)">
+        <member name="M:Sigma.Pages.ChatPage.OpenChat.SendChat(System.String,System.String,Sigma.Core.Repositories.Apps)">
             <summary>
             发送普通对话
             </summary>
@@ -88,28 +88,28 @@
             <param name="app"></param>
             <returns></returns>
         </member>
-        <member name="M:AntSK.Pages.ChatPage.OpenChat.HistorySummarize(Sigma.Core.Repositories.Apps,System.String)">
+        <member name="M:Sigma.Pages.ChatPage.OpenChat.HistorySummarize(Sigma.Core.Repositories.Apps,System.String)">
             <summary>
             历史会话的会话总结
             </summary>
             <param name="questions"></param>
             <returns></returns>
         </member>
-        <member name="T:AntSK.Pages.KmsPage.KmsDetail.UrlModel">
+        <member name="T:Sigma.Pages.KmsPage.KmsDetail.UrlModel">
             <summary>
             根据文档ID获取文档
             </summary>
             <param name="fileid"></param>
             <returns></returns>
         </member>
-        <member name="M:AntSK.plugins.Functions.FunctionTest.GetOrder(System.Int32)">
+        <member name="M:Sigma.plugins.Functions.FunctionTest.GetOrder(System.Int32)">
             <summary>
             获取订单信息
             </summary>
             <param name="id">订单号</param>
             <returns>订单信息</returns>
         </member>
-        <member name="M:AntSK.plugins.Functions.FunctionTest.GetModels">
+        <member name="M:Sigma.plugins.Functions.FunctionTest.GetModels">
             <summary>
             获取模型
             </summary>

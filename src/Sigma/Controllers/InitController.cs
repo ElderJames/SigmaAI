@@ -1,7 +1,7 @@
 ﻿using Sigma.Core.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AntSK.Controllers
+namespace Sigma.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

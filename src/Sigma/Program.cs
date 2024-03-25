@@ -46,7 +46,7 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 builder.Services.Configure<ProSettings>(builder.Configuration.GetSection("ProSettings"));
 
-builder.Services.AddSingleton(sp => new FunctionService(sp, [typeof(Sigma.Client.App).Assembly, typeof(Sigma.Core.Common.SigmaFunctionAttribute).Assembly]));
+builder.Services.AddSingleton(sp => new FunctionService(sp, [typeof(App).Assembly, typeof(Sigma.Core.Common.SigmaFunctionAttribute).Assembly]));
 builder.Services.AddScoped<FunctionTest>();
 
 builder.Services.AddScoped<IChatService, ChatService>();

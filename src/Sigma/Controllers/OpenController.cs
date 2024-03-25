@@ -3,7 +3,7 @@ using Sigma.Core.Utils;
 using Sigma.Services.OpenApi;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AntSK.Controllers
+namespace Sigma.Controllers
 {
 
     /// <summary>

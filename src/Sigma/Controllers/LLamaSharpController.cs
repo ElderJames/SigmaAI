@@ -2,7 +2,7 @@
 using Sigma.Services.LLamaSharp;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AntSK.Controllers
+namespace Sigma.Controllers
 {
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]

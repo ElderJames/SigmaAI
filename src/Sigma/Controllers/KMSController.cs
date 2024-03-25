@@ -6,7 +6,7 @@ using Coravel.Queuing.Interfaces;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AntSK.Controllers
+namespace Sigma.Controllers
 {
     /// <summary>
     ///
