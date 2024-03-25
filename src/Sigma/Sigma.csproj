@@ -11,6 +11,10 @@
     <ProjectReference Include="..\Sigma.Client\Sigma.Client.csproj" />
     <ProjectReference Include="..\Sigma.Core\Sigma.Core.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 	
   <ItemGroup>

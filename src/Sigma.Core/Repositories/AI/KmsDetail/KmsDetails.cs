@@ -32,11 +32,6 @@ namespace Sigma.Core.Repositories
         public int? DataCount { get; set; }
 
         /// <summary>
-        /// 创建时间
-        /// </summary>
-        public DateTime CreateTime { get; set; }
-
-        /// <summary>
         /// 状态
         /// </summary>
         public ImportKmsStatus? Status { get; set; } = ImportKmsStatus.Loadding;

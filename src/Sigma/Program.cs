@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Sigma.Components;
 using Sigma.Components.Account;
+using Sigma.Core.Common;
+using Sigma.Core.Data;
 using Sigma.Core.Domain.Interface;
 using Sigma.Core.Domain.Service;
 using Sigma.Core.Options;
@@ -69,6 +71,9 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddQueue();
+
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+builder.Services.AddScoped<AuditInterceptor>();
 
 
 builder.Services.AddAuthentication(options =>

@@ -45,7 +45,7 @@ namespace Sigma.Controllers
             {
                 Id = Guid.NewGuid().ToString(),
                 KmsId = req.KmsId.ToString(),
-                CreateTime = DateTime.Now,
+                CreatedAt = DateTime.Now,
                 Status = ImportKmsStatus.Loadding,
                 Type = model.ImportType.ToString().ToLower()
             };
