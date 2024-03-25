@@ -257,7 +257,16 @@ namespace LLMJson
             {
                 Type arrayType = type.GetElementType();
                 if (json[0] != '[' || json[json.Length - 1] != ']')
-                    return null;
+                {
+                    if (json[0] != '[' && json[json.Length - 1] != ']')
+                    {
+                        json = $"[{json}]";
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
 
                 List<string> elems = Split(json);
                 Array? newArray = Array.CreateInstance(arrayType, elems.Count);
@@ -270,7 +279,16 @@ namespace LLMJson
             {
                 Type listType = type.GetGenericArguments()[0];
                 if (json[0] != '[' || json[json.Length - 1] != ']')
-                    return null;
+                {
+                    if (json[0] != '[' && json[json.Length - 1] != ']')
+                    {
+                        json = $"[{json}]";
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
 
                 List<string> elems = Split(json);
                 var list = (IList)type.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { elems.Count });

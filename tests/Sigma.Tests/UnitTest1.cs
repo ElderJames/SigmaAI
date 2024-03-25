@@ -9,10 +9,10 @@ namespace Sigma.Tests
         public Dictionary<string, object> Arguments { get; set; }
     }
 
-    public class UnitTest1
+    public class LLMJsonParserTests
     {
         [Fact]
-        public void Test1()
+        public void JsonParse()
         {
             var json = """
                 [{
@@ -29,6 +29,24 @@ namespace Sigma.Tests
             var results = JsonParser.FromJson<List<FunctionSchema>>(json);
 
             Assert.True(results.Count == 2);
+        }
+
+
+        [Fact]
+        public void Parse_object_to_array()
+        {
+            var json = """
+                {
+                   "function": "get_order",
+                   "intention": "get an order",
+                   "arguments": {"id": 123},
+                }
+                """;
+
+            var results = JsonParser.FromJson<List<FunctionSchema>>(json);
+
+            Assert.NotNull(results);
+            Assert.True(results.Count == 1);
         }
     }
 }

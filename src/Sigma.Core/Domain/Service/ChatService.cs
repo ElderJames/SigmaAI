@@ -9,7 +9,6 @@ using System.Text.Json;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using LLMJson;
-using Sigma.Core.Domain.Model.Dto;
 
 namespace Sigma.Core.Domain.Service
 {
@@ -110,27 +109,34 @@ namespace Sigma.Core.Domain.Service
                     yield break;
                 }
 
-                var functioResults = JsonParser.FromJson<List<FunctionSchema>>(result);
-
                 var callResult = new List<string>();
 
-                foreach (var functioResult in functioResults)
+                try
                 {
-                    var plugin = _kernel?.Plugins.GetFunctionsMetadata().Where(x => x.PluginName == "SigmaFunctions").ToList().FirstOrDefault(f => f.Name == functioResult.Function);
-                    if (plugin == null)
-                    {
-                        yield break;
+                    var functioResults = JsonParser.FromJson<List<FunctionSchema>>(result);
+
+                     foreach (var functioResult in functioResults)
+                     {
+                        var plugin = _kernel?.Plugins.GetFunctionsMetadata().Where(x => x.PluginName == "SigmaFunctions").ToList().FirstOrDefault(f => f.Name == functioResult.Function);
+                        if (plugin == null)
+                        {
+                            yield break;
+                        }
+
+                        if (!_kernel.Plugins.TryGetFunction(plugin.PluginName, plugin.Name, out var function))
+                        {
+                            yield break;
+                        }
+                        var arguments = new KernelArguments(functioResult.Arguments);
+                        var funcResult = (await function.InvokeAsync(_kernel, arguments)).GetValue<object>() ?? string.Empty;
+                        callResult.Add($"用户意图{functioResult.Reason}结果是{JsonSerializer.Serialize(funcResult, JsonSerializerOptions)}");
                     }
 
-                    if (!_kernel.Plugins.TryGetFunction(plugin.PluginName, plugin.Name, out var function))
-                    {
-                        yield break;
-                    }
-                    var arguments = new KernelArguments(functioResult.Arguments);
-                    var funcResult = (await function.InvokeAsync(_kernel, arguments)).GetValue<object>() ?? string.Empty;
-                    callResult.Add($"用户意图{functioResult.Reason}结果是{JsonSerializer.Serialize(funcResult, JsonSerializerOptions)}");
                 }
-
+                catch(Exception e)
+                {
+                    callResult.Add($"调用函数时发生异常：{e.Message}");
+                }
 
                 history = $"""
                     system: {string.Join("\r\n", callResult)}。
@@ -182,15 +188,23 @@ namespace Sigma.Core.Domain.Service
                 return "";
 
             var functionNames = functions.Select(x => x.Description).ToList();
-            var functionKV = functions.ToDictionary(x => x.Description, x => new { Function = $"{x.Name}", Parameters = x.Parameters.Select(x => $"{x.Name}:{x.ParameterType?.Name}({(x.ParameterType?.IsArray == true ? "数组" : "非数组")})") });
+            var functionKV = functions.ToDictionary(x => x.Description, x => new { Function = $"{x.Name}", Parameters = x.Parameters.Select(x => $"{x.Name}"), Summary = $"其中{string.Join("；", x.Parameters.Select(o => $"参数{o.Name}的类型是{o.ParameterType!.Name},{(o.ParameterType!.IsArray ? "多选" : "单选")}"))}" });
             var template = $$"""
-                          请对用户的最后一个提问完成意图识别任务。已知的意图有{{JsonSerializer.Serialize(functionNames, JsonSerializerOptions)}}，分别对应的函数如下：
-                          {{JsonSerializer.Serialize(functionKV, JsonSerializerOptions)}}，其中 Parameters 的括号只表示参数类型和是否数组，不是参数名的一部分。
-
-                          从已知的意图中识别出一个或多个意图，并直接给出以下json格式的对象，不要输出 markdown 及其他多余文字。 
+                          请完成意图识别任务。
                           
-                          输出格式如下：
+                          ### 已知的意图有
+                          
+                          {{JsonSerializer.Serialize(functionNames, JsonSerializerOptions)}}
+                          
+                          分别对应的函数如下：
 
+                          {{JsonSerializer.Serialize(functionKV, JsonSerializerOptions)}}
+
+                          ### 要求
+
+                          请根据用户的最后一个提问从已知的意图中识别出一个或多个意图和所需参数，对单选的参数，不同的值代表不同的意图。
+                          
+                          直接给出以下json格式的数组，不要输出 markdown 及其他多余文字。 
                           [{
                              "function": string   // 意图对应的function
                              "intention": string  // 用户的意图
@@ -202,9 +216,10 @@ namespace Sigma.Core.Domain.Service
                              "arguments": object  // 参数
                              "reason": string     // 问题中体现这参数的关键词
                           }]
-
                           
-                          如果用户意图无法识别，则直接回答用户的问题，只输出markdown，不要有其他多余文字。
+                          注意，用户提问中可能包含多个意图，也可能一个都没有。如果一个都没有，则直接回答用户的问题，只输出markdown，不要有其他多余文字。
+
+                          用户的问题：
                           """;
 
             return template;
