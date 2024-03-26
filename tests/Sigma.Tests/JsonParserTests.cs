@@ -7,7 +7,7 @@ namespace Sigma.Tests
     {
         public string Function { get; set; }
         public string Intention { get; set; }
-        public Dictionary<string, object> Arguments { get; set; }
+        public JsonElement Arguments { get; set; }
     }
 
     public class JsonParserTests
@@ -48,6 +48,7 @@ namespace Sigma.Tests
 
             Assert.NotNull(results);
             Assert.True(results.Count == 1);
+            Assert.True(results[0].Arguments.ValueKind == JsonValueKind.Object);
         }
 
         [Fact]

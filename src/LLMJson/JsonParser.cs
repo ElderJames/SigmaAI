@@ -51,11 +51,6 @@ namespace LLMJson
             JsonRepair.Context = JsonRepair.InputType.LLM;
             if (UseRepair) { try { json = JsonRepair.RepairJson(json); } catch (Exception) { /* cleaning failed */ } }
 
-            var tryParseElement = JsonSerializer.Deserialize<T>(json);
-
-            if (tryParseElement != null)
-                return tryParseElement;
-
             // Initialize, if needed, the ThreadStatic variables
             if (propertyInfoCache == null) propertyInfoCache = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
             if (fieldInfoCache == null) fieldInfoCache = new Dictionary<Type, Dictionary<string, FieldInfo>>();
@@ -242,6 +237,10 @@ namespace LLMJson
                 //return SafeParseUtils.GetSafeFloatingPoint(type, json, UseRecognizer);
                 var result = Convert.ChangeType(json, type, System.Globalization.CultureInfo.InvariantCulture);
                 return result;
+            }
+            else if (type == typeof(JsonElement))
+            {
+                return JsonSerializer.Deserialize<JsonElement>(json);
             }
             if (json.ToLower() == "null")
             {
