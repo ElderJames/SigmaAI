@@ -6,7 +6,7 @@ An out-of-box enterprise intelligence platform based on LLM and GenAI.
 
 Our goal is to empower your business systems to become intelligent, thereby achieving greater business value.
 
-![Build](https://img.shields.io/github/actions/workflow/status/ElderJames/Sigma/dotnet.yml?style=flat-square)
+![Build](https://img.shields.io/github/actions/workflow/status/ElderJames/SigmaAI/dotnet.yml?style=flat-square)
 
 </div>
 
@@ -33,8 +33,8 @@ English | [简体中文](README-zh_CN.md)
 - Clone and run
 
 ```bash
-$ git clone https://github.com/ElderJames/Sigma.git
-$ cd Sigma
+$ git clone https://github.com/ElderJames/SigmaAI.git
+$ cd SigmaAI
 $ dotnet run --project src/sigma
 ```
 
@@ -50,17 +50,17 @@ $ dotnet run --project src/sigma
 
 ## 🤝 Contributing
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/ElderJames/Sigma/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/ElderJames/SigmaAI/pulls)
 
-If you would like to contribute, feel free to create a [Pull Request](https://github.com/ElderJames/Sigma/pulls), or give us [Bug Report](https://github.com/ElderJames/Sigma/issues/new).
+If you would like to contribute, feel free to create a [Pull Request](https://github.com/ElderJames/SigmaAI/pulls), or give us [Bug Report](https://github.com/ElderJames/SigmaAI/issues/new).
 
 
 ## 💕 Contributors
 
 This project exists thanks to all the people who contribute.
 
-<a href="https://github.com/ElderJames/Sigma/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ElderJames/Sigma&max=1000&columns=15&anon=1" />
+<a href="https://github.com/ElderJames/SigmaAI/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ElderJames/SigmaAI&max=1000&columns=15&anon=1" />
 </a>
 
 ## 🚨 Code of Conduct

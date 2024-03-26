@@ -6,7 +6,7 @@
 
 我们的目标是赋能您的业务系统实现智能化，从而实现更大的商业价值。
 
-![Build](https://img.shields.io/github/actions/workflow/status/ElderJames/Sigma/dotnet.yml?style=flat-square)
+![Build](https://img.shields.io/github/actions/workflow/status/ElderJames/SigmaAI/dotnet.yml?style=flat-square)
 
 </div>
 
@@ -30,8 +30,8 @@
 - 克隆并启动项目
 
   ```bash
-  $ git clone https://github.com/ElderJames/Sigma.git
-  $ cd Sigma
+  $ git clone https://github.com/ElderJames/SigmaAI.git
+  $ cd SigmaAI
   $ dotnet run --project src/sigma
   ```
 
@@ -47,17 +47,17 @@
 
 ## 🤝 贡献
 
-[![欢迎 PR](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/ElderJames/Sigma/pulls)
+[![欢迎 PR](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/ElderJames/SigmaAI/pulls)
 
-如果你想来贡献, 尽管创建 [Pull Request](https://github.com/ElderJames/Sigma/pulls), 或者提交 [Bug Report](https://github.com/ElderJames/Sigma/issues/new).
+如果你想来贡献, 尽管创建 [Pull Request](https://github.com/ElderJames/SigmaAI/pulls), 或者提交 [Bug Report](https://github.com/ElderJames/SigmaAI/issues/new).
 
 
 ## 💕 贡献者
 
 感谢本项目的贡献者
 
-<a href="https://github.com/ElderJames/Sigma/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ElderJames/Sigma&max=1000&columns=15&anon=1" />
+<a href="https://github.com/ElderJames/SigmaAI/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ElderJames/SigmaAI&max=1000&columns=15&anon=1" />
 </a>
 
 ## 🚨 Code of Conduct
