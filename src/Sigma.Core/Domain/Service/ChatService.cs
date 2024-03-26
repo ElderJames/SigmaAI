@@ -132,7 +132,7 @@ namespace Sigma.Core.Domain.Service
                         var arguments = new KernelArguments(JsonParameterParser.ParseJsonToDictionary(functioResult.Arguments, parameters));
 
                         var funcResult = (await function.InvokeAsync(_kernel, arguments)).GetValue<object>() ?? string.Empty;
-                        callResult.Add($"用户意图{functioResult.Reason}结果是{JsonSerializer.Serialize(funcResult, JsonSerializerOptions)}");
+                        callResult.Add($"- {functioResult.Reason}，结果是：{JsonSerializer.Serialize(funcResult, JsonSerializerOptions)}");
                     }
 
                 }
@@ -142,9 +142,12 @@ namespace Sigma.Core.Domain.Service
                 }
 
                 history = $"""
-                    system: {string.Join("\r\n", callResult)}。
-                    {history}
+                    system: 你能通过用户意图和反馈结果总结回复。
                     
+                    已知意图和结果：
+
+                    {string.Join("\r\n\r\n", callResult)}。
+
                     请结合用户最后的问题作答：
                     """;
                 
@@ -212,12 +215,12 @@ namespace Sigma.Core.Domain.Service
                              "function": string   // 意图对应的function
                              "intention": string  // 用户的意图
                              "arguments": object  // 参数
-                             "reason": string     // 问题中体现这参数的关键词
+                             "reason": string     // 意图和参数总结原因
                           },{
                              "function": string   // 意图对应的function
                              "intention": string  // 用户的意图
                              "arguments": object  // 参数
-                             "reason": string     // 问题中体现这参数的关键词
+                             "reason": string     // 意图和参数总结原因
                           }]
                           
                           注意，用户提问中可能包含多个意图，也可能一个都没有。如果一个都没有，则直接回答用户的问题，只输出markdown，不要有其他多余文字。
