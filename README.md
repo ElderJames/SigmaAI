@@ -12,7 +12,7 @@ Our goal is to empower your business systems to become intelligent, thereby achi
 
 *Note that this is still in early development*
 
-English | [简体中文](README-zh_CN.md)
+English | [简体中文](README_zh-CN.md)
 
 ## ✨ Implemented Features
 
