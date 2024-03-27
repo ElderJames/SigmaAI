@@ -114,6 +114,7 @@ namespace Sigma.Core.Repositories.Base
 
         public bool Insert(T obj)
         {
+            obj.Id ??= Guid.NewGuid().ToString();
             _db.Set<T>().Add(obj);
             return _db.SaveChanges() > 0;
         }

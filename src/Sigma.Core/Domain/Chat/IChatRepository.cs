@@ -13,7 +13,9 @@ namespace Sigma.Core.Domain.Chat
     {
         public Task<List<ChatHistory>> GetChatHistories(string chatId, int offset, int take);
 
-        public Task<bool> CreateHistory(ChatHistory history);
+        public Task<bool> SaveHistory(ChatHistory history);
+
+        public Task<bool> ClearHistory(string chatId);
     }
 
     public class ChatRepository : Repository<Chat>, IChatRepository
@@ -25,9 +27,18 @@ namespace Sigma.Core.Domain.Chat
             _db = db;
         }
 
-        public async Task<bool> CreateHistory(ChatHistory history)
+        public async Task<bool> SaveHistory(ChatHistory history)
         {
-            _db.Add(history);
+            if (history.Id == null)
+            {
+                history.Id = Guid.NewGuid().ToString();
+                _db.Add(history);
+            }
+            else
+            {
+                _db.Update(history);
+            }
+          
             await _db.SaveChangesAsync();
             return true;
         }
@@ -40,6 +51,12 @@ namespace Sigma.Core.Domain.Chat
                 .Skip(offset)
                 .Take(take)
                 .ToListAsync();
+        }
+
+        public async Task<bool> ClearHistory(string chatId)
+        {
+           await _db.Set<ChatHistory>().Where(x => x.ChatId == chatId).ExecuteDeleteAsync();
+            return true;
         }
     }
 }

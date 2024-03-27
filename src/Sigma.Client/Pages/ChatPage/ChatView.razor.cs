@@ -199,7 +199,7 @@ namespace Sigma.Components.Pages.ChatPage
                     Content = _messageInput,
                 };
 
-                await ChatRepository.CreateHistory(history);
+                await ChatRepository.SaveHistory(history);
                 _histories.Add(history);
 
                 Sendding = true;
@@ -235,7 +235,9 @@ namespace Sigma.Components.Pages.ChatPage
                 var result = await _confirmService.Show(content, title, ConfirmButtons.YesNo);
                 if (result == ConfirmResult.Yes)
                 {
+                    await ChatRepository.ClearHistory(ChatId);
                     _histories.Clear();
+
                     _ = Message.Info("清理成功");
                 }
             }
@@ -282,8 +284,10 @@ namespace Sigma.Components.Pages.ChatPage
         {
             var chatResult = _chatService.SendKmsByAppAsync(app, questions, msg, _relevantSources);
 
-            ChatHistory chatHistory = new() { ChatId = ChatId, Role = ChatRoles.Assistant };
+            ChatHistory chatHistory = new() { ChatId = ChatId, Role = ChatRoles.Assistant, Content="" };
+            await ChatRepository.SaveHistory(chatHistory);
 
+            _histories.Add(chatHistory);
             await foreach (var content in chatResult)
             {
                 chatHistory.Content += content;
@@ -295,6 +299,8 @@ namespace Sigma.Components.Pages.ChatPage
 
             //全部处理完后再处理一次Markdown
             await MarkDown(chatHistory);
+
+            await ChatRepository.SaveHistory(chatHistory);
         }
 
         /// <summary>
@@ -309,7 +315,9 @@ namespace Sigma.Components.Pages.ChatPage
             //MessageInfo info = null;
             var chatResult = _chatService.SendChatByAppAsync(app, questions, history);
 
-            ChatHistory chatHistory = new() { ChatId = ChatId, Role = ChatRoles.Assistant };
+            ChatHistory chatHistory = new() { ChatId = ChatId, Role = ChatRoles.Assistant, Content="" };
+            await ChatRepository.SaveHistory(chatHistory);
+            _histories.Add(chatHistory);
 
             await foreach (var content in chatResult)
             {
@@ -321,6 +329,8 @@ namespace Sigma.Components.Pages.ChatPage
             }
             //全部处理完后再处理一次Markdown
             await MarkDown(chatHistory);
+
+            await ChatRepository.SaveHistory(chatHistory);
         }
 
         private async Task MarkDown(ChatHistory info)
