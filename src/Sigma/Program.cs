@@ -9,6 +9,7 @@ using Sigma.Components;
 using Sigma.Components.Account;
 using Sigma.Core.Common;
 using Sigma.Core.Data;
+using Sigma.Core.Domain.Chat;
 using Sigma.Core.Domain.Interface;
 using Sigma.Core.Domain.Service;
 using Sigma.Core.Options;
@@ -61,6 +62,8 @@ builder.Services.AddScoped<IApps_Repositories, Apps_Repositories>();
 builder.Services.AddScoped<IKmss_Repositories, Kmss_Repositories>();
 builder.Services.AddScoped<IKmsDetails_Repositories, KmsDetails_Repositories>();
 builder.Services.AddScoped<IAIModels_Repositories, AIModels_Repositories>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+
 builder.Services.AddScoped<IUsers_Repositories, Users_Repositories>();
 builder.Services.AddSingleton<ILLamaChatService, LLamaChatService>();
 builder.Services.AddSingleton<ILLamaEmbeddingService, LLamaEmbeddingService>();

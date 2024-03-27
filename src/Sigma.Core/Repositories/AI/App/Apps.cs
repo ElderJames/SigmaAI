@@ -24,7 +24,7 @@ namespace Sigma.Core.Repositories
         /// 图标
         /// </summary>
         [Required]
-        public string Icon { get; set; }
+        public string Icon { get; set; } = "appstore";
 
         /// <summary>
         /// 类型

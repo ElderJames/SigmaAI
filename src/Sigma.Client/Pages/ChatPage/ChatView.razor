@@ -7,28 +7,32 @@
 
 <div>
     <Layout Class="chat-layout">
-        <Sider Class="site-layout-background" Width="200">
+        <Sider Class="site-layout-background" Collapsed>
             <Menu Mode="MenuMode.Inline"
                   DefaultSelectedKeys=@(new[] {"1"})
-                  DefaultOpenKeys=@(new[] {"sub1"})
-                  Style="height: 100%;">
-                <MenuItem Key="9">新对话</MenuItem>
-                <MenuItem Key="10">新对话1</MenuItem>
-                <MenuItem Key="11">新对话2</MenuItem>
-                <MenuItem Key="12">新对话3</MenuItem>
+                  SelectedKeys="_selectedApps"
+                  SelectedKeysChanged="OnAppSelectChange"        
+            >
+                @foreach (var app in _appList)
+                {
+                    <MenuItem Key="@app.Id" Icon="@app.Icon">@app.Name</MenuItem>
+                }
+            </Menu>
+        </Sider>
+        <Sider Class="site-layout-background" Width="200">
+            <Button Type="@ButtonType.Primary" Icon="@IconType.Outline.Plus" Size="@ButtonSize.Large">新对话</Button>
+            <Menu Mode="MenuMode.Inline" SelectedKeys="_selectedChat" SelectedKeysChanged="OnChatSelectChange">
+                @foreach (var chat in _chatList)
+                {
+                    <MenuItem Key="@chat.Id">@chat.Title</MenuItem>
+                }
             </Menu>
         </Sider>
         <Content Style="min-height: 280px;">
             <Card Bordered>
                 <TitleTemplate>
-                    <Icon Type="setting" /> 选择应用
-                    @*           <Select DataSource="@_list"
-                    @bind-Value="@AppId"
-                    DefaultValue="@("lucy")"
-                    ValueProperty="c=>c.Id"
-                    LabelProperty="c=>c.Name"
-                    Style="width:200px">
-                    </Select> *@
+                    <Icon Type="(@_app?.Icon||)" /> @(_chat?.Title ?? "新对话")
+                   
                 </TitleTemplate>
                 <Body>
                     <div id="scrollDiv" style="height: 530px; overflow-y: auto; overflow-x: hidden;">

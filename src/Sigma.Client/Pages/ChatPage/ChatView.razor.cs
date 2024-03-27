@@ -14,51 +14,101 @@ using Sigma.Core.Domain.Model;
 using Sigma.Core.Domain.Model.Dto;
 using Sigma.Core.Domain.Model.Enum;
 using Microsoft.Extensions.Logging;
+using Sigma.Core.Domain.Chat;
 
 namespace Sigma.Components.Pages.ChatPage
 {
-    public partial class Chat
+    public partial class ChatView
     {
         [Parameter]
+        [SupplyParameterFromQuery]
+        public string ChatId { get; set; }
+
+        [Parameter]
+        [SupplyParameterFromQuery]
         public string AppId { get; set; }
+
         [Inject]
-        protected MessageService? Message { get; set; }
+        private MessageService? Message { get; set; }
+
         [Inject]
-        protected IApps_Repositories _apps_Repositories { get; set; }
+        private IApps_Repositories _apps_Repositories { get; set; }
+
         [Inject]
-        protected IApis_Repositories _apis_Repositories { get; set; }
+        private IApis_Repositories _apis_Repositories { get; set; }
+
         [Inject]
-        protected IKmss_Repositories _kmss_Repositories { get; set; }
+        private IKmss_Repositories _kmss_Repositories { get; set; }
+
         [Inject]
-        protected IKmsDetails_Repositories _kmsDetails_Repositories { get; set; }
-        [Inject]  IJSRuntime _JSRuntime { get; set; }
+        private IKmsDetails_Repositories _kmsDetails_Repositories { get; set; }
+
+        [Inject] private IJSRuntime _JSRuntime { get; set; }
 
         [Inject]
         protected IKernelService _kernelService { get; set; }
+
         [Inject]
         protected IKMService _kMService { get; set; }
+
         [Inject]
-        IConfirmService _confirmService { get; set; }
+        private IConfirmService _confirmService { get; set; }
+
         [Inject]
-        IChatService _chatService { get; set; }
+        private IChatService _chatService { get; set; }
 
         [Inject]
         private ILogger<Chat> Logger { get; set; }
 
-        protected bool _loading = false;
-        protected List<MessageInfo> MessageList = [];
-        protected string? _messageInput;
-        protected string _json = "";
-        protected bool Sendding = false;
+        [Inject]
+        private IChatRepository ChatRepository { get; set; }
 
-        List<RelevantSource> _relevantSources = new List<RelevantSource>();
+        private bool _loading = false;
 
-        protected List<Apps> _list = new List<Apps>();
+        private List<MessageInfo> MessageList = [];
+        private string? _messageInput;
+        private string _json = "";
+        private bool Sendding = false;
+
+        private string[] _selectedApps = [];
+        private string[] _selectedChat = [];
+        private Chat? _chat;
+        private Apps? _app;
+
+        private List<RelevantSource> _relevantSources = new List<RelevantSource>();
+
+        private List<Apps> _appList = [];
+        private List<Chat> _chatList = [];
+        private List<ChatHistory> _histories = [];
+
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            _list = _apps_Repositories.GetList();
+            _appList = _apps_Repositories.GetList();
         }
+
+        private async Task OnAppSelectChange(string[] appIds)
+        {
+            var appId = appIds.FirstOrDefault();
+            if (appId == null)
+            {
+                return;
+            }
+
+            _app = _appList.FirstOrDefault(x => x.Id == appId);
+
+            _chatList = await ChatRepository.GetListAsync(x => x.AppId == appId);
+        }
+
+        private async Task OnChatSelectChange(string[] chatIds)
+        {
+            ChatId = chatIds.First();
+
+            _chat = _chatList.FirstOrDefault(x => x.Id == ChatId);
+
+            _histories = await ChatRepository.GetChatHistories(ChatId, 0, 10);
+        }
+
         protected async Task OnSendAsync()
         {
             try
@@ -83,7 +133,6 @@ namespace Sigma.Components.Pages.ChatPage
                     IsSend = true
                 });
 
-
                 Sendding = true;
                 await SendAsync(_messageInput);
                 _messageInput = "";
@@ -92,10 +141,11 @@ namespace Sigma.Components.Pages.ChatPage
             catch (System.Exception ex)
             {
                 Sendding = false;
-                Logger.LogError( ex,"对话异常");
-                _ = Message.Error("异常:"+ex.Message, 2);
+                Logger.LogError(ex, "对话异常");
+                _ = Message.Error("异常:" + ex.Message, 2);
             }
         }
+
         protected async Task OnCopyAsync(MessageInfo item)
         {
             await Task.Run(() =>
@@ -122,6 +172,7 @@ namespace Sigma.Components.Pages.ChatPage
                 _ = Message.Info("没有会话记录");
             }
         }
+
         protected async Task<bool> SendAsync(string questions)
         {
             string msg = "";
@@ -138,6 +189,7 @@ namespace Sigma.Components.Pages.ChatPage
                     //普通会话
                     await SendChat(questions, msg, app);
                     break;
+
                 case AppType.Kms:
                     //知识库问答
                     await SendKms(questions, msg, app);
@@ -156,8 +208,6 @@ namespace Sigma.Components.Pages.ChatPage
         /// <returns></returns>
         private async Task SendKms(string questions, string msg, Apps app)
         {
-
-
             MessageInfo info = null;
             var chatResult = _chatService.SendKmsByAppAsync(app, questions, msg, _relevantSources);
             await foreach (var content in chatResult)
@@ -181,10 +231,7 @@ namespace Sigma.Components.Pages.ChatPage
             }
             //全部处理完后再处理一次Markdown
             await MarkDown(info);
-
         }
-
-
 
         /// <summary>
         /// 发送普通对话
@@ -195,7 +242,7 @@ namespace Sigma.Components.Pages.ChatPage
         /// <returns></returns>
         private async Task SendChat(string questions, string history, Apps app)
         {
-            MessageInfo info =null;
+            MessageInfo info = null;
             var chatResult = _chatService.SendChatByAppAsync(app, questions, history);
             await foreach (var content in chatResult)
             {
@@ -221,19 +268,18 @@ namespace Sigma.Components.Pages.ChatPage
             await MarkDown(info);
         }
 
-
         private async Task MarkDown(MessageInfo info)
         {
             if (info.IsNotNull())
             {
                 // info!.HtmlAnswers = markdown.Transform(info.HtmlAnswers);
                 info!.HtmlAnswers = Markdown.ToHtml(info.HtmlAnswers);
-
             }
             await InvokeAsync(StateHasChanged);
             await _JSRuntime.InvokeVoidAsync("Prism.highlightAll");
             await _JSRuntime.ScrollToBottomAsync("scrollDiv");
         }
+
         /// <summary>
         /// 历史会话的会话总结
         /// </summary>
@@ -273,8 +319,5 @@ namespace Sigma.Components.Pages.ChatPage
                 return "";
             }
         }
-
     }
-
-  
 }

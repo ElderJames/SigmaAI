@@ -87,6 +87,11 @@ namespace Sigma.Core.Repositories.Base
             return await _db.Set<T>().Where(whereExpression).FirstOrDefaultAsync();
         }
 
+        public async Task<T?> GetFirstAsync(string id)
+        {
+            return await _db.Set<T>().FindAsync(id);
+        }
+
         public List<T> GetList()
         {
             return _db.Set<T>().ToList();
