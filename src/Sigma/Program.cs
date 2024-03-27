@@ -64,7 +64,6 @@ builder.Services.AddSingleton<ILLamaChatService, LLamaChatService>();
 builder.Services.AddSingleton<ILLamaEmbeddingService, LLamaEmbeddingService>();
 builder.Services.AddScoped<ILLamaSharpService, LLamaSharpService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IUserService, UserService>();

@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using LLMJson;
+using Sigma.Core.OutputParsers;
 
 namespace Sigma.Core.Domain.Service
 {
@@ -194,11 +195,11 @@ namespace Sigma.Core.Domain.Service
                 return "";
 
             var functionNames = functions.Select(x => x.Description).ToList();
-            var functionKV = functions.ToDictionary(x => x.Description, x => new { Function = $"{x.Name}", Parameters = x.Parameters.Select(x => $"{x.Name}"), Summary = $"其中{string.Join("；", x.Parameters.Select(o => $"参数{o.Name}的类型是{o.ParameterType!.Name},{(o.ParameterType!.IsArray ? "多选" : "单选")}"))}" });
+            var functionKV = functions.ToDictionary(x => x.Description, x => new { Function = $"{x.Name}", Parameters = x.Parameters.Select(x => $"{x.Name}:{TypeParser.ConvertToTypeScriptType(x.ParameterType!)} // {x.Description},{(TypeParser.IsArrayOrList(x.ParameterType!) ? "多选" : "单选")}") });
             var template = $$"""
-                          请完成意图识别任务。
+                          请对用户的最后一个提问完成意图识别任务。
                           
-                          ### 已知的意图有
+                          已知的意图有
                           
                           {{JsonSerializer.Serialize(functionNames, JsonSerializerOptions)}}
                           
@@ -206,26 +207,24 @@ namespace Sigma.Core.Domain.Service
 
                           {{JsonSerializer.Serialize(functionKV, JsonSerializerOptions)}}
 
-                          ### 要求
-
-                          请根据用户的最后一个提问从已知的意图中识别出一个或多个意图和所需参数，对单选的参数，不同的值代表不同的意图。
+                          从已知的意图中识别出一个或多个意图，并直接给出以下json格式的对象，不要输出 markdown 及其他多余文字。 
                           
-                          直接给出以下json格式的数组，不要输出 markdown 及其他多余文字。 
+                          输出格式如下：
+
                           [{
                              "function": string   // 意图对应的function
                              "intention": string  // 用户的意图
-                             "arguments": object  // 参数
-                             "reason": string     // 意图和参数总结原因
+                             "arguments": object  // 参数值
+                             "reason": string     // 取这个参数值的原因
                           },{
                              "function": string   // 意图对应的function
                              "intention": string  // 用户的意图
-                             "arguments": object  // 参数
-                             "reason": string     // 意图和参数总结原因
+                             "arguments": object  // 参数值
+                             "reason": string     // 取这个参数值的原因
                           }]
-                          
-                          注意，用户提问中可能包含多个意图，也可能一个都没有。如果一个都没有，则直接回答用户的问题，只输出markdown，不要有其他多余文字。
 
-                          用户的问题：
+                          
+                          如果用户意图无法识别，则直接回答用户的问题，只输出markdown，不要有其他多余文字。
                           """;
 
             return template;
