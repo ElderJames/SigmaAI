@@ -211,6 +211,7 @@ namespace Sigma.Components.Pages.ChatPage
                 }
                 else
                 {
+                    info.Context += content?.ConvertToString();
                     info.HtmlAnswers += content.ConvertToString();
                     await Task.Delay(50);
                 }

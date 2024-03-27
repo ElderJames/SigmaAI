@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json;
 
 #pragma warning disable CS8600, CS8601, CS8602, CS8603, CS8604, CS8618
 
@@ -49,6 +50,7 @@ namespace LLMJson
             _isbase = true;
             JsonRepair.Context = JsonRepair.InputType.LLM;
             if (UseRepair) { try { json = JsonRepair.RepairJson(json); } catch (Exception) { /* cleaning failed */ } }
+
             // Initialize, if needed, the ThreadStatic variables
             if (propertyInfoCache == null) propertyInfoCache = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
             if (fieldInfoCache == null) fieldInfoCache = new Dictionary<Type, Dictionary<string, FieldInfo>>();
@@ -236,6 +238,10 @@ namespace LLMJson
                 var result = Convert.ChangeType(json, type, System.Globalization.CultureInfo.InvariantCulture);
                 return result;
             }
+            else if (type == typeof(JsonElement))
+            {
+                return JsonSerializer.Deserialize<JsonElement>(json);
+            }
             if (json.ToLower() == "null")
             {
                 return null;
@@ -257,7 +263,16 @@ namespace LLMJson
             {
                 Type arrayType = type.GetElementType();
                 if (json[0] != '[' || json[json.Length - 1] != ']')
-                    return null;
+                {
+                    if (json[0] != '[' && json[json.Length - 1] != ']')
+                    {
+                        json = $"[{json}]";
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
 
                 List<string> elems = Split(json);
                 Array? newArray = Array.CreateInstance(arrayType, elems.Count);
@@ -270,7 +285,16 @@ namespace LLMJson
             {
                 Type listType = type.GetGenericArguments()[0];
                 if (json[0] != '[' || json[json.Length - 1] != ']')
-                    return null;
+                {
+                    if (json[0] != '[' && json[json.Length - 1] != ']')
+                    {
+                        json = $"[{json}]";
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
 
                 List<string> elems = Split(json);
                 var list = (IList)type.GetConstructor(new Type[] { typeof(int) }).Invoke(new object[] { elems.Count });
