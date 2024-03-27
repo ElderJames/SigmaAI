@@ -12,6 +12,8 @@ namespace Sigma.Core.Domain.Chat
     public interface IChatRepository : IRepository<Chat>
     {
         public Task<List<ChatHistory>> GetChatHistories(string chatId, int offset, int take);
+
+        public Task<bool> CreateHistory(ChatHistory history);
     }
 
     public class ChatRepository : Repository<Chat>, IChatRepository
@@ -21,6 +23,13 @@ namespace Sigma.Core.Domain.Chat
         public ChatRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
+        }
+
+        public async Task<bool> CreateHistory(ChatHistory history)
+        {
+            _db.Add(history);
+            await _db.SaveChangesAsync();
+            return true;
         }
 
         public async Task<List<ChatHistory>> GetChatHistories(string chatId, int offset, int take)

@@ -15,6 +15,7 @@ using Sigma.Core.Domain.Model.Dto;
 using Sigma.Core.Domain.Model.Enum;
 using Microsoft.Extensions.Logging;
 using Sigma.Core.Domain.Chat;
+using Sigma.Client.Services;
 
 namespace Sigma.Components.Pages.ChatPage
 {
@@ -63,9 +64,12 @@ namespace Sigma.Components.Pages.ChatPage
         [Inject]
         private IChatRepository ChatRepository { get; set; }
 
+        [Inject]
+        private LayoutService LayoutService { get; set; }
+
         private bool _loading = false;
 
-        private List<MessageInfo> MessageList = [];
+        //private List<MessageInfo> MessageList = [];
         private string? _messageInput;
         private string _json = "";
         private bool Sendding = false;
@@ -83,12 +87,40 @@ namespace Sigma.Components.Pages.ChatPage
 
         protected override async Task OnInitializedAsync()
         {
+            LayoutService.ChangeSiderCollapsed(true);
+
             await base.OnInitializedAsync();
             _appList = _apps_Repositories.GetList();
+
+            if (_appList.Any())
+            {
+                _app = _appList.First();
+                AppId = _app.Id;
+
+                await OnAppSelectChange([AppId]);
+                //_chatList = await ChatRepository.GetListAsync(x => x.AppId == _app.Id);
+                //_chat = _chatList.FirstOrDefault();
+                //if (_chat != null)
+                //{
+                //    ChatId = _chat.Id;
+                //}
+                //else
+                //{
+                //    ChatId = Guid.NewGuid().ToString();
+                //    _chat = new() { AppId = _app.Id, Id = ChatId, Title = "新对话" };
+
+                //    _chatList.Add(_chat);
+                //}
+
+                //_selectedChat = [ChatId];
+                //_selectedApps = [AppId];
+
+            }
         }
 
         private async Task OnAppSelectChange(string[] appIds)
         {
+            _selectedApps = appIds;
             var appId = appIds.FirstOrDefault();
             if (appId == null)
             {
@@ -96,12 +128,33 @@ namespace Sigma.Components.Pages.ChatPage
             }
 
             _app = _appList.FirstOrDefault(x => x.Id == appId);
+            if (_app == null)
+            {
+                return;
+            }
 
             _chatList = await ChatRepository.GetListAsync(x => x.AppId == appId);
+            _chat = _chatList.FirstOrDefault();
+            if (_chat != null)
+            {
+                ChatId = _chat.Id;
+            }
+            else
+            {
+                ChatId = Guid.NewGuid().ToString();
+                _chat = new() { AppId = _app.Id, Id = ChatId, Title = "新对话" };
+
+                _chatList.Add(_chat);
+
+            }
+
+            await OnChatSelectChange([ChatId]);
         }
 
         private async Task OnChatSelectChange(string[] chatIds)
         {
+            _selectedChat = chatIds;
+
             ChatId = chatIds.First();
 
             _chat = _chatList.FirstOrDefault(x => x.Id == ChatId);
@@ -125,15 +178,34 @@ namespace Sigma.Components.Pages.ChatPage
                     return;
                 }
 
-                MessageList.Add(new MessageInfo()
+                if (_chat.CreatedBy == null)
                 {
-                    ID = Guid.NewGuid().ToString(),
-                    Context = _messageInput,
-                    CreateTime = DateTime.Now,
-                    IsSend = true
-                });
+                    _chat.Title = _messageInput[..int.Min(9, _messageInput.Length - 1)];
+                    ChatRepository.Insert(_chat);
+                }
+
+                //MessageList.Add(new MessageInfo()
+                //{
+                //    ID = Guid.NewGuid().ToString(),
+                //    Context = _messageInput,
+                //    CreateTime = DateTime.Now,
+                //    IsSend = true
+                //});
+
+                var history = new ChatHistory
+                {
+                    ChatId = ChatId,
+                    Role = ChatRoles.User,
+                    Content = _messageInput,
+                };
+
+                await ChatRepository.CreateHistory(history);
+                _histories.Add(history);
 
                 Sendding = true;
+
+                StateHasChanged();
+
                 await SendAsync(_messageInput);
                 _messageInput = "";
                 Sendding = false;
@@ -146,24 +218,24 @@ namespace Sigma.Components.Pages.ChatPage
             }
         }
 
-        protected async Task OnCopyAsync(MessageInfo item)
+        protected async Task OnCopyAsync(ChatHistory item)
         {
             await Task.Run(() =>
             {
-                _messageInput = item.Context;
+                _messageInput = item.Content;
             });
         }
 
         protected async Task OnClearAsync()
         {
-            if (MessageList.Count > 0)
+            if (_histories.Count > 0)
             {
                 var content = "是否要清理会话记录";
                 var title = "清理";
                 var result = await _confirmService.Show(content, title, ConfirmButtons.YesNo);
                 if (result == ConfirmResult.Yes)
                 {
-                    MessageList.Clear();
+                    _histories.Clear();
                     _ = Message.Info("清理成功");
                 }
             }
@@ -178,7 +250,7 @@ namespace Sigma.Components.Pages.ChatPage
             string msg = "";
             //处理多轮会话
             Apps app = _apps_Repositories.GetFirst(p => p.Id == AppId);
-            if (MessageList.Count > 0)
+            if (_histories.Count > 0)
             {
                 msg = await HistorySummarize(app, questions);
             }
@@ -208,29 +280,21 @@ namespace Sigma.Components.Pages.ChatPage
         /// <returns></returns>
         private async Task SendKms(string questions, string msg, Apps app)
         {
-            MessageInfo info = null;
             var chatResult = _chatService.SendKmsByAppAsync(app, questions, msg, _relevantSources);
+
+            ChatHistory chatHistory = new() { ChatId = ChatId, Role = ChatRoles.Assistant };
+
             await foreach (var content in chatResult)
             {
-                if (info == null)
-                {
-                    info = new MessageInfo();
-                    info.ID = Guid.NewGuid().ToString();
-                    info.Context = content?.ConvertToString();
-                    info.HtmlAnswers = content?.ConvertToString();
-                    info.CreateTime = DateTime.Now;
+                chatHistory.Content += content;
 
-                    MessageList.Add(info);
-                }
-                else
-                {
-                    info.HtmlAnswers += content.ConvertToString();
-                    await Task.Delay(50);
-                }
+                await Task.Delay(50);
+
                 await InvokeAsync(StateHasChanged);
             }
+
             //全部处理完后再处理一次Markdown
-            await MarkDown(info);
+            await MarkDown(chatHistory);
         }
 
         /// <summary>
@@ -242,38 +306,29 @@ namespace Sigma.Components.Pages.ChatPage
         /// <returns></returns>
         private async Task SendChat(string questions, string history, Apps app)
         {
-            MessageInfo info = null;
+            //MessageInfo info = null;
             var chatResult = _chatService.SendChatByAppAsync(app, questions, history);
+
+            ChatHistory chatHistory = new() { ChatId = ChatId, Role = ChatRoles.Assistant };
+
             await foreach (var content in chatResult)
             {
-                if (info == null)
-                {
-                    info = new MessageInfo();
-                    info.ID = Guid.NewGuid().ToString();
-                    info.Context = content?.ConvertToString();
-                    info.HtmlAnswers = content?.ConvertToString();
-                    info.CreateTime = DateTime.Now;
+                chatHistory.Content += content;
 
-                    MessageList.Add(info);
-                }
-                else
-                {
-                    info.Context += content?.ConvertToString();
-                    info.HtmlAnswers += content.ConvertToString();
-                    await Task.Delay(50);
-                }
+                await Task.Delay(50);
+
                 await InvokeAsync(StateHasChanged);
             }
             //全部处理完后再处理一次Markdown
-            await MarkDown(info);
+            await MarkDown(chatHistory);
         }
 
-        private async Task MarkDown(MessageInfo info)
+        private async Task MarkDown(ChatHistory info)
         {
             if (info.IsNotNull())
             {
                 // info!.HtmlAnswers = markdown.Transform(info.HtmlAnswers);
-                info!.HtmlAnswers = Markdown.ToHtml(info.HtmlAnswers);
+                info!.Content = Markdown.ToHtml(info.Content);
             }
             await InvokeAsync(StateHasChanged);
             await _JSRuntime.InvokeVoidAsync("Prism.highlightAll");
@@ -288,21 +343,21 @@ namespace Sigma.Components.Pages.ChatPage
         private async Task<string> HistorySummarize(Apps app, string questions)
         {
             var _kernel = _kernelService.GetKernelByApp(app);
-            if (MessageList.Count > 1)
+            if (_histories.Count > 1)
             {
                 StringBuilder history = new StringBuilder();
-                foreach (var item in MessageList)
+                foreach (var item in _histories)
                 {
-                    if (item.IsSend)
+                    if (item.Role == ChatRoles.User)
                     {
-                        history.Append($"user:{item.Context}{Environment.NewLine}");
+                        history.Append($"user:{item.Content}{Environment.NewLine}");
                     }
                     else
                     {
-                        history.Append($"assistant:{item.Context}{Environment.NewLine}");
+                        history.Append($"assistant:{item.Content}{Environment.NewLine}");
                     }
                 }
-                if (MessageList.Count > 10)
+                if (_histories.Count > 10)
                 {
                     //历史会话大于10条，进行总结
                     var msg = await _kernelService.HistorySummarize(_kernel, questions, history.ToString());

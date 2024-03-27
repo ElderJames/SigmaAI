@@ -88,6 +88,18 @@
         <member name="M:Sigma.Core.Migrations.AddAuditlog.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:Sigma.Core.Migrations.ChatHistory">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.ChatHistory.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.ChatHistory.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.ChatHistory.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:Sigma.Core.Domain.Model.Enum.AIType">
             <summary>
             AI类型

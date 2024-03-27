@@ -26,6 +26,8 @@ namespace Sigma.Data
 
         public DbSet<AuditLog> AuditLogs { get; set; }
 
+        public DbSet<ChatHistory> ChatHistories { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Apis>().HasQueryFilter(x => !x.IsDeleted);
@@ -35,6 +37,7 @@ namespace Sigma.Data
             builder.Entity<AIModels>().HasQueryFilter(x => !x.IsDeleted);
             builder.Entity<Users>().HasQueryFilter(x => !x.IsDeleted);
             builder.Entity<Chat>().HasQueryFilter(x => !x.IsDeleted);
+            builder.Entity<ChatHistory>().HasQueryFilter(x => !x.IsDeleted);
 
             base.OnModelCreating(builder);
         }

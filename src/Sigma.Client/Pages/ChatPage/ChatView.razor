@@ -7,8 +7,9 @@
 
 <div>
     <Layout Class="chat-layout">
-        <Sider Class="site-layout-background" Collapsed>
+        <Sider Class="site-layout-background" >
             <Menu Mode="MenuMode.Inline"
+                  Style="height: 100%;"
                   DefaultSelectedKeys=@(new[] {"1"})
                   SelectedKeys="_selectedApps"
                   SelectedKeysChanged="OnAppSelectChange"        
@@ -19,8 +20,8 @@
                 }
             </Menu>
         </Sider>
-        <Sider Class="site-layout-background" Width="200">
-            <Button Type="@ButtonType.Primary" Icon="@IconType.Outline.Plus" Size="@ButtonSize.Large">新对话</Button>
+        <Sider Class="site-layout-background" Width="200" Theme="SiderTheme.Light">
+            <Button Icon="@IconType.Outline.Plus" Size="@ButtonSize.Large" Style="width: 100%;border:none;">新对话</Button>
             <Menu Mode="MenuMode.Inline" SelectedKeys="_selectedChat" SelectedKeysChanged="OnChatSelectChange">
                 @foreach (var chat in _chatList)
                 {
@@ -31,20 +32,20 @@
         <Content Style="min-height: 280px;">
             <Card Bordered>
                 <TitleTemplate>
-                    <Icon Type="(@_app?.Icon||)" /> @(_chat?.Title ?? "新对话")
+                    <Icon Type="@(_app?.Icon??"appstore")" /> @(_chat?.Title ?? "新对话")
                    
                 </TitleTemplate>
                 <Body>
                     <div id="scrollDiv" style="height: 530px; overflow-y: auto; overflow-x: hidden;">
                         <GridRow Gutter="(8, 8)" Style="margin:0">
-                            <Virtualize Items="@(MessageList.OrderBy(o => o.CreateTime).ToList())" Context="item">
-                                @if (item.IsSend)
+                            <Virtualize Items="@(_histories.OrderBy(o => o.CreatedAt).ToList())" Context="item">
+                                @if (item.Role== Core.Domain.Chat.ChatRoles.User)
                                 {
                                     <GridRow Style="width:100%">
                                         <GridCol Span="23">
                                             <div class="chat-bubble sent">
-                                                <Popover Title="@item.CreateTime.ToString()">
-                                                    @(item.Context)
+                                                <Popover Title="@item.CreatedAt.ToString()">
+                                                    @(item.Content)
                                                 </Popover>
                                             </div>
                                             <Icon Style="float:right;margin-top:10px;" Type="copy" Theme="outline" OnClick="async () =>await OnCopyAsync(item)" />
@@ -62,7 +63,7 @@
                                         </GridCol>
                                         <GridCol Span="23">
                                             <div class="chat-bubble received">
-                                                @((MarkupString)(item.HtmlAnswers))
+                                                @((MarkupString)(item.Content))
                                             </div>
                                         </GridCol>
                                     </GridRow>

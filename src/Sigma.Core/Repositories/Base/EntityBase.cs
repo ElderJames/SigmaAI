@@ -8,7 +8,7 @@ namespace Sigma.Core.Repositories.Base
 {
     public class EntityBase
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         public DateTime CreatedAt { get; set; }
 
