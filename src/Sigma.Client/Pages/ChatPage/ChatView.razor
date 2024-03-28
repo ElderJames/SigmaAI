@@ -21,7 +21,7 @@
             </Menu>
         </Sider>
         <Sider Class="site-layout-background" Width="200" Theme="SiderTheme.Light">
-            <Button Icon="@IconType.Outline.Plus" Size="@ButtonSize.Large" Style="width: 100%;border:none;">新对话</Button>
+            <Button Icon="@IconType.Outline.Plus" Size="@ButtonSize.Large" Style="width: 100%;border:none;" OnClick="NewChat">新对话</Button>
             <Menu Mode="MenuMode.Inline" SelectedKeys="_selectedChat" SelectedKeysChanged="OnChatSelectChange">
                 @foreach (var chat in _chatList)
                 {

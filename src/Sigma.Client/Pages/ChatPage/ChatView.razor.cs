@@ -141,13 +141,29 @@ namespace Sigma.Components.Pages.ChatPage
             }
             else
             {
-                ChatId = Guid.NewGuid().ToString();
-                _chat = new() { AppId = _app.Id, Id = ChatId, Title = "新对话" };
-
-                _chatList.Add(_chat);
+                CreateChat();
             }
 
             await OnChatSelectChange([ChatId]);
+        }
+
+        private async Task NewChat()
+        {
+            if (_chat?.CreatedBy == null)
+            {
+                return;
+            }
+
+            CreateChat();
+        }
+
+        private void CreateChat()
+        {
+            ChatId = Guid.NewGuid().ToString();
+            _chat = new() { AppId = _app.Id, Id = ChatId, Title = "新对话" };
+            _chatList.Add(_chat);
+            _selectedChat = [ChatId];
+            _histories = [];
         }
 
         private async Task OnChatSelectChange(string[] chatIds)
