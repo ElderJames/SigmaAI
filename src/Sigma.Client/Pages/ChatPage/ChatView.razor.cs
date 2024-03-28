@@ -71,6 +71,7 @@ namespace Sigma.Components.Pages.ChatPage
 
         //private List<MessageInfo> MessageList = [];
         private string? _messageInput;
+
         private string _json = "";
         private bool Sendding = false;
 
@@ -114,26 +115,25 @@ namespace Sigma.Components.Pages.ChatPage
 
                 //_selectedChat = [ChatId];
                 //_selectedApps = [AppId];
-
             }
         }
 
         private async Task OnAppSelectChange(string[] appIds)
         {
             _selectedApps = appIds;
-            var appId = appIds.FirstOrDefault();
-            if (appId == null)
+            AppId = appIds.FirstOrDefault();
+            if (AppId == null)
             {
                 return;
             }
 
-            _app = _appList.FirstOrDefault(x => x.Id == appId);
+            _app = _appList.FirstOrDefault(x => x.Id == AppId);
             if (_app == null)
             {
                 return;
             }
 
-            _chatList = await ChatRepository.GetListAsync(x => x.AppId == appId);
+            _chatList = await ChatRepository.GetListAsync(x => x.AppId == AppId);
             _chat = _chatList.FirstOrDefault();
             if (_chat != null)
             {
@@ -145,7 +145,6 @@ namespace Sigma.Components.Pages.ChatPage
                 _chat = new() { AppId = _app.Id, Id = ChatId, Title = "新对话" };
 
                 _chatList.Add(_chat);
-
             }
 
             await OnChatSelectChange([ChatId]);
@@ -180,7 +179,7 @@ namespace Sigma.Components.Pages.ChatPage
 
                 if (_chat.CreatedBy == null)
                 {
-                    _chat.Title = _messageInput[..int.Min(9, _messageInput.Length - 1)];
+                    _chat.Title = _messageInput[..int.Min(10, _messageInput.Length)];
                     ChatRepository.Insert(_chat);
                 }
 
@@ -284,7 +283,7 @@ namespace Sigma.Components.Pages.ChatPage
         {
             var chatResult = _chatService.SendKmsByAppAsync(app, questions, msg, _relevantSources);
 
-            ChatHistory chatHistory = new() { ChatId = ChatId, Role = ChatRoles.Assistant, Content="" };
+            ChatHistory chatHistory = new() { ChatId = ChatId, Role = ChatRoles.Assistant, Content = "" };
             await ChatRepository.SaveHistory(chatHistory);
 
             _histories.Add(chatHistory);
@@ -315,7 +314,7 @@ namespace Sigma.Components.Pages.ChatPage
             //MessageInfo info = null;
             var chatResult = _chatService.SendChatByAppAsync(app, questions, history);
 
-            ChatHistory chatHistory = new() { ChatId = ChatId, Role = ChatRoles.Assistant, Content="" };
+            ChatHistory chatHistory = new() { ChatId = ChatId, Role = ChatRoles.Assistant, Content = "" };
             await ChatRepository.SaveHistory(chatHistory);
             _histories.Add(chatHistory);
 
