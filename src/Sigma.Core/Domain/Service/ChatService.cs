@@ -10,6 +10,7 @@ using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using LLMJson;
 using Sigma.Core.OutputParsers;
+using Microsoft.SemanticKernel.ChatCompletion;
 
 namespace Sigma.Core.Domain.Service
 {
@@ -24,6 +25,26 @@ namespace Sigma.Core.Domain.Service
             Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
         };
 
+        public ChatHistory GetChatHistory(List<Chat.ChatHistory> histories)
+        {
+            ChatHistory history = [];
+            if (histories.Count > 1)
+            {
+                foreach (var item in histories)
+                {
+                    if (item.Role== Chat.ChatRoles.User)
+                    {
+                        history.AddUserMessage(item.Content);
+                    }
+                    else
+                    {
+                        history.AddAssistantMessage(item.Content);
+                    }
+                }
+            }
+            return history;
+        }
+
         /// <summary>
         /// 发送消息
         /// </summary>
@@ -31,7 +52,7 @@ namespace Sigma.Core.Domain.Service
         /// <param name="questions"></param>
         /// <param name="history"></param>
         /// <returns></returns>
-        public async IAsyncEnumerable<StreamingKernelContent> SendChatByAppAsync(Apps app, string questions, string history)
+        public async IAsyncEnumerable<StreamingKernelContent> SendChatByAppAsync(Apps app, string questions, ChatHistory history)
         {
             var _kernel = _kernelService.GetKernelByApp(app);
             var temperature = app.Temperature / 100;//存的是0~100需要缩小
@@ -62,8 +83,21 @@ namespace Sigma.Core.Domain.Service
 
             async IAsyncEnumerable<StreamingKernelContent> Execute()
             {
+                KernelArguments args = [];
+                if (history.Count > 10)
+                {
+                    app.Prompt = @"${{ConversationSummaryPlugin.SummarizeConversation $history}}" + app.Prompt;
+
+                    args.Add("history", string.Join("\n", history.Select(x => x.Role + ": " + x.Content)));
+                    args.Add("input", questions);
+                }
+                else
+                {
+                    args.Add("input", $"{string.Join("\n", history.Select(x => x.Role + ": " + x.Content))}{Environment.NewLine} user:{questions}");
+                }
+
                 var func = _kernel.CreateFunctionFromPrompt(prompt, settings);
-                var chatResult = _kernel.InvokeStreamingAsync(function: func, arguments: new KernelArguments() { ["input"] = $"{history}{Environment.NewLine} user:{questions}" });
+                var chatResult = _kernel.InvokeStreamingAsync(function: func, arguments: args);
 
                 if (!useIntentionRecognition)
                 {
@@ -104,7 +138,7 @@ namespace Sigma.Core.Domain.Service
 
                 if (!successMatch)
                 {
-                   foreach (var c in contentBuffer)
+                    foreach (var c in contentBuffer)
                         yield return c;
 
                     yield break;
@@ -116,8 +150,8 @@ namespace Sigma.Core.Domain.Service
                 {
                     var functioResults = JsonParser.FromJson<List<FunctionSchema>>(result);
 
-                     foreach (var functioResult in functioResults)
-                     {
+                    foreach (var functioResult in functioResults)
+                    {
                         var plugin = _kernel?.Plugins.GetFunctionsMetadata().Where(x => x.PluginName == "SigmaFunctions").ToList().FirstOrDefault(f => f.Name == functioResult.Function);
                         if (plugin == null)
                         {
@@ -137,12 +171,12 @@ namespace Sigma.Core.Domain.Service
                     }
 
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     callResult.Add($"调用函数时发生异常：{e.Message}");
                 }
 
-                history = $"""
+                history = new ChatHistory($"""
                     system: 你能通过用户意图和反馈结果总结回复。
                     
                     已知意图和结果：
@@ -150,8 +184,8 @@ namespace Sigma.Core.Domain.Service
                     {string.Join("\r\n\r\n", callResult)}。
 
                     请结合用户最后的问题作答：
-                    """;
-                
+                    """);
+
                 //questions = "请将这个结果重新组织语言";
                 prompt = "{{$input}}";
                 useIntentionRecognition = false;
@@ -161,7 +195,7 @@ namespace Sigma.Core.Domain.Service
             }
         }
 
-        public async IAsyncEnumerable<StreamingKernelContent> SendKmsByAppAsync(Apps app, string questions, string history, List<RelevantSource> relevantSources = null)
+        public async IAsyncEnumerable<StreamingKernelContent> SendKmsByAppAsync(Apps app, string questions, ChatHistory history, List<RelevantSource> relevantSources = null)
         {
             var _kernel = _kernelService.GetKernelByApp(app);
             var relevantSourceList = await _kMService.GetRelevantSourceList(app.KmsIdList, questions);
@@ -187,6 +221,7 @@ namespace Sigma.Core.Domain.Service
                 yield return new StreamingTextContent("知识库未搜索到相关内容");
             }
         }
+
 
         private string GenerateFuncionPrompt(Kernel kernel)
         {

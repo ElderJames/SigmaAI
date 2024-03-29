@@ -5,6 +5,8 @@
 @page "/Chat"
 @page "/Chat/{AppId}"
 
+@inherits AntDomComponentBase
+
 <div>
     <Layout Class="chat-layout">
         <Sider Class="site-layout-background" >
@@ -72,7 +74,7 @@
                         </GridRow>
                     </div>
                     <div style="height: 10px;"></div>
-                    <AntDesign.Input @bind-Value="@(_messageInput)" DebounceMilliseconds="@(-1)" Placeholder="输入消息回车发送" OnPressEnter="@(async () => await OnSendAsync())" Disabled="@Sendding">
+                    <AntDesign.Input @ref="_input" @bind-Value="@(_messageInput)" DebounceMilliseconds="@(-1)" Placeholder="输入消息回车发送" OnPressEnter="@(async () => await OnSendAsync())" Disabled="@Sendding">
                         <Suffix>
                             <Button Icon="clear" Type="@(ButtonType.Link)" OnClick="@(async () => await OnClearAsync())" Disabled="@Sendding"></Button>
                             <Button Icon="send" Type="@(ButtonType.Link)" OnClick="@(async () => await OnSendAsync())" Disabled="@Sendding"></Button>

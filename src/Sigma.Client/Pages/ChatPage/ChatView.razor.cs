@@ -19,7 +19,7 @@ using Sigma.Client.Services;
 
 namespace Sigma.Components.Pages.ChatPage
 {
-    public partial class ChatView
+    public partial class ChatView:AntDomComponentBase
     {
         [Parameter]
         [SupplyParameterFromQuery]
@@ -86,6 +86,8 @@ namespace Sigma.Components.Pages.ChatPage
         private List<Chat> _chatList = [];
         private List<ChatHistory> _histories = [];
 
+        private Input<string?> _input;
+
         protected override async Task OnInitializedAsync()
         {
             LayoutService.ChangeSiderCollapsed(true);
@@ -99,22 +101,6 @@ namespace Sigma.Components.Pages.ChatPage
                 AppId = _app.Id;
 
                 await OnAppSelectChange([AppId]);
-                //_chatList = await ChatRepository.GetListAsync(x => x.AppId == _app.Id);
-                //_chat = _chatList.FirstOrDefault();
-                //if (_chat != null)
-                //{
-                //    ChatId = _chat.Id;
-                //}
-                //else
-                //{
-                //    ChatId = Guid.NewGuid().ToString();
-                //    _chat = new() { AppId = _app.Id, Id = ChatId, Title = "新对话" };
-
-                //    _chatList.Add(_chat);
-                //}
-
-                //_selectedChat = [ChatId];
-                //_selectedApps = [AppId];
             }
         }
 
@@ -175,6 +161,11 @@ namespace Sigma.Components.Pages.ChatPage
             _chat = _chatList.FirstOrDefault(x => x.Id == ChatId);
 
             _histories = await ChatRepository.GetChatHistories(ChatId, 0, 10);
+
+            CallAfterRender(async () =>
+            {
+                await _JSRuntime.ScrollToBottomAsync("scrollDiv");
+            });
         }
 
         protected async Task OnSendAsync()
@@ -184,12 +175,6 @@ namespace Sigma.Components.Pages.ChatPage
                 if (string.IsNullOrWhiteSpace(_messageInput))
                 {
                     _ = Message.Info("请输入消息", 2);
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(AppId))
-                {
-                    _ = Message.Info("请选择应用进行测试", 2);
                     return;
                 }
 
@@ -221,9 +206,14 @@ namespace Sigma.Components.Pages.ChatPage
 
                 StateHasChanged();
 
+                await Task.Yield();
+
+                await _JSRuntime.ScrollToBottomAsync("scrollDiv");
+
                 await SendAsync(_messageInput);
                 _messageInput = "";
                 Sendding = false;
+                await _input.Ref.FocusAsync();
             }
             catch (System.Exception ex)
             {
@@ -264,24 +254,24 @@ namespace Sigma.Components.Pages.ChatPage
 
         protected async Task<bool> SendAsync(string questions)
         {
-            string msg = "";
+            Microsoft.SemanticKernel.ChatCompletion.ChatHistory history = new();
             //处理多轮会话
             Apps app = _apps_Repositories.GetFirst(p => p.Id == AppId);
             if (_histories.Count > 0)
             {
-                msg = await HistorySummarize(app, questions);
+                history = _chatService.GetChatHistory(_histories);
             }
 
             switch (app.Type)
             {
                 case AppType.Chat:
                     //普通会话
-                    await SendChat(questions, msg, app);
+                    await SendChat(questions, history, app);
                     break;
 
                 case AppType.Kms:
                     //知识库问答
-                    await SendKms(questions, msg, app);
+                    await SendKms(questions, history, app);
                     break;
             }
 
@@ -295,9 +285,9 @@ namespace Sigma.Components.Pages.ChatPage
         /// <param name="msg"></param>
         /// <param name="app"></param>
         /// <returns></returns>
-        private async Task SendKms(string questions, string msg, Apps app)
+        private async Task SendKms(string questions, Microsoft.SemanticKernel.ChatCompletion.ChatHistory history, Apps app)
         {
-            var chatResult = _chatService.SendKmsByAppAsync(app, questions, msg, _relevantSources);
+            var chatResult = _chatService.SendKmsByAppAsync(app, questions, history, _relevantSources);
 
             ChatHistory chatHistory = new() { ChatId = ChatId, Role = ChatRoles.Assistant, Content = "" };
             await ChatRepository.SaveHistory(chatHistory);
@@ -310,10 +300,10 @@ namespace Sigma.Components.Pages.ChatPage
                 await Task.Delay(50);
 
                 await InvokeAsync(StateHasChanged);
+             
+                await MarkDown(chatHistory);
             }
 
-            //全部处理完后再处理一次Markdown
-            await MarkDown(chatHistory);
 
             await ChatRepository.SaveHistory(chatHistory);
         }
@@ -325,7 +315,7 @@ namespace Sigma.Components.Pages.ChatPage
         /// <param name="history"></param>
         /// <param name="app"></param>
         /// <returns></returns>
-        private async Task SendChat(string questions, string history, Apps app)
+        private async Task SendChat(string questions, Microsoft.SemanticKernel.ChatCompletion.ChatHistory history, Apps app)
         {
             //MessageInfo info = null;
             var chatResult = _chatService.SendChatByAppAsync(app, questions, history);
@@ -341,9 +331,9 @@ namespace Sigma.Components.Pages.ChatPage
                 await Task.Delay(50);
 
                 await InvokeAsync(StateHasChanged);
+                
+                await MarkDown(chatHistory);
             }
-            //全部处理完后再处理一次Markdown
-            await MarkDown(chatHistory);
 
             await ChatRepository.SaveHistory(chatHistory);
         }
@@ -358,46 +348,6 @@ namespace Sigma.Components.Pages.ChatPage
             await InvokeAsync(StateHasChanged);
             await _JSRuntime.InvokeVoidAsync("Prism.highlightAll");
             await _JSRuntime.ScrollToBottomAsync("scrollDiv");
-        }
-
-        /// <summary>
-        /// 历史会话的会话总结
-        /// </summary>
-        /// <param name="questions"></param>
-        /// <returns></returns>
-        private async Task<string> HistorySummarize(Apps app, string questions)
-        {
-            var _kernel = _kernelService.GetKernelByApp(app);
-            if (_histories.Count > 1)
-            {
-                StringBuilder history = new StringBuilder();
-                foreach (var item in _histories)
-                {
-                    if (item.Role == ChatRoles.User)
-                    {
-                        history.Append($"user:{item.Content}{Environment.NewLine}");
-                    }
-                    else
-                    {
-                        history.Append($"assistant:{item.Content}{Environment.NewLine}");
-                    }
-                }
-                if (_histories.Count > 10)
-                {
-                    //历史会话大于10条，进行总结
-                    var msg = await _kernelService.HistorySummarize(_kernel, questions, history.ToString());
-                    return msg;
-                }
-                else
-                {
-                    var msg = $"history：{history.ToString()}{Environment.NewLine}";
-                    return msg;
-                }
-            }
-            else
-            {
-                return "";
-            }
         }
     }
 }

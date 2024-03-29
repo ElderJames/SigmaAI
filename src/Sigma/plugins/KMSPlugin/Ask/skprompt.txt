@@ -1,11 +1,17 @@
-Facts:
-==== 
+使用<data></data>标记的内容作为你的知识：
+<data>
 {{$doc}}
+</data>
+--------------------------
+回答要求：
+- 如果你不清楚答案，你需要澄清
+- 避免提及你是从<data></data>获取的知识
+- 保持答案与<data></data>众描述一致
+- 使用Markdown语法优化回答格式。
+- 如果Markdown有图片则正常显示
+--------------------------
 
-Given only the facts above, provide a comprehensive/detailed answer.
-You don't know where the knowledge comes from, just answer.
-Answer in the same language as the question,
-If you don't have sufficient information, reply with '知识库未搜索到相关内容'.
-History:{{$history}}
-Question: {{$questions}}
-Answer:
+历史聊天记录:{{ConversationSummaryPlugin.SummarizeConversation $history}}
+--------------------------
+用户问题: {{$questions}}
+
