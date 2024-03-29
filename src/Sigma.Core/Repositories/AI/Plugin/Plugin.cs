@@ -1,13 +1,12 @@
 ﻿using Sigma.Core.Repositories.Base;
 using Sigma.Core.Domain.Model.Enum;
-using Sigma.Core.Repositories.AI.Api;
+using Sigma.Core.Repositories.AI.Plugin;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sigma.Core.Repositories
 {
-    [Table("Apis")]
-    public partial class Apis : EntityBase
+    public partial class Plugin : EntityBase
     {
         /// <summary>
         /// 接口名称
@@ -16,7 +15,7 @@ namespace Sigma.Core.Repositories
         public string Name { get; set; }
 
         [Required]
-        public ApiPluginType Type { get; set; } = ApiPluginType.OpenAPI;
+        public PluginType Type { get; set; } = PluginType.OpenAPI;
 
         /// <summary>
         /// 接口描述

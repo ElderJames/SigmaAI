@@ -3,70 +3,69 @@ using Sigma.Core.Repositories;
 using Microsoft.AspNetCore.Components;
 using System.Text.RegularExpressions;
 
-namespace Sigma.Components.Pages.ApiPage
+namespace Sigma.Components.Pages.PluginPage
 {
-    public partial class AddApi
+    public partial class AddPlugin
     {
         [Parameter]
-        public string ApiId { get; set; }
+        public string PluginId { get; set; }
 
         [Inject]
-        protected IApis_Repositories _apis_Repositories { get; set; }
+        protected IPluginRepository _pluginRepository { get; set; }
 
         [Inject]
         protected NavigationManager NavigationManager { get; set; }
+
         [Inject]
         protected MessageService? Message { get; set; }
 
-        private Apis _apiModel = new Apis();
-
+        private Plugin _pluginModel = new Plugin();
 
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            if (!string.IsNullOrEmpty(ApiId))
+            if (!string.IsNullOrEmpty(PluginId))
             {
                 //查看
-                _apiModel = _apis_Repositories.GetFirst(p => p.Id == ApiId);
+                _pluginModel = _pluginRepository.GetFirst(p => p.Id == PluginId);
             }
         }
+
         private void HandleSubmit()
         {
-            if (string.IsNullOrEmpty(ApiId))
+            if (string.IsNullOrEmpty(PluginId))
             {
                 //新增
-                _apiModel.Id = Guid.NewGuid().ToString();
+                _pluginModel.Id = Guid.NewGuid().ToString();
 
-                if (_apis_Repositories.IsAny(p => p.Name == _apiModel.Name))
+                if (_pluginRepository.IsAny(p => p.Name == _pluginModel.Name))
                 {
                     _ = Message.Error("名称已存在！", 2);
                     return;
                 }
 
                 string pattern = @"^[A-Za-z]\w*$"; // 正则表达式模式
-                if (!Regex.IsMatch(_apiModel.Name, pattern))
+                if (!Regex.IsMatch(_pluginModel.Name, pattern))
                 {
                     _ = Message.Error("API名称只能是字母、数字、下划线组成，且不能以数字开头！", 2);
                     return;
                 }
 
-                _apis_Repositories.Insert(_apiModel);
+                _pluginRepository.Insert(_pluginModel);
             }
             else
             {
                 //修改
 
-                _apis_Repositories.Update(_apiModel);
+                _pluginRepository.Update(_pluginModel);
             }
 
             Back();
         }
 
-
         private void Back()
         {
-            NavigationManager.NavigateTo("/plugins/apilist");
+            NavigationManager.NavigateTo("/plugins/pluginlist");
         }
     }
-
 }

@@ -204,46 +204,6 @@
             表前缀
             </summary>
         </member>
-        <member name="P:Sigma.Core.Repositories.Apis.Name">
-            <summary>
-            接口名称
-            </summary>
-        </member>
-        <member name="P:Sigma.Core.Repositories.Apis.Describe">
-            <summary>
-            接口描述
-            </summary>
-        </member>
-        <member name="P:Sigma.Core.Repositories.Apis.Url">
-            <summary>
-            接口地址
-            </summary>
-        </member>
-        <member name="P:Sigma.Core.Repositories.Apis.Method">
-            <summary>
-            请求方法
-            </summary>
-        </member>
-        <member name="P:Sigma.Core.Repositories.Apis.Query">
-            <summary>
-            QueryString参数
-            </summary>
-        </member>
-        <member name="P:Sigma.Core.Repositories.Apis.JsonBody">
-            <summary>
-            jsonBody 实体
-            </summary>
-        </member>
-        <member name="P:Sigma.Core.Repositories.Apis.InputPrompt">
-            <summary>
-            入参提示词
-            </summary>
-        </member>
-        <member name="P:Sigma.Core.Repositories.Apis.OutputPrompt">
-            <summary>
-            返回提示词
-            </summary>
-        </member>
         <member name="P:Sigma.Core.Repositories.Apps.Name">
             <summary>
             名称
@@ -284,7 +244,7 @@
             提示词
             </summary>
         </member>
-        <member name="P:Sigma.Core.Repositories.Apps.ApiFunctionList">
+        <member name="P:Sigma.Core.Repositories.Apps.PluginList">
             <summary>
             插件列表
             </summary>
@@ -357,6 +317,46 @@
         <member name="P:Sigma.Core.Repositories.Kmss.OverlappingTokens">
             <summary>
             段落之间重叠标记的数量。
+            </summary>
+        </member>
+        <member name="P:Sigma.Core.Repositories.Plugin.Name">
+            <summary>
+            接口名称
+            </summary>
+        </member>
+        <member name="P:Sigma.Core.Repositories.Plugin.Describe">
+            <summary>
+            接口描述
+            </summary>
+        </member>
+        <member name="P:Sigma.Core.Repositories.Plugin.Url">
+            <summary>
+            接口地址
+            </summary>
+        </member>
+        <member name="P:Sigma.Core.Repositories.Plugin.Method">
+            <summary>
+            请求方法
+            </summary>
+        </member>
+        <member name="P:Sigma.Core.Repositories.Plugin.Query">
+            <summary>
+            QueryString参数
+            </summary>
+        </member>
+        <member name="P:Sigma.Core.Repositories.Plugin.JsonBody">
+            <summary>
+            jsonBody 实体
+            </summary>
+        </member>
+        <member name="P:Sigma.Core.Repositories.Plugin.InputPrompt">
+            <summary>
+            入参提示词
+            </summary>
+        </member>
+        <member name="P:Sigma.Core.Repositories.Plugin.OutputPrompt">
+            <summary>
+            返回提示词
             </summary>
         </member>
         <member name="P:Sigma.Core.Repositories.AIModels.AIType">

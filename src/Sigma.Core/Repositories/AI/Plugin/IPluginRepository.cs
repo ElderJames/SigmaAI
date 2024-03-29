@@ -2,7 +2,7 @@
 
 namespace Sigma.Core.Repositories
 {
-    public interface IApis_Repositories : IRepository<Apis>
+    public interface IPluginRepository : IRepository<Plugin>
     {
     }
 }

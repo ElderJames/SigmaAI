@@ -56,7 +56,7 @@ namespace Sigma.Core.Repositories
         /// 插件列表
         /// </summary>
         [Column(TypeName = "varchar(1000)")]
-        public string? ApiFunctionList { get; set; }
+        public string? PluginList { get; set; }
 
         /// <summary>
         /// 本地函数列表

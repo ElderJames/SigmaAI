@@ -15,7 +15,7 @@ using Sigma.LLM.Mock;
 using Sigma.Core.Domain.Model.Enum;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.SemanticKernel.Plugins.OpenApi;
-using Sigma.Core.Repositories.AI.Api;
+using Sigma.Core.Repositories.AI.Plugin;
 using Microsoft.SemanticKernel.ChatCompletion;
 using LLamaSharp.SemanticKernel.ChatCompletion;
 
@@ -23,19 +23,19 @@ namespace Sigma.Core.Domain.Service
 {
     public class KernelService : IKernelService
     {
-        private readonly IApis_Repositories _apis_Repositories;
+        private readonly IPluginRepository _pluginRepository;
         private readonly IAIModels_Repositories _aIModels_Repositories;
         private readonly FunctionService _functionService;
         private readonly IServiceProvider _serviceProvider;
         private Kernel _kernel;
 
         public KernelService(
-              IApis_Repositories apis_Repositories,
+              IPluginRepository apis_Repositories,
               IAIModels_Repositories aIModels_Repositories,
               FunctionService functionService,
               IServiceProvider serviceProvider)
         {
-            _apis_Repositories = apis_Repositories;
+            _pluginRepository = apis_Repositories;
             _aIModels_Repositories = aIModels_Repositories;
             _functionService = functionService;
             _serviceProvider = serviceProvider;
@@ -50,7 +50,7 @@ namespace Sigma.Core.Domain.Service
         public Kernel GetKernelByApp(Apps app)
         {
             var chatModel = _aIModels_Repositories.GetFirst(p => p.Id == app.ChatModelID);
-            app.AIModel= chatModel;
+            app.AIModel = chatModel;
             //http代理
             var chatHttpClient = new HttpClient(ActivatorUtilities.CreateInstance<OpenAIHttpClientHandler>(_serviceProvider, chatModel.EndPoint));
 
@@ -117,20 +117,20 @@ namespace Sigma.Core.Domain.Service
             {
                 return;
             }
-            List<KernelFunction> apiFunctions = new List<KernelFunction>();
+            List<KernelFunction> pluginFunctions = new List<KernelFunction>();
 
             //API插件
-            if (!string.IsNullOrWhiteSpace(app.ApiFunctionList))
+            if (!string.IsNullOrWhiteSpace(app.PluginList))
             {
                 //开启自动插件调用
-                var apiIdList = app.ApiFunctionList.Split(",");
-                var apiList = _apis_Repositories.GetList(p => apiIdList.Contains(p.Id));
+                var plguinIdList = app.PluginList.Split(",");
+                var plguinList = _pluginRepository.GetList(p => plguinIdList.Contains(p.Id));
 
-                foreach (var api in apiList)
+                foreach (var plug in plguinList)
                 {
-                    if (api.Type == ApiPluginType.OpenAPI)
+                    if (plug.Type == PluginType.OpenAPI)
                     {
-                        var openApi = await _kernel.CreatePluginFromOpenApiAsync(api.Name, new Uri(api.Url), new()
+                        var openApi = await _kernel.CreatePluginFromOpenApiAsync(plug.Name, new Uri(plug.Url), new()
                         {
                             //AuthCallback = (request, _) =>
                             //{
@@ -139,21 +139,21 @@ namespace Sigma.Core.Domain.Service
                             //}
                         });
 
-                        apiFunctions.AddRange(openApi);
+                        pluginFunctions.AddRange(openApi);
                         continue;
                     }
 
-                    switch (api.Method)
+                    switch (plug.Method)
                     {
                         case HttpMethodType.Get:
-                            apiFunctions.Add(_kernel.CreateFunctionFromMethod((string msg) =>
+                            pluginFunctions.Add(_kernel.CreateFunctionFromMethod((string msg) =>
                             {
                                 try
                                 {
                                     Console.WriteLine(msg);
                                     RestClient client = new RestClient();
-                                    RestRequest request = new RestRequest(api.Url, Method.Get);
-                                    foreach (var header in api.Header.ConvertToString().Split("\n"))
+                                    RestRequest request = new RestRequest(plug.Url, Method.Get);
+                                    foreach (var header in plug.Header.ConvertToString().Split("\n"))
                                     {
                                         var headerArray = header.Split(":");
                                         if (headerArray.Length == 2)
@@ -162,7 +162,7 @@ namespace Sigma.Core.Domain.Service
                                         }
                                     }
                                     //这里应该还要处理一次参数提取，等后面再迭代
-                                    foreach (var query in api.Query.ConvertToString().Split("\n"))
+                                    foreach (var query in plug.Query.ConvertToString().Split("\n"))
                                     {
                                         var queryArray = query.Split("=");
                                         if (queryArray.Length == 2)
@@ -177,18 +177,18 @@ namespace Sigma.Core.Domain.Service
                                 {
                                     return "调用失败：" + ex.Message;
                                 }
-                            }, api.Name, $"{api.Describe}"));
+                            }, plug.Name, $"{plug.Describe}"));
                             break;
 
                         case HttpMethodType.Post:
-                            apiFunctions.Add(_kernel.CreateFunctionFromMethod((string msg) =>
+                            pluginFunctions.Add(_kernel.CreateFunctionFromMethod((string msg) =>
                             {
                                 try
                                 {
                                     Console.WriteLine(msg);
                                     RestClient client = new RestClient();
-                                    RestRequest request = new RestRequest(api.Url, Method.Post);
-                                    foreach (var header in api.Header.ConvertToString().Split("\n"))
+                                    RestRequest request = new RestRequest(plug.Url, Method.Post);
+                                    foreach (var header in plug.Header.ConvertToString().Split("\n"))
                                     {
                                         var headerArray = header.Split(":");
                                         if (headerArray.Length == 2)
@@ -197,7 +197,7 @@ namespace Sigma.Core.Domain.Service
                                         }
                                     }
                                     //这里应该还要处理一次参数提取，等后面再迭代
-                                    request.AddJsonBody(api.JsonBody.ConvertToString());
+                                    request.AddJsonBody(plug.JsonBody.ConvertToString());
                                     var result = client.Execute(request);
                                     return result.Content;
                                 }
@@ -205,7 +205,7 @@ namespace Sigma.Core.Domain.Service
                                 {
                                     return "调用失败：" + ex.Message;
                                 }
-                            }, api.Name, $"{api.Describe}"));
+                            }, plug.Name, $"{plug.Describe}"));
                             break;
                     }
                 }
@@ -217,7 +217,7 @@ namespace Sigma.Core.Domain.Service
                 var nativeIdList = app.NativeFunctionList.Split(",");
 
                 _functionService.SearchMarkedMethods();
-       
+
                 foreach (var func in _functionService.Functions)
                 {
                     if (nativeIdList.Contains(func.Key))
@@ -226,11 +226,11 @@ namespace Sigma.Core.Domain.Service
                         var parameters = methodInfo.Parameters.Select(x => new KernelParameterMetadata(x.ParameterName) { ParameterType = x.ParameterType, Description = x.Description });
                         var returnType = new KernelReturnParameterMetadata() { ParameterType = methodInfo.ReturnType.ParameterType, Description = methodInfo.ReturnType.Description };
                         var target = ActivatorUtilities.CreateInstance(_serviceProvider, func.Value.DeclaringType);
-                        apiFunctions.Add(_kernel.CreateFunctionFromMethod(func.Value, target, func.Key, methodInfo.Description, parameters, returnType));
+                        pluginFunctions.Add(_kernel.CreateFunctionFromMethod(func.Value, target, func.Key, methodInfo.Description, parameters, returnType));
                     }
                 }
             }
-            _kernel.ImportPluginFromFunctions("SigmaFunctions", apiFunctions);
+            _kernel.ImportPluginFromFunctions("SigmaFunctions", pluginFunctions);
         }
 
         /// <summary>

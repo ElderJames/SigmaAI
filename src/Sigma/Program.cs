@@ -58,7 +58,7 @@ builder.Services.AddScoped<IHttpService, HttpService>();
 builder.Services.AddScoped<IImportKMSService, ImportKMSService>();
 builder.Services.AddScoped<IKernelService, KernelService>();
 builder.Services.AddScoped<IKMService, KMService>();
-builder.Services.AddScoped<IApis_Repositories, Apis_Repositories>();
+builder.Services.AddScoped<IPluginRepository, PluginRepository>();
 builder.Services.AddScoped<IApps_Repositories, Apps_Repositories>();
 builder.Services.AddScoped<IKmss_Repositories, Kmss_Repositories>();
 builder.Services.AddScoped<IKmsDetails_Repositories, KmsDetails_Repositories>();
@@ -100,7 +100,6 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-
 builder.Configuration.GetSection("DBConnection").Get<DBConnectionOption>();
 builder.Configuration.GetSection("Login").Get<LoginOption>();
 builder.Configuration.GetSection("LLamaSharp").Get<LLamaSharpOption>();
@@ -119,7 +118,6 @@ else if (LLamaSharpOption.RunType.ToUpper() == "GPU")
     .WithLogs(true);
 }
 
-
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
@@ -128,7 +126,6 @@ using var scope = app.Services.CreateScope();
 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 //db.Database.EnsureCreated();
 db.Database.Migrate();
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

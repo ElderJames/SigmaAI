@@ -18,17 +18,10 @@
     "icon": "database"
   },
   {
-    "path": "/plugins",
-    "name": "插件市场",
+    "path": "/plugins/list",
+    "name": "插件管理",
     "key": "plugins",
-    "icon": "dropbox",
-    "children": [
-      {
-        "path": "/plugins/apilist",
-        "name": "Api管理",
-        "key": "plugins.apilist"
-      }
-    ]
+    "icon": "dropbox"
   },
   {
     "path": "/setting",

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sigma.Core.Repositories.AI.Api
+namespace Sigma.Core.Repositories.AI.Plugin
 {
-    public enum ApiPluginType
+    public enum PluginType
     {
         OpenAPI,
         Nomal,

@@ -2,16 +2,17 @@
 using Sigma.Core.Repositories;
 using Microsoft.AspNetCore.Components;
 
-namespace Sigma.Components.Pages.ApiPage
+namespace Sigma.Components.Pages.PluginPage
 {
-    public partial class ApiList
+    public partial class PluginList
     {
-        private Apis[] _data = { };
+        private Plugin[] _data = { };
 
         [Inject]
-        protected IApis_Repositories _apis_Repositories { get; set; }
+        protected IPluginRepository _pluginRepository { get; set; }
+
         [Inject]
-        IConfirmService _confirmService { get; set; }
+        private IConfirmService _confirmService { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -21,15 +22,15 @@ namespace Sigma.Components.Pages.ApiPage
 
         private async Task InitData(string searchKey)
         {
-            var list = new List<Apis> { new Apis() };
-            List<Apis> data;
+            var list = new List<Plugin> { new Plugin() };
+            List<Plugin> data;
             if (string.IsNullOrEmpty(searchKey))
             {
-                data = await _apis_Repositories.GetListAsync();
+                data = await _pluginRepository.GetListAsync();
             }
             else
             {
-                data = await _apis_Repositories.GetListAsync(p => p.Name.Contains(searchKey));
+                data = await _pluginRepository.GetListAsync(p => p.Name.Contains(searchKey));
             }
 
             list.AddRange(data);
@@ -39,7 +40,7 @@ namespace Sigma.Components.Pages.ApiPage
 
         private void NavigateToAddApp()
         {
-            NavigationManager.NavigateTo("/plugins/api/add");
+            NavigationManager.NavigateTo("/plugins/add");
         }
 
         private async Task Search(string searchKey)
@@ -49,17 +50,17 @@ namespace Sigma.Components.Pages.ApiPage
 
         private void Info(string id)
         {
-            NavigationManager.NavigateTo($"/plugins/api/add/{id}");
+            NavigationManager.NavigateTo($"/plugins/add/{id}");
         }
 
         private async Task Delete(string id)
         {
-            var content = "是否确认删除此Api";
+            var content = "是否确认删除此插件";
             var title = "删除";
             var result = await _confirmService.Show(content, title, ConfirmButtons.YesNo);
             if (result == ConfirmResult.Yes)
             {
-                await _apis_Repositories.DeleteAsync(id);
+                await _pluginRepository.DeleteAsync(id);
                 await InitData("");
             }
         }
