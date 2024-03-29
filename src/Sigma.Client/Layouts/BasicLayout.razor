@@ -1,13 +1,16 @@
 ﻿@using System.Security.Claims
+@using Sigma.Client.Services
 @using Sigma.Models
 @using Microsoft.AspNetCore.Components.Authorization
 @using Sigma.Core.Options
 @using Sigma.Core.Repositories
 @inject INotificationService _notice
 @inherits LayoutComponentBase
+@implements IAsyncDisposable
 
 <AntDesign.ProLayout.BasicLayout Logo="@("https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg")"
-                                 MenuData="_menuData">
+                                 MenuData="_menuData"
+                                 @bind-Collapsed="_collapsed">
     <RightContentRender>
         <Sigma.Components.RightContent />
     </RightContentRender>
@@ -38,14 +41,29 @@
 
     [Inject] protected IUsers_Repositories _users_Repositories { get; set; }
 
+    [Inject] private LayoutService LayoutService { get; set; }
+
+    private bool _collapsed=false;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         //菜单权限控制
         _menuData = await HttpClient.GetFromJsonAsync<MenuDataItem[]>("data/menu.json");
+
+        LayoutService.OnSiderCollapsedChanged += OnSiderCollapsedChanged;
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        LayoutService.OnSiderCollapsedChanged -= OnSiderCollapsedChanged;
+    }
+
+    void OnSiderCollapsedChanged(object? target, bool isCollapsed)
+    {
+        _collapsed = isCollapsed;
+        StateHasChanged();
+    }
 
     void ShowNotification(Exception ex)
     {

@@ -53,3 +53,7 @@ ol {
     min-height: 100vh;
   }
 }
+
+.ant-pro-global-footer{
+    margin: 24px 0;
+}

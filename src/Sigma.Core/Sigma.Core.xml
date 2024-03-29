@@ -64,6 +64,42 @@
         <member name="M:Sigma.Core.Migrations.UseIntentionRecognition.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:Sigma.Core.Migrations.Chat">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.Chat.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.Chat.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.Chat.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Sigma.Core.Migrations.AddAuditlog">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.AddAuditlog.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.AddAuditlog.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.AddAuditlog.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Sigma.Core.Migrations.ChatHistory">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.ChatHistory.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.ChatHistory.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.ChatHistory.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:Sigma.Core.Domain.Model.Enum.AIType">
             <summary>
             AI类型
@@ -286,11 +322,6 @@
         <member name="P:Sigma.Core.Repositories.KmsDetails.DataCount">
             <summary>
             数据数量
-            </summary>
-        </member>
-        <member name="P:Sigma.Core.Repositories.KmsDetails.CreateTime">
-            <summary>
-            创建时间
             </summary>
         </member>
         <member name="P:Sigma.Core.Repositories.KmsDetails.Status">

@@ -1,5 +1,4 @@
-﻿using Sigma.Core.Repositories.Base;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace Sigma.Core.Repositories.Base
 {
@@ -15,9 +14,11 @@ namespace Sigma.Core.Repositories.Base
 
         Task<int> CountAsync(Expression<Func<T, bool>> whereExpression);
 
-        T GetFirst(Expression<Func<T, bool>> whereExpression);
+        Task<T?> GetFirstAsync(string id);
 
-        Task<T> GetFirstAsync(Expression<Func<T, bool>> whereExpression);
+        T? GetFirst(Expression<Func<T, bool>> whereExpression);
+
+        Task<T?> GetFirstAsync(Expression<Func<T, bool>> whereExpression);
 
         bool Insert(T obj);
 

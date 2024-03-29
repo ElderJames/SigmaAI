@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sigma.Data;
 
@@ -10,9 +11,11 @@ using Sigma.Data;
 namespace Sigma.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240325141833_Chat")]
+    partial class Chat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
@@ -145,48 +148,6 @@ namespace Sigma.Core.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Sigma.Core.Common.AuditLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("AuditType")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("AuditUserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("AuditUserName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ChangedColumns")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("KeyValues")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NewValues")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OldValues")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TableName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AuditLogs");
-                });
-
             modelBuilder.Entity("Sigma.Core.Domain.Chat.Chat", b =>
                 {
                     b.Property<string>("Id")
@@ -200,12 +161,14 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CreatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DeletedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsDeleted")
@@ -222,56 +185,12 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UpdatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.ToTable("Chats");
-                });
-
-            modelBuilder.Entity("Sigma.Core.Domain.Chat.ChatHistory", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ChatId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TenantId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ChatHistories");
                 });
 
             modelBuilder.Entity("Sigma.Core.Repositories.AIModels", b =>
@@ -286,12 +205,14 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CreatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DeletedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("EndPoint")
@@ -323,6 +244,7 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UpdatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("UseIntentionRecognition")
@@ -342,12 +264,14 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CreatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DeletedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Describe")
@@ -389,6 +313,7 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UpdatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
@@ -415,12 +340,14 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CreatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DeletedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Describe")
@@ -466,6 +393,7 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UpdatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -482,6 +410,7 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CreatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("DataCount")
@@ -491,6 +420,7 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DeletedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FileGuidName")
@@ -522,6 +452,7 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UpdatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
@@ -542,12 +473,14 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CreatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DeletedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Describe")
@@ -585,6 +518,7 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UpdatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -601,12 +535,14 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CreatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DeletedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Describe")
@@ -639,6 +575,7 @@ namespace Sigma.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UpdatedBy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
