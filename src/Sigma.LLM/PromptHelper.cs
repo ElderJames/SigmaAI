@@ -24,7 +24,7 @@ namespace Sigma.LLM
             while (index <= lines.Length)
             {
                 string? line = index < lines.Length ? lines[index] : null;
-                var match = line != null ? Regex.Match(line, @"^(system|assistant|user):") : null;
+                var match = line != null ? Regex.Match(line, @"^\s*(system|assistant|user):") : null;
 
                 if (match != null && match.Success)
                 {

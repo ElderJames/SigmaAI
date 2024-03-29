@@ -35,10 +35,10 @@ namespace Sigma.Tests
             string input = $"""
                 {expectedSystemMessage}
 
-                user:
+                 user:
 
                 {expectedUserMessage}
-                assistant:
+                 assistant:
 
                 {expectedAssistantMessage}
                 """;
