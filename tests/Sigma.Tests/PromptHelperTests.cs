@@ -12,22 +12,46 @@ namespace Sigma.Tests
         [Fact]
         public void TestHistories()
         {
-            string input = """
-                system: message1,
+            string expectedSystemMessage = """
+                message1
+                message1
+                message1
+                """;
 
-                user: userMesssage assistant:34425
-                okokok
+            string expectedUserMessage = """
+                123
 
-                assistant: assistantMessage
-                ```
-                ddd
-                ```
+                213123
+                12321
+                """;
 
+            string expectedAssistantMessage = """
+                daf
+                adfd
+                adsfa
+                afa
+                """;
+
+            string input = $"""
+                {expectedSystemMessage}
+
+                user:
+
+                {expectedUserMessage}
+                assistant:
+
+                {expectedAssistantMessage}
                 """;
 
             var messages = PromptHelper.GetHistories(input);
 
             Assert.True(messages.Count == 3);
+            Assert.Equal("system", messages[0].Role);
+            Assert.Equal("user", messages[1].Role);
+            Assert.Equal("assistant", messages[2].Role);
+            Assert.Equal(expectedSystemMessage, messages[0].Message);
+            Assert.Equal(expectedUserMessage, messages[1].Message);
+            Assert.Equal(expectedAssistantMessage, messages[2].Message);
         }
     }
 }
