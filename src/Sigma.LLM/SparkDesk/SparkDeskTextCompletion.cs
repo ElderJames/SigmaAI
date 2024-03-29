@@ -92,46 +92,18 @@ namespace Sigma.LLM.SparkDesk
 
                         if (kernel.Plugins.TryGetFunction(func.PluginName, func.Name, out var function))
                         {
-                            var arguments = new KernelArguments();
-
                             var JsonElement = JsonDocument.Parse(msg.FunctionCall.Arguments).RootElement;
-                            foreach (var parameter in func.Parameters)
-                            {
-                                var error = "";
-                                try
-                                {
-                                    if (JsonElement.TryGetProperty(parameter.Name, out var property))
-                                    {
-                                        object? argumentValue = property.ValueKind switch
-                                        {
-                                            JsonValueKind.Null => null,
-                                            JsonValueKind.Undefined => null,
-                                            JsonValueKind.String => property.GetString(),
-                                            JsonValueKind.Number => property.GetDecimal(),
-                                            JsonValueKind.True => property.GetBoolean(),
-                                            JsonValueKind.False => property.GetBoolean(),
-                                            JsonValueKind.Object => property.Deserialize(parameter.ParameterType),
-                                            JsonValueKind.Array => property.Deserialize(parameter.ParameterType),
-                                        };
-                                        arguments.Add(parameter.Name, argumentValue == null ? null : Convert.ChangeType(argumentValue, parameter.ParameterType));
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    error = $"参数{parameter.Name}解析错误:{ex.Message}";
-                                }
 
-                                if (!string.IsNullOrEmpty(error))
-                                {
-                                    yield return new(error);
-                                    yield break;
-                                }
-                            }
-
+                            var parameters = JsonParameterParser.ParseJsonToDictionary(JsonElement, func.Parameters.ToDictionary(x => x.Name, x => x.ParameterType!));
+                            var arguments = new KernelArguments(parameters);
                             var result = (await function.InvokeAsync(kernel, arguments, cancellationToken)).GetValue<object>() ?? string.Empty;
                             var stringResult = ProcessFunctionResult(result, chatExecutionSettings.ToolCallBehavior);
-                            messages = [ChatMessage.FromSystem($"用户意图{func.Description},结果是{stringResult}"),
-                                ChatMessage.FromUser("请将这个结果重新组织语言")];
+                            messages = [ChatMessage.FromSystem($"""
+                                请结合用户问题与意图结果总结陈词
+
+                                用户意图{func.Description},结果是{stringResult}
+                                """),
+                               messages.LastOrDefault()];
 
                             functionDefs = [];
 
