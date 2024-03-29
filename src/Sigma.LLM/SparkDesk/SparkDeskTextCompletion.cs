@@ -48,7 +48,9 @@ namespace Sigma.LLM.SparkDesk
             parameters.Temperature = (float)chatExecutionSettings.Temperature;
             parameters.MaxTokens = chatExecutionSettings.MaxTokens ?? parameters.MaxTokens;
 
-            await foreach (StreamedChatResponse msg in _client.ChatAsStreamAsync(_options.ModelVersion, GetHistories(prompt), parameters))
+            var messages = PromptHelper.GetHistories(prompt).Select(m => new ChatMessage(m.Role, m.Message)).ToArray();
+
+            await foreach (StreamedChatResponse msg in _client.ChatAsStreamAsync(_options.ModelVersion, messages, parameters))
             {
                 sb.Append(msg);
             };
@@ -70,8 +72,7 @@ namespace Sigma.LLM.SparkDesk
             IList<KernelFunctionMetadata> functions = kernel?.Plugins.GetFunctionsMetadata().Where(x => x.PluginName == "SigmaFunctions").ToList() ?? [];
             var functionDefs = functions.Select(func => new FunctionDef(func.Name, func.Description, func.Parameters.Select(p => new FunctionParametersDef(p.Name, p.ParameterType?.IsClass == true ? "object" : "string", func.Description, p.IsRequired)).ToList())).ToList();
 
-            //var messages = GetHistories(prompt);
-            var messages = new ChatMessage[] { new ChatMessage("user", prompt)  };
+            var messages = PromptHelper.GetHistories(prompt).Select(m => new ChatMessage(m.Role, m.Message)).ToArray();
 
             return GetStreamingMessageAsync();
 
@@ -119,7 +120,7 @@ namespace Sigma.LLM.SparkDesk
                                 {
                                     error = $"参数{parameter.Name}解析错误:{ex.Message}";
                                 }
-                             
+
                                 if (!string.IsNullOrEmpty(error))
                                 {
                                     yield return new(error);
@@ -146,17 +147,6 @@ namespace Sigma.LLM.SparkDesk
                     }
                 };
             }
-        }
-
-        private ChatMessage[] GetHistories(string prompt)
-        {
-            var histories = prompt.Replace("history：", "")
-                .Split("\r\n")
-                .Select(m => m.Split(":", 2))
-                .Where(m => m.Length == 2)
-                .Select(pair => new ChatMessage(pair[0].Trim() == "user" ? "user" : "assistant", pair[1])).ToArray();
-
-            return histories;
         }
 
         private static string? ProcessFunctionResult(object functionResult, ToolCallBehavior? toolCallBehavior)
