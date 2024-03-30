@@ -87,9 +87,11 @@ namespace Sigma.Components.Pages.ChatPage
         private List<ChatHistory> _histories = [];
 
         private Input<string?> _input;
+        private bool _firstOpen;
 
         protected override async Task OnInitializedAsync()
         {
+            _firstOpen = true;
             LayoutService.ChangeSiderCollapsed(true);
 
             await base.OnInitializedAsync();
@@ -164,6 +166,11 @@ namespace Sigma.Components.Pages.ChatPage
 
             CallAfterRender(async () =>
             {
+                if (_firstOpen)
+                {
+                    _firstOpen = false;
+                    await Task.Delay(100);
+                }
                 await _JSRuntime.ScrollToBottomAsync("scrollDiv");
             });
         }
