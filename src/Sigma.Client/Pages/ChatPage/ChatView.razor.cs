@@ -36,7 +36,7 @@ namespace Sigma.Components.Pages.ChatPage
         private IApps_Repositories _apps_Repositories { get; set; }
 
         [Inject]
-        private IApis_Repositories _apis_Repositories { get; set; }
+        private IPluginRepository PluginRepository { get; set; }
 
         [Inject]
         private IKmss_Repositories _kmss_Repositories { get; set; }

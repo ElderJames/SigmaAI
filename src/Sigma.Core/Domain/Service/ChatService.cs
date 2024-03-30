@@ -20,7 +20,7 @@ namespace Sigma.Core.Domain.Service
         IKmsDetails_Repositories _kmsDetails_Repositories
         ) : IChatService
     {
-        JsonSerializerOptions JsonSerializerOptions = new()
+        private JsonSerializerOptions JsonSerializerOptions = new()
         {
             Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
         };
@@ -59,7 +59,7 @@ namespace Sigma.Core.Domain.Service
             OpenAIPromptExecutionSettings settings = new() { Temperature = temperature };
             var useIntentionRecognition = app.AIModel?.UseIntentionRecognition == true;
 
-            if (!string.IsNullOrEmpty(app.ApiFunctionList) || !string.IsNullOrEmpty(app.NativeFunctionList))//这里还需要加上本地插件的
+            if (!string.IsNullOrEmpty(app.PluginList) || !string.IsNullOrEmpty(app.NativeFunctionList))//这里还需要加上本地插件的
             {
                 await _kernelService.ImportFunctionsByApp(app, _kernel);
                 settings.ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions;
@@ -169,7 +169,6 @@ namespace Sigma.Core.Domain.Service
                         var funcResult = (await function.InvokeAsync(_kernel, arguments)).GetValue<object>() ?? string.Empty;
                         callResult.Add($"- {functioResult.Reason}，结果是：{JsonSerializer.Serialize(funcResult, JsonSerializerOptions)}");
                     }
-
                 }
                 catch (Exception e)
                 {
@@ -178,7 +177,7 @@ namespace Sigma.Core.Domain.Service
 
                 history = new ChatHistory($"""
                     system: 你能通过用户意图和反馈结果总结回复。
-                    
+
                     已知意图和结果：
 
                     {string.Join("\r\n\r\n", callResult)}。
@@ -233,17 +232,17 @@ namespace Sigma.Core.Domain.Service
             var functionKV = functions.ToDictionary(x => x.Description, x => new { Function = $"{x.Name}", Parameters = x.Parameters.Select(x => $"{x.Name}:{TypeParser.ConvertToTypeScriptType(x.ParameterType!)} // {x.Description},{(TypeParser.IsArrayOrList(x.ParameterType!) ? "多选" : "单选")}") });
             var template = $$"""
                           请对用户的最后一个提问完成意图识别任务。
-                          
+
                           已知的意图有
-                          
+
                           {{JsonSerializer.Serialize(functionNames, JsonSerializerOptions)}}
-                          
+
                           分别对应的函数如下：
 
                           {{JsonSerializer.Serialize(functionKV, JsonSerializerOptions)}}
 
-                          从已知的意图中识别出一个或多个意图，并直接给出以下json格式的对象，不要输出 markdown 及其他多余文字。 
-                          
+                          从已知的意图中识别出一个或多个意图，并直接给出以下json格式的对象，不要输出 markdown 及其他多余文字。
+
                           输出格式如下：
 
                           [{
@@ -258,12 +257,10 @@ namespace Sigma.Core.Domain.Service
                              "reason": string     // 取这个参数值的原因
                           }]
 
-                          
                           如果用户意图无法识别，则直接回答用户的问题，只输出markdown，不要有其他多余文字。
                           """;
 
             return template;
         }
-
     }
 }
