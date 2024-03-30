@@ -11,7 +11,7 @@ namespace Sigma.Core.Utils
             {
                 string requestBody = await request.Content.ReadAsStringAsync();
                 //便于调试查看请求prompt
-                logger.LogDebug(requestBody);
+                logger.LogInformation(requestBody);
             }
 
             request.RequestUri = new Uri(new Uri(endPoint), request.RequestUri?.PathAndQuery);
@@ -23,7 +23,7 @@ namespace Sigma.Core.Utils
             {
                 string requestBody = await response.Content.ReadAsStringAsync();
                 //便于调试查看请求prompt
-                logger.LogDebug(requestBody);
+                logger.LogInformation(requestBody);
             }
 
             return response;

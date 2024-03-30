@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\LLMJson\LLMJson.csproj" />
+    <ProjectReference Include="..\..\src\Sigma.LLM\Sigma.LLM.csproj" />
   </ItemGroup>
 
   <ItemGroup>

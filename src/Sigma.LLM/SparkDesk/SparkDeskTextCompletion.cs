@@ -48,7 +48,9 @@ namespace Sigma.LLM.SparkDesk
             parameters.Temperature = (float)chatExecutionSettings.Temperature;
             parameters.MaxTokens = chatExecutionSettings.MaxTokens ?? parameters.MaxTokens;
 
-            await foreach (StreamedChatResponse msg in _client.ChatAsStreamAsync(_options.ModelVersion, GetHistories(prompt), parameters))
+            var messages = PromptHelper.GetHistories(prompt).Select(m => new ChatMessage(m.Role, m.Message)).ToArray();
+
+            await foreach (StreamedChatResponse msg in _client.ChatAsStreamAsync(_options.ModelVersion, messages, parameters))
             {
                 sb.Append(msg);
             };
@@ -70,8 +72,7 @@ namespace Sigma.LLM.SparkDesk
             IList<KernelFunctionMetadata> functions = kernel?.Plugins.GetFunctionsMetadata().Where(x => x.PluginName == "SigmaFunctions").ToList() ?? [];
             var functionDefs = functions.Select(func => new FunctionDef(func.Name, func.Description, func.Parameters.Select(p => new FunctionParametersDef(p.Name, p.ParameterType?.IsClass == true ? "object" : "string", func.Description, p.IsRequired)).ToList())).ToList();
 
-            //var messages = GetHistories(prompt);
-            var messages = new ChatMessage[] { new ChatMessage("user", prompt)  };
+            var messages = PromptHelper.GetHistories(prompt).Select(m => new ChatMessage(m.Role, m.Message)).ToArray();
 
             return GetStreamingMessageAsync();
 
@@ -91,46 +92,18 @@ namespace Sigma.LLM.SparkDesk
 
                         if (kernel.Plugins.TryGetFunction(func.PluginName, func.Name, out var function))
                         {
-                            var arguments = new KernelArguments();
-
                             var JsonElement = JsonDocument.Parse(msg.FunctionCall.Arguments).RootElement;
-                            foreach (var parameter in func.Parameters)
-                            {
-                                var error = "";
-                                try
-                                {
-                                    if (JsonElement.TryGetProperty(parameter.Name, out var property))
-                                    {
-                                        object? argumentValue = property.ValueKind switch
-                                        {
-                                            JsonValueKind.Null => null,
-                                            JsonValueKind.Undefined => null,
-                                            JsonValueKind.String => property.GetString(),
-                                            JsonValueKind.Number => property.GetDecimal(),
-                                            JsonValueKind.True => property.GetBoolean(),
-                                            JsonValueKind.False => property.GetBoolean(),
-                                            JsonValueKind.Object => property.Deserialize(parameter.ParameterType),
-                                            JsonValueKind.Array => property.Deserialize(parameter.ParameterType),
-                                        };
-                                        arguments.Add(parameter.Name, argumentValue == null ? null : Convert.ChangeType(argumentValue, parameter.ParameterType));
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    error = $"参数{parameter.Name}解析错误:{ex.Message}";
-                                }
-                             
-                                if (!string.IsNullOrEmpty(error))
-                                {
-                                    yield return new(error);
-                                    yield break;
-                                }
-                            }
 
+                            var parameters = JsonParameterParser.ParseJsonToDictionary(JsonElement, func.Parameters.ToDictionary(x => x.Name, x => x.ParameterType!));
+                            var arguments = new KernelArguments(parameters);
                             var result = (await function.InvokeAsync(kernel, arguments, cancellationToken)).GetValue<object>() ?? string.Empty;
                             var stringResult = ProcessFunctionResult(result, chatExecutionSettings.ToolCallBehavior);
-                            messages = [ChatMessage.FromSystem($"用户意图{func.Description},结果是{stringResult}"),
-                                ChatMessage.FromUser("请将这个结果重新组织语言")];
+                            messages = [ChatMessage.FromSystem($"""
+                                请结合用户问题与意图结果总结陈词
+
+                                用户意图{func.Description},结果是{stringResult}
+                                """),
+                               messages.LastOrDefault()];
 
                             functionDefs = [];
 
@@ -146,17 +119,6 @@ namespace Sigma.LLM.SparkDesk
                     }
                 };
             }
-        }
-
-        private ChatMessage[] GetHistories(string prompt)
-        {
-            var histories = prompt.Replace("history：", "")
-                .Split("\r\n")
-                .Select(m => m.Split(":", 2))
-                .Where(m => m.Length == 2)
-                .Select(pair => new ChatMessage(pair[0].Trim() == "user" ? "user" : "assistant", pair[1])).ToArray();
-
-            return histories;
         }
 
         private static string? ProcessFunctionResult(object functionResult, ToolCallBehavior? toolCallBehavior)

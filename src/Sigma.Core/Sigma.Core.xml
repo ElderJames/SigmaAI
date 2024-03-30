@@ -135,7 +135,7 @@
             避免模型重复加载，本地缓存
             </summary>
         </member>
-        <member name="M:Sigma.Core.Domain.Service.ChatService.SendChatByAppAsync(Sigma.Core.Repositories.Apps,System.String,System.String)">
+        <member name="M:Sigma.Core.Domain.Service.ChatService.SendChatByAppAsync(Sigma.Core.Repositories.Apps,System.String,Microsoft.SemanticKernel.ChatCompletion.ChatHistory)">
             <summary>
             发送消息
             </summary>
