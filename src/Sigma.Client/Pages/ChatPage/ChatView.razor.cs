@@ -16,6 +16,7 @@ using Sigma.Core.Domain.Model.Enum;
 using Microsoft.Extensions.Logging;
 using Sigma.Core.Domain.Chat;
 using Sigma.Client.Services;
+using static LLama.Common.ChatHistory;
 
 namespace Sigma.Components.Pages.ChatPage
 {
@@ -87,6 +88,8 @@ namespace Sigma.Components.Pages.ChatPage
         private List<ChatHistory> _histories = [];
 
         private Input<string?> _input;
+
+        private List<UploadFileItem> _fileList = [];
 
         protected override async Task OnInitializedAsync()
         {
@@ -252,6 +255,13 @@ namespace Sigma.Components.Pages.ChatPage
             }
         }
 
+        private async Task<bool> HandleFileRemove(UploadFileItem file)
+        {
+            _fileList.RemoveAll(x => x.FileName == file.FileName);
+            await Task.Yield();
+            return true;
+        }
+
         protected async Task<bool> SendAsync(string questions)
         {
             Microsoft.SemanticKernel.ChatCompletion.ChatHistory history = new();
@@ -277,6 +287,7 @@ namespace Sigma.Components.Pages.ChatPage
 
             return await Task.FromResult(true);
         }
+
 
         /// <summary>
         /// 发送知识库问答
@@ -348,6 +359,50 @@ namespace Sigma.Components.Pages.ChatPage
             await InvokeAsync(StateHasChanged);
             await _JSRuntime.InvokeVoidAsync("Prism.highlightAll");
             await _JSRuntime.ScrollToBottomAsync("scrollDiv");
+        }
+
+        public bool BeforeUpload(UploadFileItem file)
+        {
+            List<string> types = new List<string>() {
+                "text/plain",
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "application/vnd.ms-excel",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "application/vnd.ms-powerpoint",
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                "application/pdf",
+                "application/json",
+                "text/x-markdown",
+                "text/markdown"
+            };
+
+            string[] exceptExts = [".md", ".pdf"];
+            var validTypes = types.Contains(file.Type) || exceptExts.Contains(file.Ext);
+            if (!validTypes && file.Ext != ".md")
+            {
+                Message.Error("文件格式错误,请重新选择!");
+            }
+            var IsLt500K = file.Size < 1024 * 1024 * 100;
+            if (!IsLt500K)
+            {
+                Message.Error("文件需不大于100MB!");
+            }
+
+            return validTypes && IsLt500K;
+        }
+
+        public void OnSingleCompleted(UploadInfo fileinfo)
+        {
+            if (fileinfo.File.State == UploadState.Success)
+            {
+                //文件列表
+                _fileList.Add(new UploadFileItem()
+                {
+                    FileName = fileinfo.File.FileName,
+                    Url = fileinfo.File.Url = fileinfo.File.Response
+                });
+            }
         }
     }
 }

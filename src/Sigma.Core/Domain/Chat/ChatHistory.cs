@@ -14,5 +14,9 @@ namespace Sigma.Core.Domain.Chat
         public ChatRoles Role { get; set; }
 
         public string Content { get; set; }
+
+        public string? FilePath { get; set; }
+
+        public string? FileName { get; set; }
     }
 }

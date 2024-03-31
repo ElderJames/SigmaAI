@@ -38,7 +38,7 @@
                    
                 </TitleTemplate>
                 <Body>
-                    <div id="scrollDiv" style="height: 530px; overflow-y: auto; overflow-x: hidden;">
+                    <div id="scrollDiv" style="height: 530px; overflow-y: auto; overflow-x: hidden;padding:10px;">
                         <GridRow Gutter="(8, 8)" Style="margin:0">
                             <Virtualize Items="@(_histories.OrderBy(o => o.CreatedAt).ToList())" Context="item">
                                 @if (item.Role== Core.Domain.Chat.ChatRoles.User)
@@ -47,7 +47,17 @@
                                         <GridCol Span="23">
                                             <div class="chat-bubble sent">
                                                 <Popover Title="@item.CreatedAt.ToString()">
-                                                    @(item.Content)
+                                                    <Unbound>
+                                                        <Flex Vertical RefBack="context">
+                                                            @if (item.FileName != null)
+                                                            {
+                                                                <p class="message-file">
+                                                                    <Upload DefaultFileList="[new(){ FileName= item.FileName }]" />
+                                                                </p>
+                                                            }
+                                                            <span>@(item.Content)</span>
+                                                        </Flex>
+                                                    </Unbound>
                                                 </Popover>
                                             </div>
                                             <Icon Style="float:right;margin-top:10px;" Type="copy" Theme="outline" OnClick="async () =>await OnCopyAsync(item)" />
@@ -73,13 +83,29 @@
                             </Virtualize>
                         </GridRow>
                     </div>
-                    <div style="height: 10px;"></div>
-                    <AntDesign.Input @ref="_input" @bind-Value="@(_messageInput)" DebounceMilliseconds="@(-1)" Placeholder="输入消息回车发送" OnPressEnter="@(async () => await OnSendAsync())" Disabled="@Sendding">
-                        <Suffix>
-                            <Button Icon="clear" Type="@(ButtonType.Link)" OnClick="@(async () => await OnClearAsync())" Disabled="@Sendding"></Button>
-                            <Button Icon="send" Type="@(ButtonType.Link)" OnClick="@(async () => await OnSendAsync())" Disabled="@Sendding"></Button>
-                        </Suffix>
-                    </AntDesign.Input>
+                    @if (_fileList.Count > 0)
+                    {
+                        <Flex Vertical>
+                            <Upload DefaultFileList="_fileList" OnRemove="HandleFileRemove" />
+                        </Flex>
+                    }
+                     <Flex Justify="end">
+
+                    <AntDesign.Input @ref="_input" @bind-Value="@(_messageInput)" DebounceMilliseconds="@(-1)" Placeholder="输入消息回车发送" OnPressEnter="@(async () => await OnSendAsync())" Disabled="@Sendding" />
+                        @if (_app.EmbeddingModelID != null)
+                        {
+                            <Upload Action="@("api/File/UploadFile")"
+                                    Name="file"
+                                    Accept="*/*"
+                                    ShowUploadList="false"
+                                    BeforeUpload="BeforeUpload"
+                                    OnSingleCompleted="OnSingleCompleted">
+                                <Button Icon="@IconType.Outline.Upload" Type="@(ButtonType.Link)" Disabled="@Sendding" />
+                            </Upload>
+                        }
+                        <Button Icon="clear" Type="@(ButtonType.Link)" OnClick="@(async () => await OnClearAsync())" Disabled="@Sendding"></Button>
+                        <Button Icon="send" Type="@(ButtonType.Link)" OnClick="@(async () => await OnSendAsync())" Disabled="@Sendding"></Button>
+                    </Flex>
                 </Body>
             </Card>
         </Content>
@@ -182,8 +208,7 @@
 
     .chat-bubble {
         padding: 10px;
-        margin: 10px;
-        margin-bottom: 0;
+        margin-bottom: 10px;
         border-radius: 5px;
         max-width: 70%;
         position: relative;
