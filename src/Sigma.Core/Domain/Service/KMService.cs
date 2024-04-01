@@ -30,6 +30,10 @@ namespace Sigma.Core.Domain.Service
         {
             //获取KMS配置
             var kms = _kmss_Repositories.GetFirst(p => p.Id == kmsID);
+            if (kms == null)
+                return null;
+
+            var chatModel = _aIModels_Repositories.GetFirst(p => p.Id == kms.ChatModelId);
             var embedModel = _aIModels_Repositories.GetFirst(p => p.Id == kms.EmbeddingModelID);
             var chatModel = _aIModels_Repositories.GetFirst(p => p.Id == kms.ChatModelId);
             if (chatModel == null || embedModel == null)

@@ -46,5 +46,8 @@ namespace Sigma.Core.Repositories
         /// 段落之间重叠标记的数量。
         /// </summary>
         public int OverlappingTokens { get; set; } = 49;
+        
+        [Required]
+        public string ChatModelId { get; set; }
     }
 }
