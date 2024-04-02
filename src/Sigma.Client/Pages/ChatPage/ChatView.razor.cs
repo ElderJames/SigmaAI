@@ -74,7 +74,7 @@ namespace Sigma.Components.Pages.ChatPage
         private string? _messageInput;
 
         private string _json = "";
-        private bool Sendding = false;
+        private bool _sendding = false;
 
         private string[] _selectedApps = [];
         private string[] _selectedChat = [];
@@ -205,7 +205,7 @@ namespace Sigma.Components.Pages.ChatPage
                 await ChatRepository.SaveHistory(history);
                 _histories.Add(history);
 
-                Sendding = true;
+                _sendding = true;
 
                 StateHasChanged();
 
@@ -215,12 +215,12 @@ namespace Sigma.Components.Pages.ChatPage
 
                 await SendAsync(_messageInput);
                 _messageInput = "";
-                Sendding = false;
+                _sendding = false;
                 await _input.Ref.FocusAsync();
             }
             catch (System.Exception ex)
             {
-                Sendding = false;
+                _sendding = false;
                 Logger.LogError(ex, "对话异常");
                 _ = Message.Error("异常:" + ex.Message, 2);
             }
@@ -339,13 +339,12 @@ namespace Sigma.Components.Pages.ChatPage
             {
                 chatHistory.Content += content;
 
-                await Task.Delay(50);
+                await Task.Yield();
 
                 await InvokeAsync(StateHasChanged);
-                
-                await MarkDown(chatHistory);
             }
 
+            await MarkDown(chatHistory);
             await ChatRepository.SaveHistory(chatHistory);
         }
 

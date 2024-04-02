@@ -9,13 +9,12 @@
 
 <div>
     <Layout Class="chat-layout">
-        <Sider Class="site-layout-background" >
+        <Sider Class="site-layout-background">
             <Menu Mode="MenuMode.Inline"
                   Style="height: 100%;"
                   DefaultSelectedKeys=@(new[] {"1"})
                   SelectedKeys="_selectedApps"
-                  SelectedKeysChanged="OnAppSelectChange"        
-            >
+                  SelectedKeysChanged="OnAppSelectChange">
                 @foreach (var app in _appList)
                 {
                     <MenuItem Key="@app.Id" Icon="@app.Icon">@app.Name</MenuItem>
@@ -35,13 +34,13 @@
             <Card Bordered>
                 <TitleTemplate>
                     <Icon Type="@(_app?.Icon??"appstore")" /> @(_chat?.Title ?? "新对话")
-                   
+
                 </TitleTemplate>
                 <Body>
                     <div id="scrollDiv" style="height: 530px; overflow-y: auto; overflow-x: hidden;padding:10px;">
                         <GridRow Gutter="(8, 8)" Style="margin:0">
                             <Virtualize Items="@(_histories.OrderBy(o => o.CreatedAt).ToList())" Context="item">
-                                @if (item.Role== Core.Domain.Chat.ChatRoles.User)
+                                @if (item.Role == Core.Domain.Chat.ChatRoles.User)
                                 {
                                     <GridRow Style="width:100%">
                                         <GridCol Span="23">
@@ -89,22 +88,18 @@
                             <Upload DefaultFileList="_fileList" OnRemove="HandleFileRemove" />
                         </Flex>
                     }
-                     <Flex Justify="end">
-
-                    <AntDesign.Input @ref="_input" @bind-Value="@(_messageInput)" DebounceMilliseconds="@(-1)" Placeholder="输入消息回车发送" OnPressEnter="@(async () => await OnSendAsync())" Disabled="@Sendding" />
-                        @if (_app.EmbeddingModelID != null)
-                        {
-                            <Upload Action="@("api/File/UploadFile")"
-                                    Name="file"
-                                    Accept="*/*"
-                                    ShowUploadList="false"
-                                    BeforeUpload="BeforeUpload"
-                                    OnSingleCompleted="OnSingleCompleted">
-                                <Button Icon="@IconType.Outline.Upload" Type="@(ButtonType.Link)" Disabled="@Sendding" />
-                            </Upload>
-                        }
-                        <Button Icon="clear" Type="@(ButtonType.Link)" OnClick="@(async () => await OnClearAsync())" Disabled="@Sendding"></Button>
-                        <Button Icon="send" Type="@(ButtonType.Link)" OnClick="@(async () => await OnSendAsync())" Disabled="@Sendding"></Button>
+                    <Flex Justify="end">
+                        <AntDesign.Input @ref="_input" @bind-Value="@(_messageInput)" DebounceMilliseconds="@(-1)" Placeholder="输入消息回车发送" OnPressEnter="@(async () => await OnSendAsync())" Disabled="@_sendding" />
+                        <Upload Action="@("api/File/UploadFile")"
+                                Name="file"
+                                Accept="*/*"
+                                ShowUploadList="false"
+                                BeforeUpload="BeforeUpload"
+                                OnSingleCompleted="OnSingleCompleted">
+                            <Button Icon="@IconType.Outline.Upload" Type="@(ButtonType.Link)" Disabled="@_sendding" />
+                        </Upload>
+                        <Button Icon="clear" Type="@(ButtonType.Link)" OnClick="@(async () => await OnClearAsync())" Disabled="@_sendding"></Button>
+                        <Button Icon="send" Type="@(ButtonType.Link)" OnClick="@(async () => await OnSendAsync())" Disabled="@_sendding"></Button>
                     </Flex>
                 </Body>
             </Card>

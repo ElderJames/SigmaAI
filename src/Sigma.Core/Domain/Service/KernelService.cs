@@ -56,7 +56,12 @@ namespace Sigma.Core.Domain.Service
             WithTextGenerationByAIType(builder, app, chatModel);
 
             _kernel = builder.Build();
-            RegisterPluginsWithKernel(_kernel);
+
+            if (chatModel.UseIntentionRecognition != true)
+            {
+                RegisterPluginsWithKernel(_kernel);
+            }
+          
             return _kernel;
         }
 

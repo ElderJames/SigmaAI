@@ -233,17 +233,15 @@ namespace Sigma.Core.Domain.Service
             var template = $$"""
                           请对用户的最后一个提问完成意图识别任务。
 
-                          已知的意图有
-
+                          已知的意图有:
                           {{JsonSerializer.Serialize(functionNames, JsonSerializerOptions)}}
 
                           分别对应的函数如下：
-
                           {{JsonSerializer.Serialize(functionKV, JsonSerializerOptions)}}
 
-                          从已知的意图中识别出一个或多个意图，并直接给出以下json格式的对象，不要输出 markdown 及其他多余文字。
+                          如果用户的提问包含这些意图，则从已知的意图中识别出一个或多个意图，并直接给出以下json格式的对象，不要输出 markdown 及其他多余文字。不包含这些意图时，请直接回复。
 
-                          输出格式如下：
+                          意图输出格式如下：
 
                           [{
                              "function": string   // 意图对应的function
@@ -256,8 +254,6 @@ namespace Sigma.Core.Domain.Service
                              "arguments": object  // 参数值
                              "reason": string     // 取这个参数值的原因
                           }]
-
-                          如果用户意图无法识别，则直接回答用户的问题，只输出markdown，不要有其他多余文字。
                           """;
 
             return template;
