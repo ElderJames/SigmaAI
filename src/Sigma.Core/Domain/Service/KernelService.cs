@@ -51,27 +51,35 @@ namespace Sigma.Core.Domain.Service
         {
             var chatModel = _aIModels_Repositories.GetFirst(p => p.Id == app.ChatModelID);
             app.AIModel = chatModel;
-            //http代理
-            var chatHttpClient = new HttpClient(ActivatorUtilities.CreateInstance<OpenAIHttpClientHandler>(_serviceProvider, chatModel.EndPoint));
 
             var builder = Kernel.CreateBuilder();
-            WithTextGenerationByAIType(builder, app, chatModel, chatHttpClient);
+            WithTextGenerationByAIType(builder, app, chatModel);
 
             _kernel = builder.Build();
             RegisterPluginsWithKernel(_kernel);
             return _kernel;
         }
 
-        private void WithTextGenerationByAIType(IKernelBuilder builder, Apps app, AIModels chatModel, HttpClient chatHttpClient)
+        private void WithTextGenerationByAIType(IKernelBuilder builder, Apps app, AIModels chatModel)
         {
             switch (chatModel.AIType)
             {
                 case Model.Enum.AIType.OpenAI:
+                    var chatHttpClient = new HttpClient(ActivatorUtilities.CreateInstance<OpenAIHttpClientHandler>(_serviceProvider, chatModel.EndPoint));
                     builder.AddOpenAIChatCompletion(
                        modelId: chatModel.ModelName,
                        apiKey: chatModel.ModelKey,
                        chatModel.ModelDescription,
                        httpClient: chatHttpClient);
+                    break;
+
+                case AIType.Ollama:
+                    var ollamaHttpClient = new HttpClient(ActivatorUtilities.CreateInstance<OllamaHttpClientHandler>(_serviceProvider, chatModel.EndPoint));
+                    builder.AddOpenAIChatCompletion(
+                    modelId: chatModel.ModelName,
+                    apiKey: chatModel.ModelKey,
+                    chatModel.ModelDescription,
+                    httpClient: ollamaHttpClient);
                     break;
 
                 case Model.Enum.AIType.AzureOpenAI:

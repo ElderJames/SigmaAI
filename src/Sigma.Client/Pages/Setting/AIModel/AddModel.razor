@@ -19,7 +19,6 @@
                 <FormItem Label="模型描述" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
                     <Input Placeholder="请输入模型描述" @bind-Value="@context.ModelDescription" />
                 </FormItem>
-
                 <FormItem Label="AI类型" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
                     <EnumRadioGroup @bind-Value="context.AIType"></EnumRadioGroup>
                 </FormItem>
@@ -46,7 +45,7 @@
                         <InputPassword @bind-Value="@context.ModelKey" Placeholder="请输入模型秘钥" Size="@InputSize.Large" />
                     </FormItem>
                 }
-                @if (context.AIType == AIType.OpenAI)
+                @if (context.AIType is AIType.OpenAI or AIType.Ollama)
                 {
                     <FormItem Label="请求地址" LabelCol="LayoutModel._formItemLayout.LabelCol" WrapperCol="LayoutModel._formItemLayout.WrapperCol">
                         <Input Placeholder="请输入请求地址 示例格式 http://ip:port/" @bind-Value="@context.EndPoint" />

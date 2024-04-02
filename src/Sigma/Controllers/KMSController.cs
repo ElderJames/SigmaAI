@@ -23,10 +23,9 @@ namespace Sigma.Controllers
         private readonly IImportKMSService _importKMSService;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-
         public KMSController(
             IKmsDetails_Repositories kmsDetails_Repositories,
-            IKMService iKMService, 
+            IKMService iKMService,
             IQueue queue,
             IServiceScopeFactory serviceScopeFactory)
         {
@@ -39,7 +38,6 @@ namespace Sigma.Controllers
         [HttpPost]
         public async Task<IActionResult> ImportKMSTask(ImportKMSTaskDTO model)
         {
-            Console.WriteLine("api/kms/ImportKMSTask  开始");
             ImportKMSTaskReq req = model.Adapt<ImportKMSTaskReq>();
             KmsDetails detail = new KmsDetails()
             {
@@ -53,16 +51,13 @@ namespace Sigma.Controllers
             _kmsDetails_Repositories.Insert(detail);
             req.KmsDetail = detail;
 
-            this._queue.QueueAsyncTask(() =>
+            this._queue.QueueAsyncTask(async () =>
             {
                 using var scope = _serviceScopeFactory.CreateScope();
                 var importService = scope.ServiceProvider.GetRequiredService<IImportKMSService>();
-                importService.ImportKMSTask(req);
-                return Task.CompletedTask;
+                await importService.ImportKMSTask(req);
             });
 
-            //_taskBroker.QueueWorkItem(req);
-            Console.WriteLine("api/kms/ImportKMSTask  结束");
             return Ok();
         }
     }
