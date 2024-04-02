@@ -22,6 +22,9 @@ namespace Sigma.Core.Domain.Model.Enum
         [Display(Name = "灵积大模型")]
         DashScope = 5,
 
+        [Display(Name = "Ollama")]
+        Ollama = 6,
+
         [Display(Name = "模拟输出")]
         Mock = 100,
     }

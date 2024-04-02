@@ -2,16 +2,18 @@
 using Sigma.Core.Domain.Model;
 using Sigma.Core.Repositories;
 using Microsoft.KernelMemory;
+using Microsoft.Extensions.Logging;
 
 namespace Sigma.Core.Domain.Service
 {
     public class ImportKMSService(
         IKMService _kMService,
         IKmsDetails_Repositories _kmsDetails_Repositories,
-        IKmss_Repositories _kmss_Repositories
+        IKmss_Repositories _kmss_Repositories,
+        ILogger<ImportKMSService> logger
         ) : IImportKMSService
     {
-        public void ImportKMSTask(ImportKMSTaskReq req)
+        public async Task ImportKMSTask(ImportKMSTaskReq req)
         {
             try
             {
@@ -24,12 +26,9 @@ namespace Sigma.Core.Domain.Service
                     case ImportType.File:
                         //导入文件
                         {
-                            var importResult = _memory.ImportDocumentAsync(new Document(fileid.ToString())
-                          .AddFile(req.FilePath)
-                          .AddTag("kmsid", req.KmsId.ToString())
-                          , index: "kms").Result;
+                            var importResult = await _memory.ImportDocumentAsync(new Document(fileid.ToString()).AddFile(req.FilePath).AddTag("kmsid", req.KmsId.ToString()), index: "kms");
                             //查询文档数量
-                            var docTextList = _kMService.GetDocumentByFileID(km.Id, fileid.ToString()).Result;
+                            var docTextList = await _kMService.GetDocumentByFileID(km.Id, fileid.ToString());
                             string fileGuidName = Path.GetFileName(req.FilePath);
                             req.KmsDetail.FileName = req.FileName;
                             req.KmsDetail.FileGuidName = fileGuidName;
@@ -40,10 +39,9 @@ namespace Sigma.Core.Domain.Service
                     case ImportType.Url:
                         {
                             //导入url
-                            var importResult = _memory.ImportWebPageAsync(req.Url, fileid.ToString(), new TagCollection() { { "kmsid", req.KmsId.ToString() } }
-                                 , index: "kms").Result;
+                            var importResult = await _memory.ImportWebPageAsync(req.Url, fileid.ToString(), new TagCollection() { { "kmsid", req.KmsId.ToString() } }, index: "kms");
                             //查询文档数量
-                            var docTextList = _kMService.GetDocumentByFileID(km.Id, fileid.ToString()).Result;
+                            var docTextList = await _kMService.GetDocumentByFileID(km.Id, fileid.ToString());
                             req.KmsDetail.Url = req.Url;
                             req.KmsDetail.DataCount = docTextList.Count;
                         }
@@ -52,10 +50,9 @@ namespace Sigma.Core.Domain.Service
                     case ImportType.Text:
                         //导入文本
                         {
-                            var importResult = _memory.ImportTextAsync(req.Text, fileid.ToString(), new TagCollection() { { "kmsid", req.KmsId.ToString() } }
-                       , index: "kms").Result;
+                            var importResult = await _memory.ImportTextAsync(req.Text, fileid.ToString(), new TagCollection() { { "kmsid", req.KmsId.ToString() } }, index: "kms");
                             //查询文档数量
-                            var docTextList = _kMService.GetDocumentByFileID(km.Id, fileid.ToString()).Result;
+                            var docTextList = await _kMService.GetDocumentByFileID(km.Id, fileid.ToString());
                             req.KmsDetail.Url = req.Url;
                             req.KmsDetail.DataCount = docTextList.Count;
                         }
@@ -70,7 +67,8 @@ namespace Sigma.Core.Domain.Service
             {
                 req.KmsDetail.Status = Model.Enum.ImportKmsStatus.Fail;
                 _kmsDetails_Repositories.Update(req.KmsDetail);
-                Console.WriteLine("后台导入任务异常:" + ex.Message);
+                logger.LogError(ex, "An exception waas thrown.");
+                throw;
             }
         }
     }

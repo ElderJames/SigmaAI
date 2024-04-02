@@ -29,6 +29,9 @@ namespace Sigma.Core.Repositories
         [Required]
         public string? EmbeddingModelID { get; set; }
 
+        [Required]
+        public string? ChatModelId { get; set; }
+
         /// <summary>
         /// 每个段落的最大标记数。
         /// </summary>

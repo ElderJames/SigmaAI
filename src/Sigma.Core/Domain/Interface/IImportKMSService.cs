@@ -4,6 +4,6 @@ namespace Sigma.Core.Domain.Interface
 {
     public interface IImportKMSService
     {
-        void ImportKMSTask(ImportKMSTaskReq req);
+        Task ImportKMSTask(ImportKMSTaskReq req);
     }
 }

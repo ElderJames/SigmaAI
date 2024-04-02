@@ -31,9 +31,9 @@ namespace Sigma.Core.Domain.Service
             //获取KMS配置
             var kms = _kmss_Repositories.GetFirst(p => p.Id == kmsID);
             var embedModel = _aIModels_Repositories.GetFirst(p => p.Id == kms.EmbeddingModelID);
-
-            //http代理
-            var embeddingHttpClient = new HttpClient(ActivatorUtilities.CreateInstance<OpenAIHttpClientHandler>(serviceProvider, embedModel.EndPoint));
+            var chatModel = _aIModels_Repositories.GetFirst(p => p.Id == kms.ChatModelId);
+            if (chatModel == null || embedModel == null)
+                return null;
 
             //搜索配置
             if (searchClientConfig.IsNull())
@@ -56,8 +56,9 @@ namespace Sigma.Core.Domain.Service
                 OverlappingTokens = kms.OverlappingTokens
             });
 
+            WithTextGenerationByAIType(memoryBuild, chatModel);
             //加载向量模型
-            WithTextEmbeddingGenerationByAIType(memoryBuild, embedModel, embeddingHttpClient);
+            WithTextEmbeddingGenerationByAIType(memoryBuild, embedModel);
             //加载向量库
             WithMemoryDbByVectorDB(memoryBuild, _config);
 
@@ -65,16 +66,26 @@ namespace Sigma.Core.Domain.Service
             return _memory;
         }
 
-        private void WithTextEmbeddingGenerationByAIType(IKernelMemoryBuilder memory, AIModels embedModel, HttpClient? embeddingHttpClient = null)
+        private void WithTextEmbeddingGenerationByAIType(IKernelMemoryBuilder memory, AIModels embedModel)
         {
             switch (embedModel.AIType)
             {
                 case Model.Enum.AIType.OpenAI:
+                    var embeddingHttpClient = new HttpClient(ActivatorUtilities.CreateInstance<OpenAIHttpClientHandler>(serviceProvider, embedModel.EndPoint));
                     memory.WithOpenAITextEmbeddingGeneration(new OpenAIConfig()
                     {
                         APIKey = embedModel.ModelKey,
                         EmbeddingModel = embedModel.ModelName
                     }, null, false, embeddingHttpClient);
+                    break;
+
+                case Model.Enum.AIType.Ollama:
+                    var ollamaHttpClient = new HttpClient(ActivatorUtilities.CreateInstance<OllamaHttpClientHandler>(serviceProvider, embedModel.EndPoint));
+                    memory.WithOpenAITextEmbeddingGeneration(new OpenAIConfig()
+                    {
+                        APIKey = embedModel.ModelKey,
+                        EmbeddingModel = embedModel.ModelName
+                    }, null, false, ollamaHttpClient);
                     break;
 
                 case Model.Enum.AIType.AzureOpenAI:
@@ -96,6 +107,55 @@ namespace Sigma.Core.Domain.Service
 
                 case Model.Enum.AIType.DashScope:
                     memory.WithDashScopeDefaults(embedModel.ModelKey);
+                    break;
+            }
+        }
+
+        private void WithTextGenerationByAIType(IKernelMemoryBuilder memory, AIModels chatModel)
+        {
+            switch (chatModel.AIType)
+            {
+                case Model.Enum.AIType.OpenAI:
+                    var chatHttpClient = new HttpClient(ActivatorUtilities.CreateInstance<OpenAIHttpClientHandler>(serviceProvider, chatModel.EndPoint));
+                    memory.WithOpenAITextGeneration(new OpenAIConfig()
+                    {
+                        APIKey = chatModel.ModelKey,
+                        TextModel = chatModel.ModelName
+                    }, null, chatHttpClient);
+                    break;
+
+                case Model.Enum.AIType.Ollama:
+                    var ollamaHttpClient = new HttpClient(ActivatorUtilities.CreateInstance<OllamaHttpClientHandler>(serviceProvider, chatModel.EndPoint));
+                    memory.WithOpenAITextGeneration(new OpenAIConfig()
+                    {
+                        APIKey = chatModel.ModelKey,
+                        TextModel = chatModel.ModelName
+                    }, null, ollamaHttpClient);
+                    break;
+
+                case Model.Enum.AIType.AzureOpenAI:
+                    memory.WithAzureOpenAITextGeneration(new AzureOpenAIConfig()
+                    {
+                        APIKey = chatModel.ModelKey,
+                        Deployment = chatModel.ModelName.ConvertToString(),
+                        Endpoint = chatModel.EndPoint.ConvertToString(),
+                        Auth = AzureOpenAIConfig.AuthTypes.APIKey,
+                        APIType = AzureOpenAIConfig.APITypes.TextCompletion,
+                    });
+                    break;
+
+                case Model.Enum.AIType.LLamaSharp:
+                    var (weights, parameters) = LLamaConfig.GetLLamaConfig(chatModel.ModelName);
+                    var context = weights.CreateContext(parameters);
+                    var executor = new StatelessExecutor(weights, parameters);
+                    memory.WithLLamaSharpTextGeneration(new LlamaSharpTextGenerator(weights, context, executor));
+                    break;
+
+                case Model.Enum.AIType.DashScope:
+                    memory.WithDashScopeTextGeneration(new Cnblogs.KernelMemory.AI.DashScope.DashScopeConfig
+                    {
+                        ApiKey = chatModel.ModelKey,
+                    });
                     break;
             }
         }
@@ -182,6 +242,5 @@ namespace Sigma.Core.Domain.Service
 
             return result;
         }
-
     }
 }
