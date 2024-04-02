@@ -35,7 +35,6 @@ namespace Sigma.Core.Domain.Service
 
             var chatModel = _aIModels_Repositories.GetFirst(p => p.Id == kms.ChatModelId);
             var embedModel = _aIModels_Repositories.GetFirst(p => p.Id == kms.EmbeddingModelID);
-            var chatModel = _aIModels_Repositories.GetFirst(p => p.Id == kms.ChatModelId);
             if (chatModel == null || embedModel == null)
                 return null;
 
