@@ -1,4 +1,5 @@
-﻿<Router AppAssembly="typeof(App).Assembly" >
+﻿@using MudBlazor
+<Router AppAssembly="typeof(App).Assembly" >
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Sigma.Client.Layouts.BasicLayout)">
             <NotAuthorized>
@@ -10,3 +11,6 @@
 </Router>
 
 <AntContainer />
+<MudThemeProvider />
+<MudDialogProvider/>
+<MudSnackbarProvider/>

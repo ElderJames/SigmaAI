@@ -11,6 +11,9 @@
   <ItemGroup>
 	<PackageReference Include="AntDesign.Charts" Version="0.5.1" />
 	<PackageReference Include="AntDesign.ProLayout" Version="0.18.1" />
+	<PackageReference Include="Elsa.Api.Client" Version="3.0.3" />
+	<PackageReference Include="Elsa.Studio" Version="3.0.3" />
+	<PackageReference Include="Elsa.Studio.Core.BlazorWasm" Version="3.0.3" />
 	<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" />
   </ItemGroup>
 

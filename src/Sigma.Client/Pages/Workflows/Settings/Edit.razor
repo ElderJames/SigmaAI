@@ -1,0 +1,14 @@
+﻿@using Elsa.Studio.Workflows.Components.WorkflowDefinitionEditor
+
+@page "/settings/workflows/{definitionId}/edit"
+@attribute [Authorize]
+
+<WorkflowDefinitionEditor DefinitionId="@DefinitionId"/>
+
+@code {
+    /// <summary>
+    /// The ID of the workflow definition to edit.
+    /// </summary>
+    [Parameter]
+    public string DefinitionId { get; set; } = default!;
+}

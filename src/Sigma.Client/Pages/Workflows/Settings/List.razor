@@ -1,0 +1,15 @@
+﻿@using Elsa.Studio.Workflows.Components.WorkflowDefinitionList
+
+@page "/settings/workflows/list"
+@attribute [Authorize]
+
+<WorkflowDefinitionList EditWorkflowDefinition="OnWorkflowDefinitionEdit" />
+
+@code {
+    [Inject] NavigationManager NavigationManager { get; set; } = default!;
+
+    private void OnWorkflowDefinitionEdit(string definitionId)
+    {
+        NavigationManager.NavigateTo($"/settings/workflows/{definitionId}/edit");
+    }
+}

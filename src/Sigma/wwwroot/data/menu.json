@@ -24,6 +24,12 @@
     "icon": "dropbox"
   },
   {
+    "path": "/settings/workflows/list",
+    "name": "工作流",
+    "key": "plugins",
+    "icon": "dropbox"
+  },
+  {
     "path": "/setting",
     "name": "设置",
     "key": "setting",

@@ -10,12 +10,25 @@
   <ItemGroup>
     <ProjectReference Include="..\Sigma.Client\Sigma.Client.csproj" />
     <ProjectReference Include="..\Sigma.Core\Sigma.Core.csproj" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Elsa" Version="3.0.3" />
+		<PackageReference Include="Elsa.CSharp" Version="3.0.3" />
+		<PackageReference Include="Elsa.EntityFrameworkCore" Version="3.0.3" />
+		<PackageReference Include="Elsa.EntityFrameworkCore.Sqlite" Version="3.0.3" />
+		<PackageReference Include="Elsa.JavaScript" Version="3.0.3" />
+		<PackageReference Include="Elsa.Liquid" Version="3.0.3" />
+		<PackageReference Include="Elsa.Scheduling" Version="3.0.3" />
+		<PackageReference Include="Elsa.Workflows.Api" Version="3.0.3" />
+	</ItemGroup>
 	
   <ItemGroup>
   	<None Update="plugins\KMSPlugin\Ask\skprompt.txt">

@@ -1,5 +1,14 @@
 using AntDesign.ProLayout;
 using Coravel;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using Elsa;
+using Elsa.EntityFrameworkCore.Modules.Management;
+using Elsa.EntityFrameworkCore.Modules.Runtime;
+using Elsa.Extensions;
+using Elsa.Studio.Core.BlazorWasm.Extensions;
+using Elsa.Studio.Extensions;
+using Elsa.Studio.Shell.Extensions;
+using Elsa.Studio.Workflows.Extensions;
 using LLama.Native;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -118,6 +127,29 @@ else if (LLamaSharpOption.RunType.ToUpper() == "GPU")
     .WithLogs(true);
 }
 
+builder.Services
+    .AddElsa(elsa => elsa
+        .UseWorkflowManagement(management => management.UseEntityFrameworkCore())
+        .UseWorkflowRuntime(runtime => runtime.UseEntityFrameworkCore())
+        .UseScheduling()
+        .UseJavaScript()
+        .UseLiquid()
+        .UseCSharp()
+        //.UseHttp(http => http.ConfigureHttpOptions = options => options.BaseUrl= new Uri(""))
+        .UseWorkflowsApi()
+        .UseRealTimeWorkflows()
+        .AddActivitiesFrom<Program>()
+        .AddWorkflowsFrom<Program>()
+    );
+
+EndpointSecurityOptions.DisableSecurity();
+
+builder.Services.AddCore();
+builder.Services.AddShell();
+builder.Services.AddRemoteBackend(
+    elsaClient => { },
+    options => options.Url = new Uri("https://localhost:63282/elsa/api"));
+builder.Services.AddWorkflowsModule();
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
@@ -144,6 +176,9 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+app.UseWorkflowsApi();
+app.UseWorkflows();
 
 // The render mode of /Account components is Static SSR.
 app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/Account"), second =>
