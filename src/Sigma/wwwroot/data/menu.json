@@ -26,7 +26,7 @@
   {
     "path": "/settings/workflows/list",
     "name": "工作流",
-    "key": "plugins",
+    "key": "workflows-list",
     "icon": "dropbox"
   },
   {
