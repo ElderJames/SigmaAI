@@ -1,0 +1,95 @@
+﻿@using System.Globalization
+@using Toolbelt.Blazor.SpeechRecognition
+@implements IDisposable
+@inject SpeechRecognition SpeechRecognition
+
+<Button Icon="@IconType.Outline.Audio" Type="@ButtonType.Link" Disabled="!_available" Loading="_isListening" OnClick="OnClickStart"></Button>
+
+
+@code
+{
+    [Parameter]
+    public EventCallback<string> OnChange { get; set; }
+
+    private SpeechRecognitionResult[] _results = [];
+
+    private bool _available = true;
+
+    private bool _isListening = false;
+
+    protected override void OnInitialized()
+    {
+        this.SpeechRecognition.Lang = CultureInfo.CurrentCulture.Name ;
+        this.SpeechRecognition.InterimResults = true;
+        this.SpeechRecognition.Continuous = true;
+        this.SpeechRecognition.Result += OnSpeechRecognized;
+        this.SpeechRecognition.End += OnSpeechEnded;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            this._available = await this.SpeechRecognition.IsAvailableAsync();
+            this.StateHasChanged();
+        }
+    }
+
+    private void OnChangeLang(ChangeEventArgs args)
+    {
+        this.SpeechRecognition.Lang = args.Value?.ToString() ?? "en-US";
+    }
+
+    private void OnSpeechRecognized(object? sender, SpeechRecognitionEventArgs args)
+    {
+        this._results = args.Results?.Skip(args.ResultIndex).ToArray() ?? [];
+
+        var text = this._results[^1].Items![0].Transcript;
+
+        if (OnChange.HasDelegate)
+        {
+            OnChange.InvokeAsync(text);
+        }
+
+        InvokeAsync(OnClickStop);
+
+        this.StateHasChanged();
+    }
+
+    private async Task OnClickStart()
+    {
+        if (this._isListening)
+        {
+            this._isListening = false;
+            await this.SpeechRecognition.StopAsync();
+        }
+        else
+        {
+            this._isListening = true;
+            await this.SpeechRecognition.StartAsync();
+        }
+    }
+
+    private async Task OnClickStop()
+    {
+        if (!this._isListening) return;
+        this._isListening = false;
+        await this.SpeechRecognition.StopAsync();
+    }
+
+    private void OnSpeechEnded(object? sender, EventArgs args)
+    {
+        if (this._isListening)
+        {
+            this._isListening = false;
+
+            this.StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        this.SpeechRecognition.Result -= OnSpeechRecognized;
+        this.SpeechRecognition.End -= OnSpeechEnded;
+    }
+}

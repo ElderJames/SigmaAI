@@ -168,6 +168,12 @@ namespace Sigma.Components.Pages.ChatPage
             });
         }
 
+        private async Task OnSpeech(string text)
+        {
+            _messageInput = text;
+            await OnSendAsync();
+        }
+
         protected async Task OnSendAsync()
         {
             try

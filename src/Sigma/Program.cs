@@ -22,6 +22,7 @@ using Sigma.Services;
 using Sigma.Services.LLamaSharp;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +76,7 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddQueue();
+builder.Services.AddSpeechRecognition();
 
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddScoped<AuditInterceptor>();

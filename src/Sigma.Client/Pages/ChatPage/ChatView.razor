@@ -1,4 +1,5 @@
 ﻿@namespace Sigma.Components.Pages.ChatPage
+@using Sigma.Client.Components.Speech
 @using Sigma.Core.Repositories
 @using Sigma.Models
 @using Microsoft.AspNetCore.Components.Web.Virtualization
@@ -76,8 +77,9 @@
                     <div style="height: 10px;"></div>
                     <AntDesign.Input @ref="_input" @bind-Value="@(_messageInput)" DebounceMilliseconds="@(-1)" Placeholder="输入消息回车发送" OnPressEnter="@(async () => await OnSendAsync())" Disabled="@Sendding">
                         <Suffix>
-                            <Button Icon="clear" Type="@(ButtonType.Link)" OnClick="@(async () => await OnClearAsync())" Disabled="@Sendding"></Button>
-                            <Button Icon="send" Type="@(ButtonType.Link)" OnClick="@(async () => await OnSendAsync())" Disabled="@Sendding"></Button>
+                            <Button Icon="clear" Type="@ButtonType.Link" OnClick="@(async () => await OnClearAsync())" Disabled="@Sendding"></Button>
+                            <SpeechButton OnChange="OnSpeech" ></SpeechButton>
+                            <Button Icon="send" Type="@ButtonType.Link" OnClick="@(async () => await OnSendAsync())" Disabled="@Sendding"></Button>
                         </Suffix>
                     </AntDesign.Input>
                 </Body>
