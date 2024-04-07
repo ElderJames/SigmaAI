@@ -62,12 +62,14 @@
                                 {
                                     <GridRow Style="width:100%">
                                         <GridCol Span="1">
-                                            <Image Width="25px" Height="25px" Style="margin-top:10px;" Src="https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg" />
+                                            @* <Image Width="25px" Height="25px" Style="margin-top:10px;" Src="https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg" /> *@
+                                            <Avatar Icon="@(_app?.Icon??"appstore")"></Avatar>
                                         </GridCol>
                                         <GridCol Span="23">
                                             <div class="chat-bubble received">
                                                 @((MarkupString)(item.Content))
                                             </div>
+                                            <Icon Style="float:right;margin-top:10px;" Type="sound" Theme="outline" OnClick="async () =>await SpeechSynthesis.SpeakAsync(item.Content)" />
                                         </GridCol>
                                     </GridRow>
                                 }

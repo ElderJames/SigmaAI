@@ -77,6 +77,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddQueue();
 builder.Services.AddSpeechRecognition();
+builder.Services.AddSpeechSynthesis();
 
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddScoped<AuditInterceptor>();

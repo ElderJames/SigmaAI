@@ -16,6 +16,7 @@ using Sigma.Core.Domain.Model.Enum;
 using Microsoft.Extensions.Logging;
 using Sigma.Core.Domain.Chat;
 using Sigma.Client.Services;
+using Toolbelt.Blazor.SpeechSynthesis;
 
 namespace Sigma.Components.Pages.ChatPage
 {
@@ -66,6 +67,9 @@ namespace Sigma.Components.Pages.ChatPage
 
         [Inject]
         private LayoutService LayoutService { get; set; }
+
+        [Inject]
+        private SpeechSynthesis SpeechSynthesis { get; set; }
 
         private bool _loading = false;
 
