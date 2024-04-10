@@ -1,0 +1,23 @@
+﻿@using Elsa.Studio.Components
+@inherits StudioComponentBase
+
+<PageContainer Title="流程列表">
+    <Table TItem="WorkflowDefinitionRow" DataSource="_data" Total="_totalCount" @bind-SelectedRows="_selectedRows" OnChange="OnTableChange">
+        <TitleTemplate>
+
+        </TitleTemplate>
+        <ColumnDefinitions>
+            <Selection />
+            <PropertyColumn Property="c=>c.DefinitionId" />
+            <PropertyColumn Property="c=>c.Name" />
+            <PropertyColumn Property="c=>c.LatestVersion" />
+            <PropertyColumn Property="c=>c.PublishedVersion" />
+            <PropertyColumn Property="c=>c.Description" />
+        </ColumnDefinitions>
+    </Table>
+</PageContainer>
+
+
+@code {
+
+}
