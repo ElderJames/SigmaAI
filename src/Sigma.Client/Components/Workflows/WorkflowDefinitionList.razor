@@ -1,10 +1,15 @@
-﻿@using Elsa.Studio.Components
+﻿@using AntDesign.Internal
+@using Elsa.Studio.Components
 @inherits StudioComponentBase
 
 <PageContainer Title="流程列表">
-    <Table TItem="WorkflowDefinitionRow" DataSource="_data" Total="_totalCount" @bind-SelectedRows="_selectedRows" OnChange="OnTableChange">
+    <Table TItem="WorkflowDefinitionRow" DataSource="_data" Total="_totalCount" @bind-SelectedRows="_selectedRows" OnChange="OnTableChange" OnRowClick="OnRowClick">
         <TitleTemplate>
-
+            <Flex Justify="flex-end">
+                <Button Type="@ButtonType.Primary" OnClick="OnCreateWorkflowClicked">Create workflow</Button>
+                <Button Type="@ButtonType.Default" OnClick="OnCreateWorkflowClicked">Import workflow</Button>
+            </Flex>
+         
         </TitleTemplate>
         <ColumnDefinitions>
             <Selection />
@@ -20,4 +25,27 @@
 
 @code {
 
+    class WorkflowCreateModel
+    {
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+    }
+
+    private WorkflowCreateModel model;
+    private IForm form;
+
+    private RenderFragment WorkflowEdotForm(string defaultName)
+    {
+        model = new() { Name = defaultName };
+        return
+            @<Form @ref="form" Model="model" ValidateOnChange>
+                <FormItem Label="Workflow Name" Required>
+                    <Input @bind-Value="model.Name"></Input>
+                </FormItem>
+                <FormItem Label="Description">
+                    <Input @bind-Value="model.Description"></Input>
+                </FormItem>
+            </Form>;
+    }
 }

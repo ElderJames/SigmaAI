@@ -9,9 +9,9 @@ using Elsa.Studio.DomInterop.Contracts;
 using Elsa.Studio.Workflows.Domain.Contracts;
 using Microsoft.AspNetCore.Components;
 using Elsa.Api.Client.Resources.WorkflowDefinitions.Requests;
-using Elsa.Api.Client.Resources.WorkflowDefinitions.Responses;
 using Elsa.Api.Client.Resources.WorkflowDefinitions.Enums;
 using Elsa.Studio.Components;
+using AntDesign;
 
 namespace Sigma.Client.Components.Workflows;
 
@@ -29,6 +29,10 @@ public partial class WorkflowDefinitionList : StudioComponentBase
     [Inject] private IWorkflowInstanceService WorkflowInstanceService { get; set; } = default!;
     [Inject] private IFiles Files { get; set; } = default!;
     [Inject] private IDomAccessor DomAccessor { get; set; } = default!;
+    
+    [Inject] private ModalService ModalService { get; set; } = default!;
+    [Inject] private MessageService MessageService { get; set; } = default!;
+
     private string SearchTerm { get; set; } = string.Empty;
     private List<WorkflowDefinitionRow> _data;
 
@@ -93,6 +97,38 @@ public partial class WorkflowDefinitionList : StudioComponentBase
             "Created" => OrderByWorkflowDefinition.Created,
             _ => null
         };
+    }
+
+	private async Task OnCreateWorkflowClicked()
+    {
+		var workflowName = await WorkflowDefinitionService.GenerateUniqueNameAsync();
+
+        var modalRef = await ModalService.CreateModalAsync(new()
+        {
+            Content = WorkflowEdotForm(workflowName),
+            OnOk = async (e) =>
+            {
+                if (!form.Validate())
+                {
+                    return;
+                }
+                var newWorkflowModel = model;
+                var result = await InvokeWithBlazorServiceContext((() => WorkflowDefinitionService.CreateNewDefinitionAsync(newWorkflowModel.Name!, newWorkflowModel.Description!)));
+
+                await result.OnSuccessAsync(definition => EditAsync(definition.DefinitionId));
+                result.OnFailed(errors => _ = MessageService.Error(string.Join(Environment.NewLine, errors.Errors)));
+            }
+        });
+    }
+
+    private async Task OnRowClick(RowData<WorkflowDefinitionRow> rowData)
+    {
+        await EditAsync(rowData.Data.DefinitionId);
+    }
+
+    private async Task EditAsync(string definitionId)
+    {
+        await EditWorkflowDefinition.InvokeAsync(definitionId);
     }
 
     private record WorkflowDefinitionRow(
