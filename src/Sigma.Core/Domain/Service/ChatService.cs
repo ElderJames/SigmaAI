@@ -86,7 +86,7 @@ namespace Sigma.Core.Domain.Service
                 KernelArguments args = [];
                 if (history.Count > 10)
                 {
-                    app.Prompt = @"${{ConversationSummaryPlugin.SummarizeConversation $history}}" + app.Prompt;
+                    prompt = @"${{ConversationSummaryPlugin.SummarizeConversation $history}}" + prompt;
 
                     args.Add("history", string.Join("\n", history.Select(x => x.Role + ": " + x.Content)));
                     args.Add("input", questions);

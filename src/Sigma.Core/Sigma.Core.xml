@@ -112,6 +112,18 @@
         <member name="M:Sigma.Core.Migrations.Plugin.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:Sigma.Core.Migrations.AddChatModelId">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.AddChatModelId.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.AddChatModelId.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sigma.Core.Migrations.AddChatModelId.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:Sigma.Core.Domain.Model.Enum.AIType">
             <summary>
             AI类型
