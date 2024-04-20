@@ -301,9 +301,9 @@ namespace Sigma.Components.Pages.ChatPage
 
                 await InvokeAsync(StateHasChanged);
              
-                await MarkDown(chatHistory);
             }
 
+            await MarkDown(chatHistory);
 
             await ChatRepository.SaveHistory(chatHistory);
         }
@@ -331,10 +331,9 @@ namespace Sigma.Components.Pages.ChatPage
                 await Task.Delay(50);
 
                 await InvokeAsync(StateHasChanged);
-                
-                await MarkDown(chatHistory);
+  
             }
-
+            await MarkDown(chatHistory);
             await ChatRepository.SaveHistory(chatHistory);
         }
 
